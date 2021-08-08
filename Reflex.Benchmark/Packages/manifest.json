@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "com.unity.ide.rider": "1.1.4",
+    "com.unity.test-framework": "1.1.19",
+    "com.gustavopsantos.reflex": "file:../../Reflex/Assets/Reflex",
+    "jp.hadashikick.vcontainer": "https://github.com/hadashiA/VContainer.git?path=/VContainer/Assets/VContainer/#1.8.6",
+    "com.svermeulen.extenject": "https://github.com/modesttree/Zenject.git?path=/UnityProject/Assets/Plugins/Zenject/#9.2.0",
+    "com.unity.modules.animation": "1.0.0",
+    "com.unity.modules.audio": "1.0.0",
+    "com.unity.modules.particlesystem": "1.0.0",
+    "com.unity.modules.physics": "1.0.0"
+  }
+}
