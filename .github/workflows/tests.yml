@@ -17,7 +17,7 @@ jobs:
     - name: Activate Unity
       run: echo "$UNITY_LICENSE" > Unity_lic.ulf && (/opt/unity/Editor/Unity -nographics -batchmode -manualLicenseFile Unity_lic.ulf || true)
     - name: Run Edit Mode Tests
-      run: /opt/unity/Editor/Unity -projectPath ./Reflex.Tests -batchmode -nographics -runEditorTests -editorTestsResultFile test-results.xml
+      run: /opt/unity/Editor/Unity -projectPath ./Reflex.Tests -batchmode -nographics -runEditorTests -editorTestsResultFile ../test-results.xml
     - name: Publish Results
       uses: actions/upload-artifact@v2
       with:
