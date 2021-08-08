@@ -10,7 +10,7 @@ namespace Reflex
         {
         }
 
-        public BindingContractDefinition(RegisterFunction register)
+        internal BindingContractDefinition(RegisterFunction register)
         {
             _register = register;
         }

@@ -13,7 +13,7 @@ namespace Reflex
         {
         }
 
-        public BindingGenericContractDefinition(Type genericContract, RegisterFunction register)
+        internal BindingGenericContractDefinition(Type genericContract, RegisterFunction register)
         {
             _genericContract = genericContract;
             _register = register;

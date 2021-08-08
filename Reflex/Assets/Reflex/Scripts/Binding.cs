@@ -2,10 +2,10 @@
 
 namespace Reflex
 {
-    public class Binding
+    internal class Binding
     {
-        public Type Concrete;
-        public BindingScope Scope;
-        public Func<object> Method;
+        internal Type Concrete;
+        internal BindingScope Scope;
+        internal Func<object> Method;
     }
 }

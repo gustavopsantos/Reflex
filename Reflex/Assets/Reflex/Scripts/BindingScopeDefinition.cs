@@ -4,11 +4,10 @@
     {
         private readonly Binding[] _bindings;
 
-        public BindingScopeDefinition(params Binding[] bindings)
+        internal BindingScopeDefinition(params Binding[] bindings)
         {
             _bindings = bindings;
         }
-
 
         public void AsTransient()
         {

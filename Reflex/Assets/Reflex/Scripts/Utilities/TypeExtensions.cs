@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Reflex.Scripts.Utilities
 {
-    public static class TypeExtensions
+    internal static class TypeExtensions
     {
         /// <summary>
         /// Returns the type name. If this is a generic type, appends
@@ -12,7 +12,7 @@ namespace Reflex.Scripts.Utilities
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>System.String.</returns>
-        public static string GetFormattedName(this Type type)
+        internal static string GetFormattedName(this Type type)
         {
             if (type.IsGenericType)
             {

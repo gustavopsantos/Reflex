@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 namespace Reflex.Scripts
 {
-    public class MonoInjector : MonoBehaviour
+    internal class MonoInjector : MonoBehaviour
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void AfterAssembliesLoaded()

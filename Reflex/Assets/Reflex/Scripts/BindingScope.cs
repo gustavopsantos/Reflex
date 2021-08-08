@@ -1,6 +1,6 @@
 ﻿namespace Reflex
 {
-    public enum BindingScope
+    internal enum BindingScope
     {
         None,
         Transient,
