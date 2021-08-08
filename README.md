@@ -10,8 +10,8 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)   
 [![Unity](https://img.shields.io/badge/Unity-2019+-black.svg)](https://unity3d.com/pt/get-unity/download/archive)  
 [![PullRequests](https://img.shields.io/badge/PRs-welcome-brightgreen)](http://makeapullrequest.com)  
-[![Releases](https://img.shields.io/github/release/gustavopsantos/doctest.svg)](https://github.com/gustavopsantos/doctest/releases)  
-![](https://github.com/gustavopsantos/doctest/workflows/Tests/badge.svg)  
+[![Releases](https://img.shields.io/github/release/gustavopsantos/reflex.svg)](https://github.com/gustavopsantos/reflex/releases)  
+![](https://github.com/gustavopsantos/reflex/workflows/Tests/badge.svg)  
 
 
 ## Features
@@ -19,7 +19,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - IL2CPP Friendly
 - Minimal code base
 - Contructor injection
-- `[MonoInject]` Property & field injection attribute
+- `[MonoInject]` Property, field and method injection attribute
 
 ## Performance
 10,000 iterations solving a non nested transient dependency.
