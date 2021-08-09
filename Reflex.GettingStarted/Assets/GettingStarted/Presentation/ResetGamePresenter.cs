@@ -1,14 +1,11 @@
-﻿using Reflex.Scripts.Attributes;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.Scripting;
+using Reflex.Scripts.Attributes;
 
-public class ResetGamePresenter : MonoBehaviour
+public class ResetGamePresenter : Presenter<ResetGameView>
 {
-    [SerializeField] private Button _resetGameButton;
-    [MonoInject] private IResetGame _resetGame;
-
-    private void Start()
+    [MonoInject, Preserve]
+    private void Inject(IResetGame resetGame)
     {
-        _resetGameButton.onClick.AddListener(() => _resetGame.Reset());
+        View.ResetButton.onClick.AddListener(resetGame.Reset);
     }
 }
