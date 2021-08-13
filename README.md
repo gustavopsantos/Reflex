@@ -14,14 +14,14 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 ![](https://github.com/gustavopsantos/reflex/workflows/Tests/badge.svg)  
 
 
-## ✨ Features 
+## Features 
 - Blazing fast
 - IL2CPP Friendly
 - Minimal code base
 - Contructor injection
 - `[MonoInject]` Property, field and method injection attribute
 
-## 🏎️ Performance
+## Performance
 10,000 iterations solving a non nested transient dependency.
 
 |            | GC Alloc | More Alloc Than Best | Time | Slower Than Best Best |
@@ -30,7 +30,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 | VContainer | 512KB    | 2x                   | 13ms | 2.6x
 | Zenject    | 2355KB   | 10x                  | 48ms | 9.6x
 
-## 📦 Installation
+## Installation
 
 *Requires Unity 2019+*
 
@@ -43,7 +43,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 1. Download the .unitypackage from [releases](https://github.com/gustavopsantos/reflex/releases) page.
 2. Import Reflex.X.X.X.unitypackage
 
-## 🧭 Getting Started
+## Getting Started
 
 ### Installing Bindings
 
@@ -113,7 +113,7 @@ public class NonMonoBehaviourInjection
 }
 ```
 
-## 🥷 Contributing
+## Contributing
   
 Here’s how we suggest you go about proposing a change to this project:
   
@@ -129,12 +129,12 @@ by automatically forking the project and prompting to send a pull request too.
 [branch]: https://help.github.com/articles/creating-and-deleting-branches-within-your-repository
 [pr]: https://help.github.com/articles/using-pull-requests/
 
-## 👾 Author
+## Author
 [![Twitter](https://img.shields.io/twitter/follow/codinggustavo.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=codinggustavo)  
 
 [![LinkedIn](https://img.shields.io/badge/Linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/codinggustavo)  
 
 
-## 📜 License
+## License
 
 Reflex is licensed under the MIT license, so you can comfortably use it in commercial applications (We still love contributions though).
