@@ -75,6 +75,13 @@ public class MonoBehaviourInjection : MonoBehaviour
     [MonoInject] private readonly IContainer _container;
     [MonoInject] public IDependencyOne DependencyOne { get; private set; }
 
+    [MonoInject]
+    private void Inject(IContainer container, IDependencyOne dependencyOne)
+    {
+        var dependencyTwo = container
+            .Resolve(typeof(IDependencyTwo));
+    }
+
     private void Start()
     {
         var dependencyTwo = _container

@@ -1,5 +1,5 @@
-﻿using UnityEngine.Scripting;
-using Reflex.Scripts.Attributes;
+﻿using Reflex.Scripts.Attributes;
+using UnityEngine.Scripting;
 
 public class CollectablesFeedbackPresenter : Presenter<CollectablesFeedbackView>
 {

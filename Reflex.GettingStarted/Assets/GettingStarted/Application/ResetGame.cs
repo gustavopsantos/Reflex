@@ -15,6 +15,6 @@ public class ResetGame : IResetGame
     {
         _collectableRegistry.Clear();
         _container.Resolve<IPlayerMovement>().ResetGame();
-        ObjectUtilities.FindObjectsOfType<Collectable>(true).ForEach(c => c.gameObject.SetActive(true));
+        ObjectUtilities.FindObjectsOfType<Collectable>(true).ForEach(collectable => collectable.Enable());
     }
 }

@@ -28,6 +28,11 @@ public class Collectable : MonoBehaviour
         _collectableRegistry.Register(_id);
     }
 
+    public void Enable()
+    {
+        gameObject.SetActive(true);
+    }
+
     private void Disable()
     {
         gameObject.SetActive(false);

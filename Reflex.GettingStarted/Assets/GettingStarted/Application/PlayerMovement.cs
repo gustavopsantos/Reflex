@@ -8,11 +8,8 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
     [MonoInject] private readonly IGameSettings _gameSettings;
     [MonoInject] private readonly IGetPlayerInput _getPlayerInput;
 
-    private Vector3 _initialPosition;
-
     private void Start()
     {
-        _initialPosition = transform.position;
         _container.BindSingleton<IPlayerMovement>(this);
     }
 
@@ -26,6 +23,6 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
 
     public void ResetGame()
     {
-        transform.position = _initialPosition;
+        transform.position = Vector3.zero;
     }
 }
