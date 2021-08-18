@@ -1,40 +1,53 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Unity.IL2CPP.CompilerServices;
 
 namespace Reflex
 {
-    public class BindingGenericContractDefinition
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+    public struct BindingGenericContractDefinition
     {
+        //4 bytes ref on x64 (instance)
         private readonly Type _genericContract;
-        private readonly RegisterFunction _register;
+        //4 bytes ref on x64 (instance)
+        private readonly Container _container;
 
-        private BindingGenericContractDefinition()
-        {
-        }
-
-        internal BindingGenericContractDefinition(Type genericContract, RegisterFunction register)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal BindingGenericContractDefinition(Type genericContract, Container container)
         {
             _genericContract = genericContract;
-            _register = register;
+            _container = container;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public BindingScopeDefinition To(params Type[] concretes)
         {
-            var bindings = new List<Binding>();
+            var bindings = new int[concretes.Length];
 
-            foreach (var concrete in concretes)
-            {
-                var genericTypes = GetGenericTypes(_genericContract, concrete);
-                var contract = _genericContract.MakeGenericType(genericTypes);
-                var binding = new Binding {Concrete = concrete};
-                bindings.Add(binding);
-                _register(contract, binding);
+            for (var i = 0; i < concretes.Length; ++i) {
+                var concrete     = concretes[i];
+                var genericTypes = GetGenericTypes(this._genericContract, concrete);
+                var contract     = this._genericContract.MakeGenericType(genericTypes);
+                var hashConcrete = contract.GetHashCode();
+
+                Binding binding;
+                binding.ConcreteHashCode = hashConcrete;
+                binding.Scope = BindingScope.None;
+                binding.Method = null;
+                TypeInfoCache.Register(concrete);
+                
+                bindings[i] = hashConcrete;
+                
+                _container.Bindings.Add(contract.GetHashCode(), binding, out _);
             }
 
-            return new BindingScopeDefinition(bindings.ToArray());
+            return new BindingScopeDefinition(_container, bindings);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Type[] GetGenericTypes(Type genericContract, Type type)
         {
             if (TryGetTypeGenericTypesAsInterface(type, genericContract, out var interfaceGenericArguments))
@@ -50,6 +63,7 @@ namespace Reflex
             throw new Exception($"Could not retrieve generic types from type '{type.Name}'.");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryGetTypeGenericTypesAsInterface(Type type, Type contract, out Type[] genericArguments)
         {
             var genericInterfaces = type.GetInterfaces().Where(i => i.IsGenericType);
@@ -58,6 +72,7 @@ namespace Reflex
             return genericArguments != null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryGetTypeGenericTypesAsAbstract(Type type, Type contract, out Type[] genericArguments)
         {
             genericArguments = type.BaseType != null &&

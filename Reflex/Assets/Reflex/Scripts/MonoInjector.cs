@@ -4,9 +4,13 @@ using UnityEngine;
 using System.Reflection;
 using Reflex.Scripts.Attributes;
 using UnityEngine.SceneManagement;
+using Unity.IL2CPP.CompilerServices;
 
 namespace Reflex.Scripts
 {
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     internal class MonoInjector : MonoBehaviour
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
