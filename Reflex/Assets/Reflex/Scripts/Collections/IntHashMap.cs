@@ -41,9 +41,15 @@ namespace Reflex
             data = new T[this.capacity];
         }
 
-        IEnumerator<int> IEnumerable<int>.GetEnumerator() => GetEnumerator();
+        IEnumerator<int> IEnumerable<int>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Enumerator GetEnumerator()
