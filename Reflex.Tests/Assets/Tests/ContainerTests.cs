@@ -80,6 +80,22 @@ namespace Reflex.Tests
         }
         
         [Test]
+        public void Resolve_ValueTypeAsTransient_ShouldReturnDefault()
+        {
+            Container container = new Container();
+            container.Bind<int>().To<int>().AsTransient();
+            container.Resolve<int>().Should().Be(default);
+        }
+        
+        [Test]
+        public void Resolve_StringAsTransient_ShouldReturnDefault()
+        {
+            Container container = new Container();
+            container.Bind<string>().To<string>().AsTransient();
+            container.Resolve<string>().Should().Be(default);
+        }
+        
+        [Test]
         public void Resolve_ValueTypeAsTransient_CustomConstructor_ValueShouldReturn42()
         {
             Container container = new Container();

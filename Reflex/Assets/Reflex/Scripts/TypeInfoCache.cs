@@ -51,7 +51,14 @@ namespace Reflex
             TypeInfo info;
             
             var constructors = type.GetConstructors();
-            if (constructors.Length > 0)
+            
+            //string workaround
+            if (Type.GetTypeCode(type) == TypeCode.String)
+            {
+                parameters = Type.EmptyTypes;
+                activator = objs => null;
+            }
+            else if (constructors.Length > 0)
             {
                 var constructor = type.GetConstructors().MaxBy(c => c.GetParameters().Length);
                 parameters = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
