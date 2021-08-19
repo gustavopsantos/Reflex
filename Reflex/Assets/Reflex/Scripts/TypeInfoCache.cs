@@ -42,8 +42,7 @@ namespace Reflex
 
             RegisterInternal(type, hashCode);
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private static void RegisterInternal(Type type, int hashCode)
         {
             Type[] parameters;
