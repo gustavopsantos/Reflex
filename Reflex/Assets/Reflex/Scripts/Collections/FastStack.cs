@@ -10,17 +10,17 @@ namespace Reflex
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     internal sealed class FastStack<T> 
     {
-        internal int Length;
-        internal int Capacity;
+        internal int length;
+        internal int capacity;
 
-        internal T[] Data;
+        internal T[] data;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal FastStack() 
         {
-            Capacity = 4;
-            Data     = new T[Capacity];
-            Length   = 0;
+            capacity = 4;
+            data = new T[capacity];
+            length = 0;
         }
     }
 
@@ -32,22 +32,25 @@ namespace Reflex
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void Push<T>(this FastStack<T> stack, in T value) 
         {
-            if (stack.Length == stack.Capacity) 
+            if (stack.length == stack.capacity) 
             {
-                ArrayHelpers.Grow(ref stack.Data, stack.Capacity <<= 1);
+                ArrayHelpers.Grow(ref stack.data, stack.capacity <<= 1);
             }
 
-            stack.Data[stack.Length++] = value;
+            stack.data[stack.length++] = value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static T Pop<T>(this FastStack<T> stack) => stack.Data[--stack.Length];
+        internal static T Pop<T>(this FastStack<T> stack)
+        {
+            return stack.data[--stack.length];
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void Clear<T>(this FastStack<T> stack) 
         {
-            stack.Data   = null;
-            stack.Length = stack.Capacity = 0;
+            stack.data   = null;
+            stack.length = stack.capacity = 0;
         }
     }
 }

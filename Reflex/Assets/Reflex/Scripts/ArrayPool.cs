@@ -20,7 +20,7 @@ namespace Reflex
         {
             if (registry.TryGetValue(size, out var stack))
             {
-                if (stack.Length > 0) {
+                if (stack.length > 0) {
                     return stack.Pop();
                 }
             }
