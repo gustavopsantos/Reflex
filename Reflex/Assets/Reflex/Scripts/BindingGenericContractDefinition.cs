@@ -32,17 +32,17 @@ namespace Reflex
                 var concrete     = concretes[i];
                 var genericTypes = GetGenericTypes(this._genericContract, concrete);
                 var contract     = this._genericContract.MakeGenericType(genericTypes);
-                var hashConcrete = contract.GetHashCode();
+                var hashContract = contract.GetHashCode();
 
                 Binding binding;
-                binding.ConcreteHashCode = hashConcrete;
+                binding.ConcreteHashCode = concrete.GetHashCode();
                 binding.Scope = BindingScope.None;
                 binding.Method = null;
                 TypeInfoCache.Register(concrete);
                 
-                bindings[i] = hashConcrete;
+                bindings[i] = hashContract;
                 
-                _container.Bindings.Add(contract.GetHashCode(), binding, out _);
+                _container.Bindings.Add(hashContract, binding, out _);
             }
 
             return new BindingScopeDefinition(_container, bindings);

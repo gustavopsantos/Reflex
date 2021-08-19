@@ -46,16 +46,28 @@ namespace Reflex
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void RegisterInternal(Type type, int hashCode)
         {
-            var constructor = FindMostValuableConstructor(type);
-            var parameters = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
-            var activator = CompileGenericActivator(constructor, parameters);
+            Type[] parameters;
+            DynamicObjectActivator activator;
+            TypeInfo info;
+            
+            var constructors = type.GetConstructors();
+            if (constructors.Length > 0)
+            {
+                var constructor = type.GetConstructors().MaxBy(c => c.GetParameters().Length);
+                parameters = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
+                activator = CompileGenericActivator(constructor, parameters);
+            }
+            else
+            {
+                parameters = Type.EmptyTypes;
+                activator = CompileDefaultActivator(type); //for value types return default(T)
+            }
 
             //faster than call .cctor struct/class on IL2CPP
-            TypeInfo info;
             info.Type = type;
             info.ConstructorParameters = parameters;
             info.Activator = activator;
-
+            
             Registry.Add(hashCode, info, out _);
         }
 
@@ -80,9 +92,10 @@ namespace Reflex
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static ConstructorInfo FindMostValuableConstructor(Type concrete)
+        private static DynamicObjectActivator CompileDefaultActivator(Type type)
         {
-            return concrete.GetConstructors().MaxBy(constructor => constructor.GetParameters().Length);
+            var e = Expression.Lambda(typeof(DynamicObjectActivator), Expression.Convert(Expression.Default(type), typeof(object)), Expression.Parameter(typeof(object[])));
+            return (DynamicObjectActivator) e.Compile();
         }
     }
 }
