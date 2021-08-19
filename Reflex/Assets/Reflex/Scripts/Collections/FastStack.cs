@@ -2,47 +2,52 @@
 using System.Runtime.CompilerServices;
 using Unity.IL2CPP.CompilerServices;
 
-namespace Reflex {
+namespace Reflex 
+{
     [Serializable]
     [Il2CppSetOption(Option.NullChecks, false)]
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    public sealed class FastStack<T> {
-        public int length;
-        public int capacity;
+    internal sealed class FastStack<T> 
+    {
+        internal int Length;
+        internal int Capacity;
 
-        public T[] data;
+        internal T[] Data;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public FastStack() {
-            this.capacity = 4;
-            this.data     = new T[this.capacity];
-            this.length   = 0;
+        internal FastStack() 
+        {
+            Capacity = 4;
+            Data     = new T[Capacity];
+            Length   = 0;
         }
     }
 
     [Il2CppSetOption(Option.NullChecks, false)]
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    public static class IntStackExtensions {
+    internal static class IntStackExtensions 
+    {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Push<T>(this FastStack<T> stack, in T value) {
-            if (stack.length == stack.capacity) {
-                ArrayHelpers.Grow(ref stack.data, stack.capacity <<= 1);
+        internal static void Push<T>(this FastStack<T> stack, in T value) 
+        {
+            if (stack.Length == stack.Capacity) 
+            {
+                ArrayHelpers.Grow(ref stack.Data, stack.Capacity <<= 1);
             }
 
-            stack.data[stack.length++] = value;
+            stack.Data[stack.Length++] = value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T Pop<T>(this FastStack<T> stack) {
-            return stack.data[--stack.length];
-        }
+        internal static T Pop<T>(this FastStack<T> stack) => stack.Data[--stack.Length];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Clear<T>(this FastStack<T> stack) {
-            stack.data   = null;
-            stack.length = stack.capacity = 0;
+        internal static void Clear<T>(this FastStack<T> stack) 
+        {
+            stack.Data   = null;
+            stack.Length = stack.Capacity = 0;
         }
     }
 }

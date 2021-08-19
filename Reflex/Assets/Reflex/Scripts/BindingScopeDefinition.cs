@@ -6,11 +6,12 @@ namespace Reflex
     [Il2CppSetOption(Option.NullChecks, false)]
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    public struct BindingScopeDefinition 
+    //16 bytes + 8*int[].Length
+    public readonly struct BindingScopeDefinition 
     {
-        //4 bytes value on x64 (instance)
+        //8 bytes value on x64 (instance)
         private readonly Container _container;
-        //4 bytes value on x64 (instance)
+        //8 bytes value on x64 (instance)
         private readonly int[]     _bindings;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -23,7 +24,7 @@ namespace Reflex
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AsTransient() 
         {
-            for (var i = 0; i < this._bindings.Length; ++i) 
+            for (var i = 0; i < _bindings.Length; ++i) 
             {
                 var binding = _container.Bindings.GetValueByKey(_bindings[i]);
                 binding.Scope = BindingScope.Transient;
@@ -33,7 +34,7 @@ namespace Reflex
 
         public void AsSingleton()
         {
-            for (var i = 0; i < this._bindings.Length; ++i) 
+            for (var i = 0; i < _bindings.Length; ++i) 
             {
                 var binding = _container.Bindings.GetValueByKey(_bindings[i]);
                 binding.Scope = BindingScope.Singleton;

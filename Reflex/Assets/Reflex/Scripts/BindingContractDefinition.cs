@@ -7,12 +7,13 @@ namespace Reflex
     [Il2CppSetOption(Option.NullChecks, false)]
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    public struct BindingContractDefinition<TContract>
+    //8 bytes
+    public readonly struct BindingContractDefinition<TContract>
     {
         //do not use delegates and events, it allocates some garbage
         //do not use IContainer for internal using, it is slower than a specific type when we run on IL2CPP
         //-----------------------------------
-        //4 bytes ref on x64 (instance)
+        //8 bytes ref on x64 (instance)
         private readonly Container _container;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

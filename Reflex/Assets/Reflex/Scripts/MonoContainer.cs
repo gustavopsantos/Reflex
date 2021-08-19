@@ -27,7 +27,7 @@ namespace Reflex.Scripts
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void BindSingleton<TContract>(TContract instance)
         {
-            _container.BindSingleton<TContract>(instance);
+            _container.BindSingleton(instance);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

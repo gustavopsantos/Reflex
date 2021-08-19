@@ -107,31 +107,31 @@ namespace Reflex.Scripts
         [Il2CppSetOption(Option.DivideByZeroChecks, false)]
         private static class ReflectionsCache 
         {
-            private static IntHashMap<Reflection> _reflections;
-            private static Type _attributeType;
+            private static readonly IntHashMap<Reflection> reflections;
+            private static readonly Type attributeType;
 
             static ReflectionsCache() 
             {
-                _reflections = new IntHashMap<Reflection>();
-                _attributeType = typeof(MonoInjectAttribute);
+                reflections = new IntHashMap<Reflection>();
+                attributeType = typeof(MonoInjectAttribute);
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal static Reflection Get(Type type) 
             {
                 var hash = type.GetHashCode();
-                if (_reflections.TryGetValue(hash, out var reflection))
+                if (reflections.TryGetValue(hash, out var reflection))
                 {
                     return reflection;
                 }
                 
                 const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-                reflection.Fields = type.GetFields(flags).Where(f => f.IsDefined(_attributeType)).ToArray();
-                reflection.Properties = type.GetProperties(flags).Where(p => p.CanWrite && p.IsDefined(_attributeType)).ToArray();
-                reflection.Methods = type.GetMethods(flags).Where(m => m.IsDefined(_attributeType)).ToArray();
+                reflection.Fields = type.GetFields(flags).Where(f => f.IsDefined(attributeType)).ToArray();
+                reflection.Properties = type.GetProperties(flags).Where(p => p.CanWrite && p.IsDefined(attributeType)).ToArray();
+                reflection.Methods = type.GetMethods(flags).Where(m => m.IsDefined(attributeType)).ToArray();
 
-                _reflections.Add(hash, reflection, out _);
+                reflections.Add(hash, reflection, out _);
                 return reflection;
             }
         }

@@ -10,7 +10,8 @@ namespace Reflex.Scripts
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public class ProjectContext : MonoContainer
     {
-        [SerializeField] private List<MonoInstaller> _monoInstallers = new List<MonoInstaller>();
+        [SerializeField] 
+        private List<MonoInstaller> _monoInstallers = new List<MonoInstaller>();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void InstallBindings()

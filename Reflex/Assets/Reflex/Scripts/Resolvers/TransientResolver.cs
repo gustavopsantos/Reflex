@@ -21,7 +21,7 @@ namespace Reflex
             //inline internal method for performance
             var parameters = info.ConstructorParameters;
             
-            for (int i = 0; i < parameters.Length; ++i)
+            for (var i = 0; i < parameters.Length; ++i)
             {
                 objects[i] = container.Resolve(parameters[i]);
             }

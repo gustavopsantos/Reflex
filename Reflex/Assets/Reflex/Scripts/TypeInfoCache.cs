@@ -17,48 +17,45 @@ namespace Reflex
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         //Register type before resolving for smooth FPS, cause resolve can be called at any moment of the gameplay.
-        internal static void Register<T>() {
+        internal static void Register<T>()
+        {
             var hashCode = TypeHashCodeHelper<T>.Hash;
-            
+
             if (Registry.Has(hashCode))
             {
                 return;
             }
 
             var type = typeof(T);
-            var constructor = FindMostValuableConstructor(type);
-            var parameters  = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
-            var activator   = CompileGenericActivator(constructor, parameters);
-
-            //faster than call .cctor struct/class on IL2CPP
-            TypeInfo info;
-            info.Type = type;
-            info.ConstructorParameters = parameters;
-            info.Activator = activator;
-            
-            Registry.Add(hashCode, info, out _);
+            RegisterInternal(type, hashCode);
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Register(Type type) 
+        internal static void Register(Type type)
         {
             var hashCode = type.GetHashCode();
-            
+
             if (Registry.Has(hashCode))
             {
                 return;
             }
 
+            RegisterInternal(type, hashCode);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void RegisterInternal(Type type, int hashCode)
+        {
             var constructor = FindMostValuableConstructor(type);
-            var parameters  = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
-            var activator   = CompileGenericActivator(constructor, parameters);
+            var parameters = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
+            var activator = CompileGenericActivator(constructor, parameters);
 
             //faster than call .cctor struct/class on IL2CPP
             TypeInfo info;
             info.Type = type;
             info.ConstructorParameters = parameters;
             info.Activator = activator;
-            
+
             Registry.Add(hashCode, info, out _);
         }
 
@@ -79,7 +76,7 @@ namespace Reflex
 
             var newExpression = Expression.New(constructor, argumentsExpressions);
             var lambda = Expression.Lambda(typeof(DynamicObjectActivator), Expression.Convert(newExpression, typeof(object)), param);
-            return (DynamicObjectActivator) lambda.Compile();
+            return (DynamicObjectActivator)lambda.Compile();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

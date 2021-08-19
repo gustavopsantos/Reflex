@@ -13,12 +13,12 @@ namespace Reflex
         {
             if (container.Bindings.TryGetValue(hashContract, out var binding))
             {
-                if (binding.Scope == BindingScope.Method) 
+                if (binding.Scope == BindingScope.Method)
                 {
                     return binding.Method.Invoke();
                 }
             }
-            
+
             throw new UnknownMethodException($"Cannot resolve method of type hash '{hashContract}'.");
         }
     }

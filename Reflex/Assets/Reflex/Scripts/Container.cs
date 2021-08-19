@@ -10,8 +10,8 @@ namespace Reflex
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public class Container : IContainer
     {
-        internal readonly IntHashMap<Binding> Bindings   = new IntHashMap<Binding>(); // TContract, Binding
-        internal readonly IntHashMap<object>  Singletons = new IntHashMap<object>();  // TContract, Instance
+        internal readonly IntHashMap<Binding> Bindings = new IntHashMap<Binding>(); // TContract, Binding
+        internal readonly IntHashMap<object> Singletons = new IntHashMap<object>(); // TContract, Instance
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Container()
@@ -22,12 +22,12 @@ namespace Reflex
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
-            this.Bindings.Clear();
-            this.Singletons.Clear();
+            Bindings.Clear();
+            Singletons.Clear();
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public BindingContractDefinition<TContract> Bind<TContract>() 
+        public BindingContractDefinition<TContract> Bind<TContract>()
         {
             return new BindingContractDefinition<TContract>(this);
         }
@@ -37,16 +37,16 @@ namespace Reflex
         {
             var hashContract = TypeHashCodeHelper<TContract>.Hash;
             var typeConcrete = instance.GetType();
-            
+
             //faster than call .cctor struct/class on IL2CPP
             Binding binding;
             binding.ConcreteHashCode = typeConcrete.GetHashCode();
-            binding.Scope            = BindingScope.Singleton;
-            binding.Method           = null;
+            binding.Scope = BindingScope.Singleton;
+            binding.Method = null;
             TypeInfoCache.Register(typeConcrete);
-            
-            this.Bindings.Add(hashContract, binding, out _);
-            this.Singletons.Add(hashContract, instance, out _);
+
+            Bindings.Add(hashContract, binding, out _);
+            Singletons.Add(hashContract, instance, out _);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -60,9 +60,9 @@ namespace Reflex
             binding.Scope = BindingScope.Singleton;
             binding.Method = null;
             TypeInfoCache.Register<T>();
-            
-            this.Bindings.Add(hashContract, binding, out _);
-            this.Singletons.Add(hashContract, instance, out _);
+
+            Bindings.Add(hashContract, binding, out _);
+            Singletons.Add(hashContract, instance, out _);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -75,15 +75,15 @@ namespace Reflex
         public TContract Resolve<TContract>()
         {
             var hashContract = TypeHashCodeHelper<TContract>.Hash;
-            
-            if (this.Bindings.TryGetValue(hashContract, out var binding))
+
+            if (Bindings.TryGetValue(hashContract, out var binding))
             {
                 switch (binding.Scope)
                 {
-                    case BindingScope.Method:    return (TContract)MethodResolver.Resolve(hashContract, this);
+                    case BindingScope.Method: return (TContract)MethodResolver.Resolve(hashContract, this);
                     case BindingScope.Transient: return (TContract)TransientResolver.Resolve(hashContract, this);
                     case BindingScope.Singleton: return (TContract)SingletonResolver.Resolve(hashContract, this);
-                    default:                     throw new ScopeNotHandledException($"BindingScope '{binding.Scope}' not handled.");
+                    default: throw new ScopeNotHandledException($"BindingScope '{binding.Scope}' not handled.");
                 }
             }
 
@@ -91,18 +91,18 @@ namespace Reflex
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object Resolve(Type contract) 
+        public object Resolve(Type contract)
         {
             var hashContract = contract.GetHashCode();
-            
-            if (this.Bindings.TryGetValue(hashContract, out var binding))
+
+            if (Bindings.TryGetValue(hashContract, out var binding))
             {
                 switch (binding.Scope)
                 {
-                    case BindingScope.Method:    return MethodResolver.Resolve(hashContract, this);
+                    case BindingScope.Method: return MethodResolver.Resolve(hashContract, this);
                     case BindingScope.Transient: return TransientResolver.Resolve(hashContract, this);
                     case BindingScope.Singleton: return SingletonResolver.Resolve(hashContract, this);
-                    default:                     throw new ScopeNotHandledException($"BindingScope '{binding.Scope}' not handled.");
+                    default: throw new ScopeNotHandledException($"BindingScope '{binding.Scope}' not handled.");
                 }
             }
 
@@ -113,7 +113,7 @@ namespace Reflex
         public TCast ResolveGenericContract<TCast>(Type genericContract, params Type[] genericConcrete)
         {
             var contract = genericContract.MakeGenericType(genericConcrete);
-            return (TCast) Resolve(contract);
+            return (TCast)Resolve(contract);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

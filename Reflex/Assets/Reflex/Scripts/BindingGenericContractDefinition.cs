@@ -8,11 +8,12 @@ namespace Reflex
     [Il2CppSetOption(Option.NullChecks, false)]
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    public struct BindingGenericContractDefinition
+    //16 bytes
+    public readonly struct BindingGenericContractDefinition
     {
-        //4 bytes ref on x64 (instance)
+        //8 bytes ref on x64 (instance)
         private readonly Type _genericContract;
-        //4 bytes ref on x64 (instance)
+        //8 bytes ref on x64 (instance)
         private readonly Container _container;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
