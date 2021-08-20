@@ -1,23 +1,32 @@
-﻿using System;
+﻿using System.Runtime.CompilerServices;
+using Unity.IL2CPP.CompilerServices;
 
 namespace Reflex
 {
+    [Il2CppSetOption(Option.NullChecks, false)]
+    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     internal static class SingletonResolver
     {
-        internal static object Resolve(Type contract, Container container)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static object Resolve(int hashContract, Container container)
         {
-            if (container.TryGetSingletonInstance(contract, out var instance))
+            //inline internal method for performance
+            if (container.Singletons.TryGetValue(hashContract, out var instance))
             {
                 return instance;
             }
 
-            return CreateAndRegisterSingletonInstance(contract, container);
+            return CreateAndRegisterSingletonInstance(hashContract, container);
         }
 
-        private static object CreateAndRegisterSingletonInstance(Type contract, Container container)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static object CreateAndRegisterSingletonInstance(int hashContract, Container container)
         {
-            var instance = TransientResolver.Resolve(contract, container);
-            return container.RegisterSingletonInstance(contract, instance);
+            var instance = TransientResolver.Resolve(hashContract, container);
+            //inline internal method for performance
+            container.Singletons.Add(hashContract, instance, out _);
+            return instance;
         }
     }
 }

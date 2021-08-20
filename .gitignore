@@ -1,4 +1,4 @@
-﻿Reflex/.idea
+Reflex/.idea
 Reflex/Library
 Reflex/Logs
 Reflex/obj
@@ -23,3 +23,5 @@ Reflex.Tests/Library
 Reflex.Tests/Logs
 Reflex.Tests/obj
 Reflex.Benchmark/Temp
+.DS_Store
+Reflex.Tests/Temp
