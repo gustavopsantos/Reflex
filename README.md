@@ -22,13 +22,41 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - `[MonoInject]` Property, field and method injection attribute
 
 ## Performance
-10,000 iterations solving a non nested transient dependency.
+> Resolving a Transient dependency with four levels of chained dependencies
 
-|            | GC Alloc | More Alloc Than Best | Time | Slower Than Best Best |
-|:----------:|:--------:|:--------------------:|:----:|:---------------------:|
-| Reflex     | 235KB    | 1x                   | 5ms  | 1x
-| VContainer | 512KB    | 2x                   | 13ms | 2.6x
-| Zenject    | 2355KB   | 10x                  | 48ms | 9.6x
+### Android (Mono)
+|           | GC    | Time |
+|-----------|------:|-----:|
+| Reflex    | 54KB  | 4ms
+| Zenject   | 464KB | 74ms
+| VContainer| 128KB | 53ms
+
+### Android (IL2CPP)
+|           | GC    | Time |
+|-----------|------:|-----:|
+| Reflex    | 512KB | 28ms
+| Zenject   | 480KB | 70ms
+| VContainer| 128KB | 16ms
+
+### Windows (Mono)
+|           | GC    | Time |
+|-----------|------:|-----:|
+| Reflex    | 109KB | 1ms
+| Zenject   | 900KB | 7ms
+| VContainer| 257KB | 4ms
+
+### Windows (IL2CPP)
+|           | GC    | Time |
+|-----------|------:|-----:|
+| Reflex    | 900KB | 3ms
+| Zenject   | 900KB | 8ms
+| VContainer| 257KB | 2ms
+
+> Performance in the `IL2CPP (AOT)` backend suffers compared to `Mono (JIT)` as expressions are no longer compiled to be interpreted.
+
+> The performance on `IL2CPP` backend is not so good because the expressions are actually interpreted, unlike `Mono`, where they are actually compiled.
+
+> I'm investigating whether dealing with IL Reweaving is worth the complexity it brings.
 
 ## Installation
 
