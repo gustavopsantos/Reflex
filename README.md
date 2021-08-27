@@ -22,8 +22,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - `[MonoInject]` Property, field and method injection attribute
 
 ## Performance
-> Resolving a Transient dependency with four levels of chained dependencies
-
+> Resolving thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Reflex.Benchmark/Assets/Benchmark/NestedBenchmarkReflex.cs).
 
 ### Android
 
@@ -90,7 +89,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Installing Bindings
 
-Create a MonoInstaller to install your bindings in the project context, and remember to add this component in the ProjectContext prefab, and reference it in the Mono Installers list of the ProjectContext. See [ProjectContext.prefab](Assets/Reflex/Resources/ProjectContext.prefab).
+Create a MonoInstaller to install your bindings in the project context, and remember to add this component in the ProjectContext prefab, and reference it in the Mono Installers list of the ProjectContext. See [ProjectContext.prefab](Reflex.GettingStarted/Assets/GettingStarted/Resources/ProjectContext.prefab).
 
 ```csharp
 public class ProjectInstaller : MonoInstaller
@@ -110,7 +109,7 @@ public class ProjectInstaller : MonoInstaller
 
 ### MonoBehaviour Injection
 
-> Be aware that fields and properties with [MonoInject] are only injected into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Assets/Reflex/Scripts/MonoInjector.cs).
+> Be aware that fields and properties with [MonoInject] are only injected into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Reflex/Assets/Reflex/Scripts/MonoInjector.cs).
 
 ```csharp
 public class MonoBehaviourInjection : MonoBehaviour
