@@ -24,37 +24,52 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 ## Performance
 > Resolving a Transient dependency with four levels of chained dependencies
 
-### Android (Mono)
-|           | GC    | Time |
+
+### Android
+
+<table>
+<tr><th>Mono</th><th>IL2CPP</th></tr>
+<tr><td>
+
+|         | GC    | Time |
 |-----------|------:|-----:|
 | Reflex    | 54KB  | 4ms
 | Zenject   | 464KB | 74ms
 | VContainer| 128KB | 53ms
 
-### Android (IL2CPP)
-|           | GC    | Time |
+</td><td>
+
+|          | GC    | Time |
 |-----------|------:|-----:|
 | Reflex    | 512KB | 28ms
 | Zenject   | 480KB | 70ms
 | VContainer| 128KB | 16ms
 
-### Windows (Mono)
+</td></tr> </table>
+
+### Windows
+
+<table>
+<tr><th>Mono</th><th>IL2CPP</th></tr>
+<tr><td>
+
 |           | GC    | Time |
 |-----------|------:|-----:|
 | Reflex    | 109KB | 1ms
 | Zenject   | 900KB | 7ms
 | VContainer| 257KB | 4ms
 
-### Windows (IL2CPP)
+</td><td>
+
 |           | GC    | Time |
 |-----------|------:|-----:|
 | Reflex    | 900KB | 3ms
 | Zenject   | 900KB | 8ms
 | VContainer| 257KB | 2ms
 
-> Performance in the `IL2CPP (AOT)` backend suffers compared to `Mono (JIT)` as expressions are no longer compiled to be interpreted.
+</td></tr> </table>
 
-> The performance on `IL2CPP` backend is not so good because the expressions are actually interpreted, unlike `Mono`, where they are actually compiled.
+> The performance on `IL2CPP (AOT)` backend is not so good because the expressions are actually interpreted, unlike `Mono (JIT)`, where they are actually compiled.
 
 > I'm investigating whether dealing with IL Reweaving is worth the complexity it brings.
 
