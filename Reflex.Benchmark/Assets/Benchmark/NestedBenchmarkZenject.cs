@@ -8,6 +8,8 @@ namespace Benchmark
     {
         private readonly DiContainer _container = new DiContainer();
 
+        protected override int Order => 2;
+        
         private void Start()
         {
             _container.Bind<IA>().To<A>().AsTransient();

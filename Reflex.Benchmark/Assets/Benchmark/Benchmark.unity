@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecd6a04ae29a6ba49b807bfae2a7202d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _iterations: 10000
+  _iterations: 100
   _identifier: DIFramework Reflex
 --- !u!4 &47593000
 Transform:
@@ -175,12 +175,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 47592998}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2148a9e40c5d06b4e9fa6c652f8afb37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _iterations: 10000
+  _iterations: 100
   _identifier: DIFramework VContainer
 --- !u!114 &47593002
 MonoBehaviour:
@@ -189,12 +189,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 47592998}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 628f8370ee633b145b7aa89a755ebc6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _iterations: 10000
+  _iterations: 100
   _identifier: DIFramework Zenject
 --- !u!1 &262441148
 GameObject:
@@ -232,7 +232,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.4339623, g: 0.4339623, b: 0.4339623, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
