@@ -22,13 +22,55 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - `[MonoInject]` Property, field and method injection attribute
 
 ## Performance
-10,000 iterations solving a non nested transient dependency.
+> Resolving thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Reflex.Benchmark/Assets/Benchmark/NestedBenchmarkReflex.cs).
 
-|            | GC Alloc | More Alloc Than Best | Time | Slower Than Best Best |
-|:----------:|:--------:|:--------------------:|:----:|:---------------------:|
-| Reflex     | 235KB    | 1x                   | 5ms  | 1x
-| VContainer | 512KB    | 2x                   | 13ms | 2.6x
-| Zenject    | 2355KB   | 10x                  | 48ms | 9.6x
+### Android
+
+<table>
+<tr><th>Mono</th><th>IL2CPP</th></tr>
+<tr><td>
+
+|         | GC    | Time |
+|-----------|------:|-----:|
+| Reflex    | 54KB  | 4ms
+| Zenject   | 464KB | 74ms
+| VContainer| 128KB | 53ms
+
+</td><td>
+
+|          | GC    | Time |
+|-----------|------:|-----:|
+| Reflex    | 512KB | 28ms
+| Zenject   | 480KB | 70ms
+| VContainer| 128KB | 16ms
+
+</td></tr> </table>
+
+### Windows
+
+<table>
+<tr><th>Mono</th><th>IL2CPP</th></tr>
+<tr><td>
+
+|           | GC    | Time |
+|-----------|------:|-----:|
+| Reflex    | 109KB | 1ms
+| Zenject   | 900KB | 7ms
+| VContainer| 257KB | 4ms
+
+</td><td>
+
+|           | GC    | Time |
+|-----------|------:|-----:|
+| Reflex    | 900KB | 3ms
+| Zenject   | 900KB | 8ms
+| VContainer| 257KB | 2ms
+
+</td></tr> </table>
+
+> The performance on `IL2CPP (AOT)` backend is not so good because the expressions are actually interpreted, unlike `Mono (JIT)`, where they are actually compiled.
+
+> I'm investigating whether dealing with IL Reweaving is worth the complexity it brings.
 
 ## Installation
 
@@ -47,7 +89,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Installing Bindings
 
-Create a MonoInstaller to install your bindings in the project context, and remember to add this component in the ProjectContext prefab, and reference it in the Mono Installers list of the ProjectContext. See [ProjectContext.prefab](Assets/Reflex/Resources/ProjectContext.prefab).
+Create a MonoInstaller to install your bindings in the project context, and remember to add this component in the ProjectContext prefab, and reference it in the Mono Installers list of the ProjectContext. See [ProjectContext.prefab](Reflex.GettingStarted/Assets/GettingStarted/Resources/ProjectContext.prefab).
 
 ```csharp
 public class ProjectInstaller : MonoInstaller
@@ -67,7 +109,7 @@ public class ProjectInstaller : MonoInstaller
 
 ### MonoBehaviour Injection
 
-> Be aware that fields and properties with [MonoInject] are only injected into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Assets/Reflex/Scripts/MonoInjector.cs).
+> Be aware that fields and properties with [MonoInject] are only injected into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Reflex/Assets/Reflex/Scripts/MonoInjector.cs).
 
 ```csharp
 public class MonoBehaviourInjection : MonoBehaviour
