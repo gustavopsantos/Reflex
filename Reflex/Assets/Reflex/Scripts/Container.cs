@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Reflex
 {
     public class Container : IContainer
     {
-        private readonly Dictionary<Type, Binding> _bindings = new Dictionary<Type, Binding>(); // TContract, Binding
+        internal readonly Dictionary<Type, Binding> Bindings = new Dictionary<Type, Binding>(); // TContract, Binding
         private readonly Dictionary<Type, object> _singletons = new Dictionary<Type, object>(); // TContract, Instance
 
         public Container()
@@ -16,13 +16,13 @@ namespace Reflex
 
         public void Clear()
         {
-            _bindings.Clear();
+            Bindings.Clear();
             _singletons.Clear();
         }
         
         public BindingContractDefinition<TContract> Bind<TContract>()
         {
-            return new BindingContractDefinition<TContract>(_bindings.Add);
+            return new BindingContractDefinition<TContract>(this);
         }
 
         public void BindSingleton<TContract>(TContract instance)
@@ -33,7 +33,7 @@ namespace Reflex
                 Scope = BindingScope.Singleton
             };
             
-            _bindings.Add(typeof(TContract), binding);
+            Bindings.Add(typeof(TContract), binding);
             _singletons.Add(typeof(TContract), instance);
         }
 
@@ -45,13 +45,13 @@ namespace Reflex
                 Scope = BindingScope.Singleton
             };
             
-            _bindings.Add(contract, binding);
+            Bindings.Add(contract, binding);
             _singletons.Add(contract, instance);
         }
 
         public BindingGenericContractDefinition BindGenericContract(Type genericContract)
         {
-            return new BindingGenericContractDefinition(genericContract, _bindings.Add);
+            return new BindingGenericContractDefinition(genericContract, Bindings.Add);
         }
 
         public TContract Resolve<TContract>()
@@ -61,7 +61,7 @@ namespace Reflex
 
         public object Resolve(Type contract)
         {
-            if (_bindings.TryGetValue(contract, out var binding))
+            if (Bindings.TryGetValue(contract, out var binding))
             {
                 switch (binding.Scope)
                 {
@@ -97,7 +97,7 @@ namespace Reflex
 
         internal Type GetConcreteTypeFor(Type contract)
         {
-            return _bindings[contract].Concrete;
+            return Bindings[contract].Concrete;
         }
 
         internal object RegisterSingletonInstance(Type contract, object concrete)
@@ -113,7 +113,7 @@ namespace Reflex
 
         internal bool TryGetMethod(Type contract, out Func<object> method)
         {
-            if (_bindings.TryGetValue(contract, out var binding))
+            if (Bindings.TryGetValue(contract, out var binding))
             {
                 if (binding.Scope == BindingScope.Method)
                 {

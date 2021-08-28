@@ -4,15 +4,15 @@ namespace Reflex
 {
     public class BindingContractDefinition<TContract>
     {
-        private readonly RegisterFunction _register;
+        private readonly Container _container;
 
         private BindingContractDefinition()
         {
         }
 
-        internal BindingContractDefinition(RegisterFunction register)
+        internal BindingContractDefinition(Container container)
         {
-            _register = register;
+            _container = container;
         }
 
         public BindingScopeDefinition To<TConcrete>() where TConcrete : TContract
@@ -22,7 +22,7 @@ namespace Reflex
                 Concrete = typeof(TConcrete)
             };
 
-            _register(typeof(TContract), binding);
+            _container.Bindings.Add(typeof(TContract), binding);
             return new BindingScopeDefinition(binding);
         }
 
@@ -34,7 +34,7 @@ namespace Reflex
                 Method = method as Func<object>
             };
 
-            _register(typeof(TContract), binding);
+            _container.Bindings.Add(typeof(TContract), binding);
         }
     }
 }
