@@ -27,23 +27,25 @@ namespace Reflex
 
         public void BindSingleton<TContract>(TContract instance)
         {
-            _bindings.Add(typeof(TContract), new Binding
+            var binding = new Binding
             {
                 Concrete = instance.GetType(),
                 Scope = BindingScope.Singleton
-            });
-
+            };
+            
+            _bindings.Add(typeof(TContract), binding);
             _singletons.Add(typeof(TContract), instance);
         }
 
         public void BindSingleton<T>(Type contract, T instance)
         {
-            _bindings.Add(contract, new Binding
+            var binding = new Binding
             {
                 Concrete = instance.GetType(),
                 Scope = BindingScope.Singleton
-            });
-
+            };
+            
+            _bindings.Add(contract, binding);
             _singletons.Add(contract, instance);
         }
 
