@@ -7,7 +7,11 @@ namespace Reflex
     {
         internal static object Resolve(Type contract, Container container)
         {
-            var concrete = container.GetConcreteTypeFor(contract);
+            return Construct(container.GetConcreteTypeFor(contract), container);
+        }
+
+        private static object Construct(Type concrete, Container container)
+        {
             var info = TypeInfoCache.GetClassInfo(concrete);
             var objects = ArrayPool<object>.Shared.Rent(info.ConstructorParameters.Length);
             GetConstructionObjects(info.ConstructorParameters, container, ref objects);
