@@ -61,47 +61,12 @@ namespace Reflex.Tests
         {
         }
         
-        private struct MyStruct
-        {
-            public readonly int Value;
-
-            public MyStruct(int value)
-            {
-                this.Value = value;
-            }
-        }
-        
         [Test]
         public void Resolve_ValueTypeSingleton_ShouldReturn42()
         {
             Container container = new Container();
             container.BindSingleton(42);
             container.Resolve<int>().Should().Be(42);
-        }
-        
-        [Test]
-        public void Resolve_ValueTypeAsTransient_ShouldReturnDefault()
-        {
-            Container container = new Container();
-            container.Bind<int>().To<int>().AsTransient();
-            container.Resolve<int>().Should().Be(default);
-        }
-        
-        [Test]
-        public void Resolve_StringAsTransient_ShouldReturnDefault()
-        {
-            Container container = new Container();
-            container.Bind<string>().To<string>().AsTransient();
-            container.Resolve<string>().Should().Be(default);
-        }
-        
-        [Test]
-        public void Resolve_ValueTypeAsTransient_CustomConstructor_ValueShouldReturn42()
-        {
-            Container container = new Container();
-            container.BindSingleton(42);
-            container.Bind<MyStruct>().To<MyStruct>().AsTransient();
-            container.Resolve<MyStruct>().Value.Should().Be(42);
         }
         
         [Test]

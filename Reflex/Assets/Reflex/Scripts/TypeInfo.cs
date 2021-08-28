@@ -2,10 +2,15 @@ using System;
 
 namespace Reflex
 {
-    internal struct TypeInfo
+    internal class TypeInfo
     {
-        public Type Type;
-        public Type[] ConstructorParameters;
-        public DynamicObjectActivator Activator;
+        public Type[] ConstructorParameters { get; }
+        public DynamicObjectActivator Activator { get; }
+
+        public TypeInfo(Type[] constructorParameters, DynamicObjectActivator activator)
+        {
+            Activator = activator;
+            ConstructorParameters = constructorParameters;
+        }
     }
 }

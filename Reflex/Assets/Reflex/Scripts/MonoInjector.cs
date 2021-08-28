@@ -4,14 +4,9 @@ using UnityEngine;
 using System.Reflection;
 using Reflex.Scripts.Attributes;
 using UnityEngine.SceneManagement;
-using Unity.IL2CPP.CompilerServices;
-using System.Runtime.CompilerServices;
 
 namespace Reflex.Scripts
 {
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     internal class MonoInjector : MonoBehaviour
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
@@ -24,115 +19,76 @@ namespace Reflex.Scripts
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void InjectSceneDependencies(Scene scene, IContainer container)
         {
             foreach (var rootGameObject in scene.GetRootGameObjects())
             {
                 foreach (var monoBehaviour in rootGameObject.GetComponentsInChildren<MonoBehaviour>(true))
                 {
-                    var type       = monoBehaviour.GetType();
-                    var reflection = ReflectionsCache.Get(type);
+                    var type = monoBehaviour.GetType();
 
-                    reflection.Inject(monoBehaviour, container);
+                    const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
+                    foreach (var field in type.GetFields(flags).Where(f => f.IsDefined(typeof(MonoInjectAttribute))))
+                    {
+                        InjectField(field, monoBehaviour, container);
+                    }
+
+                    foreach (var property in type.GetProperties(flags).Where(p => p.CanWrite && p.IsDefined(typeof(MonoInjectAttribute))))
+                    {
+                        InjectProperty(property, monoBehaviour, container);
+                    }
+
+                    foreach (var method in type.GetMethods(flags).Where(m => m.IsDefined(typeof(MonoInjectAttribute))))
+                    {
+                        InjectMethod(method, monoBehaviour, container);
+                    }
                 }
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryGetProjectContext(out ProjectContext projectContext)
         {
             projectContext = Resources.Load<ProjectContext>("ProjectContext");
-            if (projectContext == null) 
-            {
-                Debug.LogWarning("Skipping MonoInjector. A project context prefab named 'ProjectContext' should exist inside a Resources folder.");
-            }
+            if (projectContext == null) Debug.LogWarning("Skipping MonoInjector. A project context prefab named 'ProjectContext' should exist inside a Resources folder.");
             return projectContext != null;
         }
-        
-        [Il2CppSetOption(Option.NullChecks, false)]
-        [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-        [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-        private struct Reflection 
-        {
-            internal FieldInfo[]    Fields;
-            internal PropertyInfo[] Properties;
-            internal MethodInfo[]   Methods;
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal void Inject(object instance, IContainer container) 
+        private static void InjectField(FieldInfo fieldInfo, object instance, IContainer container)
+        {
+            try
             {
-                foreach (var field in Fields) 
-                {
-                    try
-                    {
-                        field.SetValue(instance, container.Resolve(field.FieldType));
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogError(e);
-                    }
-                }
-                
-                foreach (var property in Properties) 
-                {
-                    try
-                    {
-                        property.SetValue(instance, container.Resolve(property.PropertyType));
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogError(e);
-                    }
-                }
-                
-                foreach (var method in Methods) 
-                {
-                    try
-                    {
-                        var parameters = method.GetParameters();
-                        var arguments  = parameters.Select(p => container.Resolve(p.ParameterType)).ToArray();
-                        method.Invoke(instance, arguments);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogError(e);
-                    }
-                }
+                fieldInfo.SetValue(instance, container.Resolve(fieldInfo.FieldType));
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
             }
         }
 
-        [Il2CppSetOption(Option.NullChecks, false)]
-        [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-        [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-        private static class ReflectionsCache 
+        private static void InjectProperty(PropertyInfo propertyInfo, object instance, IContainer container)
         {
-            private static readonly IntHashMap<Reflection> reflections;
-            private static readonly Type attributeType;
-
-            static ReflectionsCache() 
+            try
             {
-                reflections = new IntHashMap<Reflection>();
-                attributeType = typeof(MonoInjectAttribute);
+                propertyInfo.SetValue(instance, container.Resolve(propertyInfo.PropertyType));
             }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static Reflection Get(Type type) 
+            catch (Exception e)
             {
-                var hash = type.GetHashCode();
-                if (reflections.TryGetValue(hash, out var reflection))
-                {
-                    return reflection;
-                }
-                
-                const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+                Debug.LogError(e);
+            }
+        }
 
-                reflection.Fields = type.GetFields(flags).Where(f => f.IsDefined(attributeType)).ToArray();
-                reflection.Properties = type.GetProperties(flags).Where(p => p.CanWrite && p.IsDefined(attributeType)).ToArray();
-                reflection.Methods = type.GetMethods(flags).Where(m => m.IsDefined(attributeType)).ToArray();
-
-                reflections.Add(hash, reflection, out _);
-                return reflection;
+        private static void InjectMethod(MethodInfo methodInfo, object instance, IContainer container)
+        {
+            try
+            {
+                var parameters = methodInfo.GetParameters();
+                var arguments = parameters.Select(p => container.Resolve(p.ParameterType)).ToArray();
+                methodInfo.Invoke(instance, arguments);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
             }
         }
     }

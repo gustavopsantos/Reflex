@@ -1,7 +1,6 @@
 ﻿namespace Reflex
 {
-    //change size from 4 bytes to 1 byte
-    internal enum BindingScope : byte
+    internal enum BindingScope
     {
         None,
         Transient,
