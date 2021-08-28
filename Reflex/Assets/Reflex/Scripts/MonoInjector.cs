@@ -2,7 +2,6 @@
 using System.Linq;
 using UnityEngine;
 using System.Reflection;
-using Reflex.Scripts.Attributes;
 using UnityEngine.SceneManagement;
 
 namespace Reflex.Scripts
@@ -26,20 +25,19 @@ namespace Reflex.Scripts
                 foreach (var monoBehaviour in rootGameObject.GetComponentsInChildren<MonoBehaviour>(true))
                 {
                     var type = monoBehaviour.GetType();
+                    var info = MonoInjectableTypeCache.Get(type);
 
-                    const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-
-                    foreach (var field in type.GetFields(flags).Where(f => f.IsDefined(typeof(MonoInjectAttribute))))
+                    foreach (var field in info.InjectableFields)
                     {
                         InjectField(field, monoBehaviour, container);
                     }
 
-                    foreach (var property in type.GetProperties(flags).Where(p => p.CanWrite && p.IsDefined(typeof(MonoInjectAttribute))))
+                    foreach (var property in info.InjectableProperties)
                     {
                         InjectProperty(property, monoBehaviour, container);
                     }
 
-                    foreach (var method in type.GetMethods(flags).Where(m => m.IsDefined(typeof(MonoInjectAttribute))))
+                    foreach (var method in info.InjectableMethods)
                     {
                         InjectMethod(method, monoBehaviour, container);
                     }
