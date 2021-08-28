@@ -610,6 +610,7 @@ PlayerSettings:
     Android: 1
     Standalone: 1
   il2cppCompilerConfiguration:
+    Android: 1
     Standalone: 2
   managedStrippingLevel: {}
   incrementalIl2cppBuild: {}
@@ -620,7 +621,8 @@ PlayerSettings:
   assemblyVersionValidation: 1
   gcWBarrierValidation: 0
   apiCompatibilityLevelPerPlatform:
-    Standalone: 3
+    Android: 3
+    Standalone: 6
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: Reflex.Benchmark

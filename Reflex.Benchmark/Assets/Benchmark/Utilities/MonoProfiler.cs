@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Domain.Generics;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Benchmark.Utilities
 {
@@ -12,7 +13,7 @@ namespace Benchmark.Utilities
 		private string _ticks;
 		private Rect _area;
 
-		private const int SampleCount = 128;
+		private const int SampleCount = 32;
 
 		private readonly RingBuffer<long> _samples = new RingBuffer<long>(SampleCount);
 
@@ -35,9 +36,11 @@ namespace Benchmark.Utilities
 		private void Update()
 		{
 			_stopwatch.Restart();
+			Profiler.BeginSample(_identifier);
 			for (int i = 0; i < _iterations; i++) Sample();
+			Profiler.EndSample();
 			_stopwatch.Stop();
-			_samples.Push(_stopwatch.ElapsedTicks);
+			_samples.Push(_stopwatch.ElapsedMilliseconds);
 		}
 
 		private void OnGUI()
@@ -45,7 +48,7 @@ namespace Benchmark.Utilities
 			GUI.Label(_area, $"{_identifier}: {Average(_samples)}", Style.Value);
 		}
 
-		private long Average(RingBuffer<long> buffer)
+		private static long Average(RingBuffer<long> buffer)
 		{
 			long total = 0;
 
@@ -54,7 +57,7 @@ namespace Benchmark.Utilities
 				total += buffer[i];
 			}
 
-			return (total / buffer.Length) / _iterations;
+			return total / buffer.Length;
 		}
 	}
 }
