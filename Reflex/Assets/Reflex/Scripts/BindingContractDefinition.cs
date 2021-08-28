@@ -6,10 +6,6 @@ namespace Reflex
     {
         private readonly Container _container;
 
-        private BindingContractDefinition()
-        {
-        }
-
         internal BindingContractDefinition(Container container)
         {
             _container = container;

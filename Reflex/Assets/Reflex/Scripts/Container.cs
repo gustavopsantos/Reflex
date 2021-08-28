@@ -51,7 +51,7 @@ namespace Reflex
 
         public BindingGenericContractDefinition BindGenericContract(Type genericContract)
         {
-            return new BindingGenericContractDefinition(genericContract, Bindings.Add);
+            return new BindingGenericContractDefinition(genericContract, this);
         }
 
         public TContract Resolve<TContract>()

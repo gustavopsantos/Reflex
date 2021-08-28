@@ -7,21 +7,17 @@ namespace Reflex
     public class BindingGenericContractDefinition
     {
         private readonly Type _genericContract;
-        private readonly RegisterFunction _register;
+        private readonly Container _container;
 
-        private BindingGenericContractDefinition()
-        {
-        }
-
-        internal BindingGenericContractDefinition(Type genericContract, RegisterFunction register)
+        internal BindingGenericContractDefinition(Type genericContract, Container container)
         {
             _genericContract = genericContract;
-            _register = register;
+            _container = container;
         }
 
         public BindingScopeDefinition To(params Type[] concretes)
         {
-            var bindings = new List<Binding>();
+            var bindings = new List<Binding>(concretes.Length);
 
             foreach (var concrete in concretes)
             {
@@ -29,7 +25,7 @@ namespace Reflex
                 var contract = _genericContract.MakeGenericType(genericTypes);
                 var binding = new Binding {Concrete = concrete};
                 bindings.Add(binding);
-                _register(contract, binding);
+                _container.Bindings.Add(contract, binding);
             }
 
             return new BindingScopeDefinition(bindings.ToArray());
@@ -54,7 +50,7 @@ namespace Reflex
         {
             var genericInterfaces = type.GetInterfaces().Where(i => i.IsGenericType);
             var contractInterface = genericInterfaces.FirstOrDefault(i => i.GetGenericTypeDefinition() == contract);
-            genericArguments = contractInterface != null ? contractInterface.GetGenericArguments() : null;
+            genericArguments = contractInterface?.GetGenericArguments();
             return genericArguments != null;
         }
 
