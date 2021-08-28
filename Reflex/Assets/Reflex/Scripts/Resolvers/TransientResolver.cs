@@ -24,7 +24,7 @@ namespace Reflex
             }
         }
 
-        private static void GetConstructionObjects(Type[] parameters, IContainer container, ref object[] array)
+        private static void GetConstructionObjects(Type[] parameters, Container container, ref object[] array)
         {
             for (int i = 0; i < parameters.Length; i++)
             {

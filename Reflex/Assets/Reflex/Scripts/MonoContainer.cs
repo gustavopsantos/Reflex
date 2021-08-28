@@ -3,48 +3,48 @@ using UnityEngine;
 
 namespace Reflex.Scripts
 {
-    public class MonoContainer : MonoBehaviour, IContainer
+    public class MonoContainer : MonoBehaviour
     {
-        private readonly IContainer _container = new Container();
+        internal readonly Container Container = new Container();
 
         public void Clear()
         {
-            _container.Clear();
+            Container.Clear();
         }
 
         public BindingContractDefinition<TContract> Bind<TContract>()
         {
-            return _container.Bind<TContract>();
+            return Container.Bind<TContract>();
         }
 
         public void BindSingleton<TContract>(TContract instance)
         {
-            _container.BindSingleton<TContract>(instance);
+            Container.BindSingleton<TContract>(instance);
         }
 
         public void BindSingleton<T>(Type contract, T instance)
         {
-            _container.BindSingleton(contract, instance);
+            Container.BindSingleton(contract, instance);
         }
 
         public BindingGenericContractDefinition BindGenericContract(Type genericContract)
         {
-            return _container.BindGenericContract(genericContract);
+            return Container.BindGenericContract(genericContract);
         }
 
         public TContract Resolve<TContract>()
         {
-            return _container.Resolve<TContract>();
+            return Container.Resolve<TContract>();
         }
 
         public object Resolve(Type contract)
         {
-            return _container.Resolve(contract);
+            return Container.Resolve(contract);
         }
 
         public TCast ResolveGenericContract<TCast>(Type genericContract, params Type[] genericConcrete)
         {
-            return _container.ResolveGenericContract<TCast>(genericContract, genericConcrete);
+            return Container.ResolveGenericContract<TCast>(genericContract, genericConcrete);
         }
     }
 }

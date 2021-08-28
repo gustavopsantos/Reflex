@@ -14,11 +14,11 @@ namespace Reflex.Scripts
             if (TryGetProjectContext(out var projectContext))
             {
                 projectContext.InstallBindings();
-                SceneManager.sceneLoaded += (scene, mode) => InjectSceneDependencies(scene, projectContext);
+                SceneManager.sceneLoaded += (scene, mode) => InjectSceneDependencies(scene, projectContext.Container);
             }
         }
 
-        private static void InjectSceneDependencies(Scene scene, IContainer container)
+        private static void InjectSceneDependencies(Scene scene, Container container)
         {
             foreach (var rootGameObject in scene.GetRootGameObjects())
             {
@@ -52,7 +52,7 @@ namespace Reflex.Scripts
             return projectContext != null;
         }
 
-        private static void InjectField(FieldInfo fieldInfo, object instance, IContainer container)
+        private static void InjectField(FieldInfo fieldInfo, object instance, Container container)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace Reflex.Scripts
             }
         }
 
-        private static void InjectProperty(PropertyInfo propertyInfo, object instance, IContainer container)
+        private static void InjectProperty(PropertyInfo propertyInfo, object instance, Container container)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace Reflex.Scripts
             }
         }
 
-        private static void InjectMethod(MethodInfo methodInfo, object instance, IContainer container)
+        private static void InjectMethod(MethodInfo methodInfo, object instance, Container container)
         {
             try
             {

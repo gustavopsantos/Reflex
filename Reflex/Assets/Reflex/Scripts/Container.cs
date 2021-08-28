@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace Reflex
 {
-    public class Container : IContainer
+    public class Container
     {
         internal readonly Dictionary<Type, Binding> Bindings = new Dictionary<Type, Binding>(); // TContract, Binding
         private readonly Dictionary<Type, object> _singletons = new Dictionary<Type, object>(); // TContract, Instance
 
         public Container()
         {
-            Bind<IContainer>().FromMethod(() => this);
+            BindSingleton<Container>(this);
         }
 
         public void Clear()

@@ -11,7 +11,7 @@ namespace Reflex.Scripts
         {
             foreach (var monoInstaller in _monoInstallers)
             {
-                monoInstaller.InstallBindings(this);
+                monoInstaller.InstallBindings(Container);
             }
         }
     }

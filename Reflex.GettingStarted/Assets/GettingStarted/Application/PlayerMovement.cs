@@ -4,7 +4,7 @@ using Reflex.Scripts.Attributes;
 
 public class PlayerMovement : MonoBehaviour, IPlayerMovement
 {
-    [MonoInject] private readonly IContainer _container;
+    [MonoInject] private readonly Container _container;
     [MonoInject] private readonly IGameSettings _gameSettings;
     [MonoInject] private readonly IGetPlayerInput _getPlayerInput;
 
