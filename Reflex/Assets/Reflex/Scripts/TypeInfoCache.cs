@@ -5,6 +5,9 @@ using System.Linq.Expressions;
 using Reflex.Scripts.Utilities;
 using System.Runtime.CompilerServices;
 using Unity.IL2CPP.CompilerServices;
+#if ENABLE_IL2CPP
+using System.Runtime.Serialization;
+#endif
 
 namespace Reflex
 {
@@ -61,12 +64,26 @@ namespace Reflex
             {
                 var constructor = type.GetConstructors().MaxBy(c => c.GetParameters().Length);
                 parameters = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
+                //Expressions for Mono Runtime, and FormatterServices for IL2CPP
+#if ENABLE_IL2CPP
+                activator = objs => 
+                {
+                    var instance = FormatterServices.GetUninitializedObject(type);
+                    constructor.Invoke(instance, objs);
+                    return instance;
+                };
+#else
                 activator = CompileGenericActivator(constructor, parameters);
+#endif
             }
             else
             {
                 parameters = Type.EmptyTypes;
+#if ENABLE_IL2CPP
+                activator = objs => FormatterServices.GetUninitializedObject(type); //for value types return default(T)
+#else
                 activator = CompileDefaultActivator(type); //for value types return default(T)
+#endif
             }
 
             //faster than call .cctor struct/class on IL2CPP
