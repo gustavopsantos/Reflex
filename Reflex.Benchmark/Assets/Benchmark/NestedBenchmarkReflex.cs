@@ -6,7 +6,7 @@ namespace Benchmark
 {
     public class NestedBenchmarkReflex : MonoProfiler
     {
-        private readonly IContainer _container = new Container();
+        private readonly Container _container = new Container();
 
         private void Start()
         {
