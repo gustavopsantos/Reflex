@@ -5,6 +5,7 @@ Reflex/obj
 Reflex/Temp
 *.csproj
 *.sln
+!SharedProject/SharedProject.sln
 Reflex.Benchmark/.idea
 Reflex.Benchmark/Library
 Reflex.Benchmark/Logs
@@ -24,3 +25,5 @@ Reflex.Tests/Logs
 Reflex.Tests/obj
 Reflex.Benchmark/Temp
 Reflex.Tests/Temp
+SharedProject/.idea
+Reflex/.idea

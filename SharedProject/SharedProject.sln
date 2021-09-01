@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflex", "..\Reflex\Reflex.csproj", "{6E861373-202E-43AF-1D73-F3706DC17FF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflex.Editor", "..\Reflex\Reflex.Editor.csproj", "{477FDE4C-60D3-FFEB-9C52-3D7477B891D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "..\Reflex.Benchmark\Benchmark.csproj", "{15478CDB-F18B-D8CB-1BE8-21A8F8C59DC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "..\Reflex.GettingStarted\Application.csproj", "{47D0BA10-B23C-8C2C-9484-13DD7009D84A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "..\Reflex.GettingStarted\Infrastructure.csproj", "{8675C7F3-5603-6F77-94BC-52047010D278}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "..\Reflex.GettingStarted\Presentation.csproj", "{1CDA6F06-7801-3085-A45D-BA1A1E514DA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflex.Tests", "..\Reflex.Tests\Reflex.Tests.csproj", "{7C8B0C50-88E1-6426-E160-D39C1E287894}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IL2CPPTest", "..\Reflex.PlatformBackendTests\IL2CPPTest.csproj", "{2BA0F502-DBA2-16AC-C478-5BAC9A7605C8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+	EndGlobalSection
+EndGlobal
