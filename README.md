@@ -30,7 +30,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 <tr><th>Mono</th><th>IL2CPP</th></tr>
 <tr><td>
 
-|         | GC    | Time |
+|           | GC    | Time |
 |-----------|------:|-----:|
 | Reflex    | 54KB  | 4ms
 | Zenject   | 464KB | 74ms
@@ -38,9 +38,9 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 </td><td>
 
-|          | GC    | Time |
+|           | GC    | Time |
 |-----------|------:|-----:|
-| Reflex    | 512KB | 28ms
+| Reflex    | 128KB | 16ms
 | Zenject   | 480KB | 70ms
 | VContainer| 128KB | 16ms
 
@@ -62,8 +62,8 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 |           | GC    | Time |
 |-----------|------:|-----:|
-| Reflex    | 900KB | 3ms
-| Zenject   | 900KB | 8ms
+| Reflex    | 257KB | 1ms
+| Zenject   | 900KB | 7ms
 | VContainer| 257KB | 2ms
 
 </td></tr> </table>
