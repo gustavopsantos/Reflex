@@ -94,7 +94,7 @@ Create a MonoInstaller to install your bindings in the project context, and reme
 ```csharp
 public class ProjectInstaller : MonoInstaller
 {
-    public override void InstallBindings(IContainer container)
+    public override void InstallBindings(Container container)
     {
         container.BindSingleton<int>(42);
         container.Bind<IDependencyOne>().To<DependencyOne>().AsTransient();
@@ -114,11 +114,11 @@ public class ProjectInstaller : MonoInstaller
 ```csharp
 public class MonoBehaviourInjection : MonoBehaviour
 {
-    [MonoInject] private readonly IContainer _container;
+    [MonoInject] private readonly Container _container;
     [MonoInject] public IDependencyOne DependencyOne { get; private set; }
 
     [MonoInject]
-    private void Inject(IContainer container, IDependencyOne dependencyOne)
+    private void Inject(Container container, IDependencyOne dependencyOne)
     {
         var dependencyTwo = container
             .Resolve(typeof(IDependencyTwo));
@@ -144,10 +144,10 @@ public class MonoBehaviourInjection : MonoBehaviour
 ```csharp
 public class NonMonoBehaviourInjection
 {
-    private readonly IContainer _container;
+    private readonly Container _container;
     private readonly int _answerForLifeTheUniverseAndEverything;
 
-    public NonMonoBehaviourInjection(IContainer container, int answerForLifeTheUniverseAndEverything)
+    public NonMonoBehaviourInjection(Container container, int answerForLifeTheUniverseAndEverything)
     {
         _container = container;
         _answerForLifeTheUniverseAndEverything = answerForLifeTheUniverseAndEverything;
