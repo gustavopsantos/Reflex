@@ -1,63 +1,50 @@
 ﻿using System;
 using UnityEngine;
-using System.Runtime.CompilerServices;
-using Unity.IL2CPP.CompilerServices;
 
 namespace Reflex.Scripts
 {
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    public class MonoContainer : MonoBehaviour, IContainer
+    public class MonoContainer : MonoBehaviour
     {
-        private readonly IContainer _container = new Container();
+        internal readonly Container Container = new Container();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
-            _container.Clear();
+            Container.Clear();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public BindingContractDefinition<TContract> Bind<TContract>()
         {
-            return _container.Bind<TContract>();
+            return Container.Bind<TContract>();
         }
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+
         public void BindSingleton<TContract>(TContract instance)
         {
-            _container.BindSingleton(instance);
+            Container.BindSingleton<TContract>(instance);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void BindSingleton<T>(Type contract, T instance)
         {
-            _container.BindSingleton(contract, instance);
+            Container.BindSingleton(contract, instance);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public BindingGenericContractDefinition BindGenericContract(Type genericContract)
         {
-            return _container.BindGenericContract(genericContract);
+            return Container.BindGenericContract(genericContract);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TContract Resolve<TContract>() 
+        public TContract Resolve<TContract>()
         {
-            return _container.Resolve<TContract>();
+            return Container.Resolve<TContract>();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Resolve(Type contract)
         {
-            return _container.Resolve(contract);
+            return Container.Resolve(contract);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TCast ResolveGenericContract<TCast>(Type genericContract, params Type[] genericConcrete)
         {
-            return _container.ResolveGenericContract<TCast>(genericContract, genericConcrete);
+            return Container.ResolveGenericContract<TCast>(genericContract, genericConcrete);
         }
     }
 }

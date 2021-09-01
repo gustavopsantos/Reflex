@@ -1,44 +1,33 @@
-using System.Runtime.CompilerServices;
-using Unity.IL2CPP.CompilerServices;
+using Reflex.Scripts.Utilities;
+using System.Collections.Generic;
 
 namespace Reflex
 {
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    internal static class ArrayPool<T>
+    internal class ArrayPool<T>
     {
-        private static readonly IntHashMap<FastStack<T[]>> registry;
-        
-        static ArrayPool()
-        {
-            registry = new IntHashMap<FastStack<T[]>>();
-        }
+        internal static readonly ArrayPool<T> Shared = new ArrayPool<T>();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static T[] Rent(int size)
+        private readonly Dictionary<int, Queue<T[]>> _registry = new Dictionary<int, Queue<T[]>>();
+
+        internal T[] Rent(int size)
         {
-            if (registry.TryGetValue(size, out var stack))
+            if (_registry.TryGetValue(size, out var queue) && queue.TryDequeue(out var array))
             {
-                if (stack.length > 0) {
-                    return stack.Pop();
-                }
+                return array;
             }
 
             return new T[size];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Return(T[] array)
+        internal void Return(T[] array)
         {
-            if (registry.TryGetValue(array.Length, out var stack))
+            if (_registry.TryGetValue(array.Length, out var queue))
             {
-                stack.Push(array);
+                queue.Enqueue(array);
             }
-            else {
-                stack = new FastStack<T[]>();
-                stack.Push(array);
-                registry.Add(array.Length, stack, out _);
+            else
+            {
+                _registry.Add(array.Length, new Queue<T[]>().With(array));
             }
         }
     }
