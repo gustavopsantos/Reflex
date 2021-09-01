@@ -1,6 +1,5 @@
-﻿using Reflex.Scripts;
-using UnityEngine;
-using UnityEngine.Assertions;
+﻿using UnityEngine;
+using Reflex.Scripts;
 using UnityEngine.SceneManagement;
 
 namespace Reflex.Injectors
@@ -20,8 +19,16 @@ namespace Reflex.Injectors
 		private static bool TryGetProjectContext(out ProjectContext projectContext)
 		{
 			projectContext = Resources.Load<ProjectContext>("ProjectContext");
-			Assert.IsNotNull(projectContext, "Skipping MonoInjector. A project context prefab named 'ProjectContext' should exist inside a Resources folder.");
+			ValidateProjectContext(projectContext);
 			return projectContext != null;
+		}
+
+		private static void ValidateProjectContext(ProjectContext context)
+		{
+			if (context == null)
+			{
+				Debug.LogWarning($"Skipping {nameof(UnityInjector)}. A project context prefab named '{nameof(ProjectContext)}' should exist inside a Resources folder.");
+			}
 		}
 	}
 }

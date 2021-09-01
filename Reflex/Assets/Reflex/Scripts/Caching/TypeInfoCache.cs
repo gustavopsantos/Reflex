@@ -11,8 +11,11 @@ namespace Reflex
 	{
 		private static readonly Dictionary<Type, TypeInfo> _registry = new Dictionary<Type, TypeInfo>();
 
+		// Expressions for Mono Runtime, and FormatterServices for IL2CPP
 		internal static TypeInfo GetClassInfo(Type type)
 		{
+			DynamicObjectActivator activator;
+			
 			if (_registry.TryGetValue(type, out var info))
 			{
 				return info;
@@ -31,14 +34,29 @@ namespace Reflex
 			{
 				var constructor = constructors.MaxBy(ctor => ctor.GetParameters().Length);
 				var parameters = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
-				var activator = CompileGenericActivator(constructor, parameters);
+#if ENABLE_IL2CPP
+                activator = args => 
+                {
+                    var instance = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
+                    constructor.Invoke(instance, args);
+                    return instance;
+                };
+#else
+				activator = CompileGenericActivator(constructor, parameters);
+#endif
 				info = new TypeInfo(parameters, activator);
 				_registry.Add(type, info);
 				return info;
 			}
 
 			// Should we add this complexity yo be able to inject value types?
-			info = new TypeInfo(Type.EmptyTypes, CompileDefaultActivator(type));
+#if ENABLE_IL2CPP
+			activator = args => System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
+#else
+			activator = CompileDefaultActivator(type);
+#endif
+			
+			info = new TypeInfo(Type.EmptyTypes, activator);
 			_registry.Add(type, info);
 			return info;
 		}
