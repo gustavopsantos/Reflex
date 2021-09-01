@@ -14,7 +14,7 @@ namespace Reflex
             return CreateAndRegisterSingletonInstance(contract, container);
         }
 
-        private static object CreateAndRegisterSingletonInstance(Type contract, Container container)
+        internal static object CreateAndRegisterSingletonInstance(Type contract, Container container)
         {
             var instance = TransientResolver.Resolve(contract, container);
             return container.RegisterSingletonInstance(contract, instance);

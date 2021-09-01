@@ -23,12 +23,16 @@ namespace Reflex
             {
                 var genericTypes = GetGenericTypes(_genericContract, concrete);
                 var contract = _genericContract.MakeGenericType(genericTypes);
-                var binding = new Binding {Concrete = concrete};
+                var binding = new Binding
+                {
+                    Contract = contract,
+                    Concrete = concrete
+                };
                 bindings.Add(binding);
                 _container.Bindings.Add(contract, binding);
             }
 
-            return new BindingScopeDefinition(bindings.ToArray());
+            return new BindingScopeDefinition(_container, bindings.ToArray());
         }
 
         private static Type[] GetGenericTypes(Type genericContract, Type type)

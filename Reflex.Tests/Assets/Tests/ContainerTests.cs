@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Reflex.Tests
 {
@@ -128,7 +129,7 @@ namespace Reflex.Tests
 		public void Resolve_AsSingleton_ShouldReturnAlwaysSameInstance()
 		{
 			Container container = new Container();
-			container.Bind<IValuable>().To<Valuable>().AsSingleton();
+			container.Bind<IValuable>().To<Valuable>().AsLazySingleton();
 			container.Resolve<IValuable>().Value = 123;
 			container.Resolve<IValuable>().Value.Should().Be(123);
 		}
@@ -154,7 +155,7 @@ namespace Reflex.Tests
 		public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowUnknownContractException()
 		{
 			Container container = new Container();
-			container.Bind<IClassWithDependency>().To<ClassWithDependency>().AsSingleton();
+			container.Bind<IClassWithDependency>().To<ClassWithDependency>().AsLazySingleton();
 			Action resolve = () => container.Resolve<IClassWithDependency>();
 			resolve.Should().Throw<UnknownContractException>();
 		}
@@ -171,7 +172,7 @@ namespace Reflex.Tests
 		public void Resolve_GenericTypeOfString_ShouldReturnImplementationWithStringAsGenericTypeArgument()
 		{
 			Container container = new Container();
-			container.BindGenericContract(typeof(IFoo<>)).To(typeof(StringFoo)).AsSingleton();
+			container.BindGenericContract(typeof(IFoo<>)).To(typeof(StringFoo)).AsLazySingleton();
 			var foo = container.ResolveGenericContract<object>(typeof(IFoo<>), typeof(string));
 			foo.GetType().GetInterfaces().First().GenericTypeArguments.First().Should().Be(typeof(string));
 		}
@@ -180,7 +181,7 @@ namespace Reflex.Tests
 		public void Resolve_GenericTypeOfObject_ShouldReturnImplementationWithObjectAsGenericTypeArgument()
 		{
 			Container container = new Container();
-			container.BindGenericContract(typeof(IFoo<>)).To(typeof(ObjectFoo)).AsSingleton();
+			container.BindGenericContract(typeof(IFoo<>)).To(typeof(ObjectFoo)).AsLazySingleton();
 			var foo = container.ResolveGenericContract<object>(typeof(IFoo<>), typeof(object));
 			foo.GetType().GetInterfaces().First().GenericTypeArguments.First().Should().Be(typeof(object));
 		}
@@ -276,6 +277,39 @@ namespace Reflex.Tests
 			var instance = container.Construct<Xing>();
 			instance.Int.Should().Be(42);
 			instance.String.Should().Be("abc");
+		}
+
+
+		internal class ConstructorCalledException : Exception
+		{
+		}
+		
+		private class SomeSingleton
+		{
+			public static bool ConstructorCalled;
+			
+			public SomeSingleton()
+			{
+				ConstructorCalled = true;
+			}
+		}
+		
+		[Test]
+		public void Bind_LazySingleton_ShouldNotRunConstructor()
+		{
+			Container container = new Container();
+			SomeSingleton.ConstructorCalled = false;
+			container.Bind<SomeSingleton>().To<SomeSingleton>().AsLazySingleton();
+			SomeSingleton.ConstructorCalled.Should().BeFalse();
+		}
+		
+		[Test]
+		public void Bind_NonLazySingleton_ShouldRunConstructor()
+		{
+			Container container = new Container();
+			SomeSingleton.ConstructorCalled = false;
+			container.Bind<SomeSingleton>().To<SomeSingleton>().AsNonLazySingleton();
+			SomeSingleton.ConstructorCalled.Should().BeTrue();
 		}
 	}
 }

@@ -15,11 +15,12 @@ namespace Reflex
         {
             var binding = new Binding
             {
+                Contract = typeof(TContract),
                 Concrete = typeof(TConcrete)
             };
 
             _container.Bindings.Add(typeof(TContract), binding);
-            return new BindingScopeDefinition(binding);
+            return new BindingScopeDefinition(_container, binding);
         }
 
         public void FromMethod(Func<TContract> method)

@@ -35,6 +35,7 @@ namespace Reflex
         {
             var binding = new Binding
             {
+                Contract = typeof(TContract),
                 Concrete = instance.GetType(),
                 Scope = BindingScope.Singleton
             };
@@ -47,6 +48,7 @@ namespace Reflex
         {
             var binding = new Binding
             {
+                Contract = contract,
                 Concrete = instance.GetType(),
                 Scope = BindingScope.Singleton
             };
