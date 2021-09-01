@@ -5,6 +5,11 @@ namespace Reflex.Injectors
 {
 	internal static class ConstructorInjector
 	{
+		internal static T ConstructAndInject<T>(Container container)
+		{
+			return (T) ConstructAndInject(typeof(T), container);
+		}
+		
 		internal static object ConstructAndInject(Type concrete, Container container)
 		{
 			var info = TypeInfoCache.GetClassInfo(concrete);

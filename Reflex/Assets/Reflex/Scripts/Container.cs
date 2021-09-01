@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using Reflex.Injectors;
 
 namespace Reflex
 {
@@ -12,6 +13,11 @@ namespace Reflex
         public Container()
         {
             BindSingleton<Container>(this);
+        }
+
+        public T Construct<T>()
+        {
+            return ConstructorInjector.ConstructAndInject<T>(this);
         }
 
         public void Clear()

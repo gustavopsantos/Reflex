@@ -200,5 +200,82 @@ namespace Reflex.Tests
 			container.Bind<string>().To<string>().AsTransient();
 			container.Resolve<string>().Should().Be(default);
 		}
+		
+		private struct MyStruct
+		{
+			public readonly int Value;
+
+			public MyStruct(int value)
+			{
+				this.Value = value;
+			}
+		}
+        
+		[Test]
+		public void Resolve_ValueTypeAsTransient_CustomConstructor_ValueShouldReturn42()
+		{
+			Container container = new Container();
+			container.BindSingleton(42);
+			container.Bind<MyStruct>().To<MyStruct>().AsTransient();
+			container.Resolve<MyStruct>().Value.Should().Be(42);
+		}
+
+		private interface ISetup<T>
+		{
+			void Setup(ref T instance);
+		}
+
+		private class IntSetup : ISetup<int>
+		{
+			public void Setup(ref int instance)
+			{
+				instance = 42;
+			}
+		}
+		
+		private class StringSetup : ISetup<string>
+		{
+			public void Setup(ref string instance)
+			{
+				instance = "abc";
+			}
+		}
+
+		private class Xing
+		{
+			public int Int;
+			public string String;
+			
+			public Xing(ISetup<int> intSetup, ISetup<string> stringSetup)
+			{
+				Int = default;
+				String = string.Empty;
+				intSetup.Setup(ref Int);
+				stringSetup.Setup(ref String);
+			}
+		}
+		
+		[Test]
+		public void Resolve_ClassWithGenericDependency_WithNormalDefinition_ValuesShouldBe42AndABC()
+		{
+			Container container = new Container();
+			container.Bind<Xing>().To<Xing>().AsTransient();
+			container.Bind<ISetup<int>>().To<IntSetup>().AsTransient();
+			container.Bind<ISetup<string>>().To<StringSetup>().AsTransient();
+			var instance = container.Construct<Xing>();
+			instance.Int.Should().Be(42);
+			instance.String.Should().Be("abc");
+		}
+		
+		[Test]
+		public void Resolve_ClassWithGenericDependency_WithMergedDefinition_ValuesShouldBe42AndABC()
+		{
+			Container container = new Container();
+			container.Bind<Xing>().To<Xing>().AsTransient();
+			container.BindGenericContract(typeof(ISetup<>)).To(typeof(IntSetup), typeof(StringSetup)).AsTransient();
+			var instance = container.Construct<Xing>();
+			instance.Int.Should().Be(42);
+			instance.String.Should().Be("abc");
+		}
 	}
 }
