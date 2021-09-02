@@ -109,7 +109,7 @@ public class ProjectInstaller : MonoInstaller
 
 ### MonoBehaviour Injection
 
-> Be aware that fields and properties with [MonoInject] are only injected into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Reflex/Assets/Reflex/Scripts/MonoInjector.cs).
+> Be aware that fields and properties with [MonoInject] are only injected into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Reflex/Assets/Reflex/Scripts/Injectors/MonoInjector.cs).
 
 ```csharp
 public class MonoBehaviourInjection : MonoBehaviour
