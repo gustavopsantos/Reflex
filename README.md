@@ -78,7 +78,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Install via UPM (using Git URL)
 ```json
-"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Reflex/Assets/Reflex/#1.0.0"
+"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Reflex/Assets/Reflex/#1.0.2"
 ```
 
 ### Install manually (using .unitypackage)
@@ -98,11 +98,11 @@ public class ProjectInstaller : MonoInstaller
     {
         container.BindSingleton<int>(42);
         container.Bind<IDependencyOne>().To<DependencyOne>().AsTransient();
-        container.Bind<IDependencyTwo>().To<DependencyTwo>().AsSingleton();
+        container.Bind<IDependencyTwo>().To<DependencyTwo>().AsSingletonLazy();
         container.BindGenericContract(typeof(SetupAsset<>)).To(
             typeof(SetupEnemy),
             typeof(SetupLevel)
-        ).AsSingleton();
+        ).AsSingletonNonLazy();
     }
 }
 ```
