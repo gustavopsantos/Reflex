@@ -78,7 +78,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Install via UPM (using Git URL)
 ```json
-"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Reflex/Assets/Reflex/#1.0.2"
+"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Reflex/Assets/Reflex/#1.0.3"
 ```
 
 ### Install manually (using .unitypackage)
@@ -145,11 +145,13 @@ public class MonoBehaviourInjection : MonoBehaviour
 public class NonMonoBehaviourInjection
 {
     private readonly Container _container;
+    private readonly IDependencyOne _dependencyOne;
     private readonly int _answerForLifeTheUniverseAndEverything;
 
-    public NonMonoBehaviourInjection(Container container, int answerForLifeTheUniverseAndEverything)
+    public NonMonoBehaviourInjection(Container container, IDependencyOne dependencyOne, int answerForLifeTheUniverseAndEverything)
     {
         _container = container;
+        _dependencyOne = dependencyOne;
         _answerForLifeTheUniverseAndEverything = answerForLifeTheUniverseAndEverything;
     }
 }
