@@ -9,7 +9,7 @@ namespace Benchmark
         private readonly ContainerBuilder _containerBuilder = new ContainerBuilder();
         private IObjectResolver _objectResolver;
 
-        protected override int Order => 1;
+        protected override int Order => 2;
 
         private void Start()
         {

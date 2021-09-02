@@ -6,7 +6,7 @@ namespace Reflex.Injectors
 	{
 		internal static void Inject(MonoBehaviour monoBehaviour, Container container)
 		{
-			var info = MonoInjectableTypeCache.Get(monoBehaviour.GetType());
+			var info = MonoInjectableRepository.Repository.Fetch(monoBehaviour);
 			FieldInjector.InjectMany(info.InjectableFields, monoBehaviour, container);
 			PropertyInjector.InjectMany(info.InjectableProperties, monoBehaviour, container);
 			MethodInjector.InjectMany(info.InjectableMethods, monoBehaviour, container);

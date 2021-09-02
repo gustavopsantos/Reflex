@@ -10,15 +10,18 @@ namespace Reflex.Injectors
 	{
 		internal static void Inject(MethodInfo method, object instance, Container container)
 		{
+			var parameters = method.GetParameters();
+			
 			try
 			{
-				var parameters = method.GetParameters();
 				var arguments = parameters.Select(p => container.Resolve(p.ParameterType)).ToArray();
 				method.Invoke(instance, arguments);
 			}
 			catch (Exception e)
 			{
-				Debug.LogError(e);
+				var methodDescription = $"'{instance.GetType().Name}::{method.Name}'";
+				var parametersDescription = $"'{string.Join(", ", parameters.Select(p => p.ParameterType.Name))}'";
+				Debug.LogError($"Could not inject method {methodDescription} with parameters {parametersDescription}\n\n{e}");
 			}
 		}
 

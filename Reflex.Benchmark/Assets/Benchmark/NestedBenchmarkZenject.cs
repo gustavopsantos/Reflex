@@ -8,7 +8,7 @@ namespace Benchmark
     {
         private readonly DiContainer _container = new DiContainer();
 
-        protected override int Order => 2;
+        protected override int Order => 1;
         
         private void Start()
         {

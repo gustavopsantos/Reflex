@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Reflex.Scripts.Utilities
 {
@@ -24,6 +25,12 @@ namespace Reflex.Scripts.Utilities
             }
 
             return type.Name;
+        }
+
+        internal static bool TryGetConstructors(this Type type, out ConstructorInfo[] constructors)
+        {
+            constructors = type.GetConstructors();
+            return constructors.Length > 0;
         }
     }
 }

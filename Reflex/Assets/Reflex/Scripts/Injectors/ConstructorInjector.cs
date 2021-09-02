@@ -12,7 +12,7 @@ namespace Reflex.Injectors
 		
 		internal static object ConstructAndInject(Type concrete, Container container)
 		{
-			var info = TypeInfoCache.GetClassInfo(concrete);
+			var info = TypeInfoRepository.Repository.Fetch(concrete);
 			var objects = ArrayPool<object>.Shared.Rent(info.ConstructorParameters.Length);
 			GetConstructionObjects(info.ConstructorParameters, container, ref objects);
 

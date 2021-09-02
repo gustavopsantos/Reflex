@@ -129,7 +129,7 @@ namespace Reflex.Tests
 		public void Resolve_AsSingleton_ShouldReturnAlwaysSameInstance()
 		{
 			Container container = new Container();
-			container.Bind<IValuable>().To<Valuable>().AsLazySingleton();
+			container.Bind<IValuable>().To<Valuable>().AsSingletonLazy();
 			container.Resolve<IValuable>().Value = 123;
 			container.Resolve<IValuable>().Value.Should().Be(123);
 		}
@@ -155,7 +155,7 @@ namespace Reflex.Tests
 		public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowUnknownContractException()
 		{
 			Container container = new Container();
-			container.Bind<IClassWithDependency>().To<ClassWithDependency>().AsLazySingleton();
+			container.Bind<IClassWithDependency>().To<ClassWithDependency>().AsSingletonLazy();
 			Action resolve = () => container.Resolve<IClassWithDependency>();
 			resolve.Should().Throw<UnknownContractException>();
 		}
@@ -172,7 +172,7 @@ namespace Reflex.Tests
 		public void Resolve_GenericTypeOfString_ShouldReturnImplementationWithStringAsGenericTypeArgument()
 		{
 			Container container = new Container();
-			container.BindGenericContract(typeof(IFoo<>)).To(typeof(StringFoo)).AsLazySingleton();
+			container.BindGenericContract(typeof(IFoo<>)).To(typeof(StringFoo)).AsSingletonLazy();
 			var foo = container.ResolveGenericContract<object>(typeof(IFoo<>), typeof(string));
 			foo.GetType().GetInterfaces().First().GenericTypeArguments.First().Should().Be(typeof(string));
 		}
@@ -181,7 +181,7 @@ namespace Reflex.Tests
 		public void Resolve_GenericTypeOfObject_ShouldReturnImplementationWithObjectAsGenericTypeArgument()
 		{
 			Container container = new Container();
-			container.BindGenericContract(typeof(IFoo<>)).To(typeof(ObjectFoo)).AsLazySingleton();
+			container.BindGenericContract(typeof(IFoo<>)).To(typeof(ObjectFoo)).AsSingletonLazy();
 			var foo = container.ResolveGenericContract<object>(typeof(IFoo<>), typeof(object));
 			foo.GetType().GetInterfaces().First().GenericTypeArguments.First().Should().Be(typeof(object));
 		}
@@ -299,7 +299,7 @@ namespace Reflex.Tests
 		{
 			Container container = new Container();
 			SomeSingleton.ConstructorCalled = false;
-			container.Bind<SomeSingleton>().To<SomeSingleton>().AsLazySingleton();
+			container.Bind<SomeSingleton>().To<SomeSingleton>().AsSingletonLazy();
 			SomeSingleton.ConstructorCalled.Should().BeFalse();
 		}
 		
@@ -308,7 +308,7 @@ namespace Reflex.Tests
 		{
 			Container container = new Container();
 			SomeSingleton.ConstructorCalled = false;
-			container.Bind<SomeSingleton>().To<SomeSingleton>().AsNonLazySingleton();
+			container.Bind<SomeSingleton>().To<SomeSingleton>().AsSingletonNonLazy();
 			SomeSingleton.ConstructorCalled.Should().BeTrue();
 		}
 	}
