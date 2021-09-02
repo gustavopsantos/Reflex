@@ -98,11 +98,11 @@ public class ProjectInstaller : MonoInstaller
     {
         container.BindSingleton<int>(42);
         container.Bind<IDependencyOne>().To<DependencyOne>().AsTransient();
-        container.Bind<IDependencyTwo>().To<DependencyTwo>().AsSingleton();
+        container.Bind<IDependencyTwo>().To<DependencyTwo>().AsSingletonLazy();
         container.BindGenericContract(typeof(SetupAsset<>)).To(
             typeof(SetupEnemy),
             typeof(SetupLevel)
-        ).AsSingleton();
+        ).AsSingletonNonLazy();
     }
 }
 ```
