@@ -22,7 +22,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - `[MonoInject]` Property, field and method injection attribute
 
 ## Performance
-> Resolving thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Reflex.Benchmark/Assets/Benchmark/NestedBenchmarkReflex.cs).
+> Resolving ten thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Reflex.Benchmark/Assets/Benchmark/NestedBenchmarkReflex.cs).
 
 ### Android
 
@@ -32,17 +32,17 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 |           | GC    | Time |
 |-----------|------:|-----:|
-| Reflex    | 54KB  | 4ms
-| Zenject   | 464KB | 74ms
-| VContainer| 128KB | 53ms
+| Reflex    |  54KB | 10ms
+| Zenject   | 464KB | 73ms
+| VContainer| 128KB | 51ms
 
 </td><td>
 
 |           | GC    | Time |
 |-----------|------:|-----:|
-| Reflex    | 128KB | 16ms
-| Zenject   | 480KB | 70ms
-| VContainer| 128KB | 16ms
+| Reflex    |  70KB | 15ms
+| Zenject   | 480KB | 77ms
+| VContainer| 128KB | 18ms
 
 </td></tr> </table>
 
@@ -56,13 +56,13 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 |-----------|------:|-----:|
 | Reflex    | 109KB | 1ms
 | Zenject   | 900KB | 7ms
-| VContainer| 257KB | 4ms
+| VContainer| 257KB | 3ms
 
 </td><td>
 
 |           | GC    | Time |
 |-----------|------:|-----:|
-| Reflex    | 257KB | 1ms
+| Reflex    | 140KB | 1ms
 | Zenject   | 900KB | 7ms
 | VContainer| 257KB | 2ms
 
