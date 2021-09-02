@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
-using Reflex.Scripts.Utilities;
+﻿using UnityEngine;
 using System.Collections.Generic;
 
 namespace Reflex.Scripts
@@ -15,18 +13,6 @@ namespace Reflex.Scripts
 			{
 				monoInstaller.InstallBindings(Container);
 			}
-		}
-
-		public void InstantiateNonLazySingletons()
-		{
-			Container.SingletonNonLazyResolver = new SingletonLazyResolver();
-			Container.Bindings.Values.Where(IsSingletonNonLazy).ForEach(binding => Container.Resolve(binding.Contract));
-			Container.SingletonNonLazyResolver = new SingletonNonLazyResolver();
-		}
-
-		private static bool IsSingletonNonLazy(Binding binding)
-		{
-			return binding.Scope == BindingScope.SingletonNonLazy;
 		}
 	}
 }

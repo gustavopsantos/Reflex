@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using Reflex.Injectors;
+using Reflex.Scripts.Utilities;
 
 namespace Reflex
 {
@@ -143,6 +144,18 @@ namespace Reflex
 
             method = null;
             return false;
+        }
+        
+        internal void InstantiateNonLazySingletons()
+        {
+            SingletonNonLazyResolver = new SingletonLazyResolver();
+            Bindings.Values.Where(IsSingletonNonLazy).ForEach(binding => Resolve(binding.Contract));
+            SingletonNonLazyResolver = new SingletonNonLazyResolver();
+        }
+
+        private static bool IsSingletonNonLazy(Binding binding)
+        {
+            return binding.Scope == BindingScope.SingletonNonLazy;
         }
     }
 }

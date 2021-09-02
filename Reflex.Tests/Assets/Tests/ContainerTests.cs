@@ -295,20 +295,22 @@ namespace Reflex.Tests
 		}
 		
 		[Test]
-		public void Bind_LazySingleton_ShouldNotRunConstructor()
+		public void Bind_LazySingleton_ThenInvokeInstantiateNonLazySingletons_ShouldNotRunConstructor()
 		{
 			Container container = new Container();
 			SomeSingleton.ConstructorCalled = false;
 			container.Bind<SomeSingleton>().To<SomeSingleton>().AsSingletonLazy();
+			container.InstantiateNonLazySingletons();
 			SomeSingleton.ConstructorCalled.Should().BeFalse();
 		}
 		
 		[Test]
-		public void Bind_NonLazySingleton_ShouldRunConstructor()
+		public void Bind_NonLazySingleton_ThenInvokeInstantiateNonLazySingletons_ShouldRunConstructor()
 		{
 			Container container = new Container();
 			SomeSingleton.ConstructorCalled = false;
 			container.Bind<SomeSingleton>().To<SomeSingleton>().AsSingletonNonLazy();
+			container.InstantiateNonLazySingletons();
 			SomeSingleton.ConstructorCalled.Should().BeTrue();
 		}
 	}

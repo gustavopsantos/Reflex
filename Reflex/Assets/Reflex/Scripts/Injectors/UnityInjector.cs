@@ -12,7 +12,7 @@ namespace Reflex.Injectors
 			if (TryGetProjectContext(out var projectContext))
 			{
 				projectContext.InstallBindings();
-				projectContext.InstantiateNonLazySingletons();
+				projectContext.Container.InstantiateNonLazySingletons();
 				SceneManager.sceneLoaded += (scene, mode) => SceneInjector.Inject(scene, projectContext.Container);
 			}
 		}
