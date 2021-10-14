@@ -157,6 +157,20 @@ public class NonMonoBehaviourInjection
 }
 ```
 
+## Order of Execution
+
+| Events                                               |
+|:----------------------------------------------------:|
+| UnityEngine.SceneManagement.SceneManager.sceneLoaded |
+| ↓                                                    |
+| MonoBehaviour.Awake                                  |
+| ↓                                                    |
+| Reflex.Injectors.SceneInjector.Inject                |
+| ↓                                                    |
+| MonoBehaviour.Start                                  |
+
+> `Reflex.Injectors.SceneInjector.Inject` injects fields and properties decorated with [MonoInject] attribute.
+
 ## Author
 [![Twitter](https://img.shields.io/twitter/follow/codinggustavo.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=codinggustavo)  
 
