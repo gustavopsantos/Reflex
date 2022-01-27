@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Reflex.Scripts.Utilities
+namespace Reflex
 {
     internal static class IEnumerableExtensions
     {

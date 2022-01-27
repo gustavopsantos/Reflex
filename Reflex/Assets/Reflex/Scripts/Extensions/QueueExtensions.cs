@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Reflex.Scripts.Utilities
+namespace Reflex
 {
     internal static class QueueExtensions
     {

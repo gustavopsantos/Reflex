@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 using Reflex.Injectors;
-using Reflex.Scripts.Utilities;
 
 namespace Reflex
 {
@@ -11,7 +10,7 @@ namespace Reflex
         internal readonly Dictionary<Type, Binding> Bindings = new Dictionary<Type, Binding>(); // TContract, Binding
         internal readonly Dictionary<Type, object> Singletons = new Dictionary<Type, object>(); // TContract, Instance
 
-        internal Resolver SingletonNonLazyResolver = null;
+        private Resolver SingletonNonLazyResolver;
         private readonly Resolver MethodResolver = new MethodResolver();
         private readonly Resolver TransientResolver = new TransientResolver();
         private readonly Resolver SingletonLazyResolver = new SingletonLazyResolver();
@@ -88,31 +87,17 @@ namespace Reflex
                     case BindingScope.Transient: return TransientResolver.Resolve(contract, this);
                     case BindingScope.SingletonLazy: return SingletonLazyResolver.Resolve(contract, this);
                     case BindingScope.SingletonNonLazy: return SingletonNonLazyResolver.Resolve(contract, this);
-                    default: throw new ScopeNotHandledException($"BindingScope '{binding.Scope}' not handled.");
+                    default: throw new ScopeNotHandledException(binding.Scope);
                 }
             }
 
-            throw BuildException(contract);
+            throw new UnknownContractException(contract);
         }
 
         public TCast ResolveGenericContract<TCast>(Type genericContract, params Type[] genericConcrete)
         {
             var contract = genericContract.MakeGenericType(genericConcrete);
             return (TCast) Resolve(contract);
-        }
-
-        private static UnknownContractException BuildException(Type contract)
-        {
-            if (!contract.IsGenericType)
-            {
-                return new UnknownContractException($"Cannot resolve contract type '{contract}'.");
-            }
-
-            var genericContract = contract.Name.Remove(contract.Name.IndexOf('`'));
-            var genericArguments = contract.GenericTypeArguments.Select(args => args.FullName);
-            var commaSeparatedArguments = string.Join(", ", genericArguments);
-            var message = $"Cannot resolve contract type '{genericContract}<{commaSeparatedArguments}>'.";
-            return new UnknownContractException(message);
         }
 
         internal Type GetConcreteTypeFor(Type contract)

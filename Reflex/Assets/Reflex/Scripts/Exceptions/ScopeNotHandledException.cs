@@ -4,7 +4,13 @@ namespace Reflex
 {
     internal class ScopeNotHandledException : Exception
     {
-        public ScopeNotHandledException(string message) : base (message) { }
+        public ScopeNotHandledException(BindingScope scope) : base(GenerateMessage(scope))
+        {
+        }
+
+        private static string GenerateMessage(BindingScope scope)
+        {
+            return $"BindingScope '{scope}' not handled.";
+        }
     }
 }
-

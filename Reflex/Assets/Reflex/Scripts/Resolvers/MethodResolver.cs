@@ -11,7 +11,7 @@ namespace Reflex
                 return method();
             }
             
-            throw new UnknownMethodException($"Cannot resolve method of type '{contract}'.");
+            throw new UnknownMethodException(contract);
         }
     }
 }

@@ -4,6 +4,13 @@ namespace Reflex
 {
     internal class UnknownMethodException : Exception
     {
-        public UnknownMethodException(string message) : base(message) { }
+        public UnknownMethodException(Type contract) : base(GenerateMessage(contract))
+        {
+        }
+
+        private static string GenerateMessage(Type contract)
+        {
+            return $"Cannot resolve method of type '{contract}'.";
+        }
     }
 }

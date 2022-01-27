@@ -1,21 +1,25 @@
-using System;
 using Reflex.Scripts.Utilities;
 
 namespace Reflex
 {
-	internal static class PlatformReflector
-	{
-		internal static Reflector Current = null;
+    internal static class PlatformReflector
+    {
+        internal static readonly Reflector Current;
 
-		static PlatformReflector()
-		{
-			switch (RuntimeScriptingBackend.Current)
-			{
-				case RuntimeScriptingBackend.Backend.Undefined: throw new Exception($"Scripting backend could not be defined.");
-				case RuntimeScriptingBackend.Backend.Mono: Current = new MonoReflector(); break;
-				case RuntimeScriptingBackend.Backend.IL2CPP: Current = new IL2CPPReflector(); break;
-				default: throw new ArgumentOutOfRangeException($"{RuntimeScriptingBackend.Current} scripting backend not handled.");
-			}
-		}
-	}
+        static PlatformReflector()
+        {
+            Current = GetReflector();
+        }
+
+        private static Reflector GetReflector()
+        {
+            switch (RuntimeScriptingBackend.Current)
+            {
+                case RuntimeScriptingBackend.Backend.Undefined: throw new UndefinedRuntimeScriptingBackendException();
+                case RuntimeScriptingBackend.Backend.Mono: return new MonoReflector();
+                case RuntimeScriptingBackend.Backend.IL2CPP: return new IL2CPPReflector();
+                default: throw new UnhandledRuntimeScriptingBackendException(RuntimeScriptingBackend.Current);
+            }
+        }
+    }
 }
