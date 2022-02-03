@@ -1,5 +1,4 @@
 using System;
-using Reflex.Scripts.Utilities;
 
 namespace Reflex.Injectors
 {
@@ -19,6 +18,7 @@ namespace Reflex.Injectors
 			try
 			{
 				var instance = info.Activator(objects);
+				container.Disposables.TryAdd(instance);
 				ArrayPool<object>.Shared.Return(objects);
 				return instance;
 			}

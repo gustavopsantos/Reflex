@@ -2,18 +2,21 @@
 using System.Linq;
 using System.Collections.Generic;
 using Reflex.Injectors;
+using Reflex.Scripts.Utilities;
+using UnityEngine;
 
 namespace Reflex
 {
-    public class Container
+    public class Container : IDisposable
     {
+        internal readonly CompositeDisposable Disposables = new CompositeDisposable();
         internal readonly Dictionary<Type, Binding> Bindings = new Dictionary<Type, Binding>(); // TContract, Binding
         internal readonly Dictionary<Type, object> Singletons = new Dictionary<Type, object>(); // TContract, Instance
 
-        private Resolver SingletonNonLazyResolver;
-        private readonly Resolver MethodResolver = new MethodResolver();
-        private readonly Resolver TransientResolver = new TransientResolver();
-        private readonly Resolver SingletonLazyResolver = new SingletonLazyResolver();
+        private Resolver _singletonNonLazyResolver;
+        private readonly Resolver _methodResolver = new MethodResolver();
+        private readonly Resolver _transientResolver = new TransientResolver();
+        private readonly Resolver _singletonLazyResolver = new SingletonLazyResolver();
 
         public Container()
         {
@@ -28,6 +31,11 @@ namespace Reflex
         public object Construct(Type concrete)
         {
             return ConstructorInjector.ConstructAndInject(concrete, this);
+        }
+
+        public void Dispose()
+        {
+            Disposables.Dispose();
         }
 
         public void Clear()
@@ -74,19 +82,30 @@ namespace Reflex
 
         public TContract Resolve<TContract>()
         {
+            if (typeof(TContract).Name == "ICollectableRegistry")
+            {
+                Debug.Log("B");
+            }
+            
             return (TContract) Resolve(typeof(TContract));
         }
 
         public object Resolve(Type contract)
         {
+            var resolver = MatchResolver(contract);
+            return resolver.Resolve(contract, this);
+        }
+
+        private Resolver MatchResolver(Type contract)
+        {
             if (Bindings.TryGetValue(contract, out var binding))
             {
                 switch (binding.Scope)
                 {
-                    case BindingScope.Method: return MethodResolver.Resolve(contract, this);
-                    case BindingScope.Transient: return TransientResolver.Resolve(contract, this);
-                    case BindingScope.SingletonLazy: return SingletonLazyResolver.Resolve(contract, this);
-                    case BindingScope.SingletonNonLazy: return SingletonNonLazyResolver.Resolve(contract, this);
+                    case BindingScope.Method: return _methodResolver;
+                    case BindingScope.Transient: return _transientResolver;
+                    case BindingScope.SingletonLazy: return _singletonLazyResolver;
+                    case BindingScope.SingletonNonLazy: return _singletonNonLazyResolver;
                     default: throw new ScopeNotHandledException(binding.Scope);
                 }
             }
@@ -133,9 +152,14 @@ namespace Reflex
         
         internal void InstantiateNonLazySingletons()
         {
-            SingletonNonLazyResolver = new SingletonLazyResolver();
-            Bindings.Values.Where(IsSingletonNonLazy).ForEach(binding => Resolve(binding.Contract));
-            SingletonNonLazyResolver = new SingletonNonLazyResolver();
+            _singletonNonLazyResolver = new SingletonLazyResolver();
+
+            var nonLazyBindings = Bindings.Values.Where(IsSingletonNonLazy).ToArray();
+            foreach (var binding in nonLazyBindings)
+            {
+                Resolve(binding.Contract);
+            }
+            _singletonNonLazyResolver = new SingletonNonLazyResolver();
         }
 
         private static bool IsSingletonNonLazy(Binding binding)

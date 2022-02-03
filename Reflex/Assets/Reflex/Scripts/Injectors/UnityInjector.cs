@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 namespace Reflex.Injectors
 {
-	internal class UnityInjector : MonoBehaviour
+	internal static class UnityInjector
 	{
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
 		private static void AfterAssembliesLoaded()
@@ -14,6 +14,7 @@ namespace Reflex.Injectors
 				projectContext.InstallBindings();
 				projectContext.Container.InstantiateNonLazySingletons();
 				SceneManager.sceneLoaded += (scene, mode) => SceneInjector.Inject(scene, projectContext.Container);
+				Application.quitting += projectContext.Container.Dispose;
 			}
 		}
 
