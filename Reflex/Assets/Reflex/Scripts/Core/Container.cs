@@ -23,6 +23,20 @@ namespace Reflex
             BindSingleton<Container>(this);
         }
 
+        public T Instantiate<T>(T original) where T : Component
+        {
+            var instance = UnityEngine.Object.Instantiate<T>(original);
+            instance.GetComponentsInChildren<MonoBehaviour>().ForEach(mb => MonoInjector.Inject(mb, this));
+            return instance;
+        }
+
+        public GameObject Instantiate(GameObject original)
+        {
+            var instance = UnityEngine.Object.Instantiate<GameObject>(original);
+            instance.GetComponentsInChildren<MonoBehaviour>().ForEach(mb => MonoInjector.Inject(mb, this));
+            return instance;
+        }
+
         public T Construct<T>()
         {
             return ConstructorInjector.ConstructAndInject<T>(this);
