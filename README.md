@@ -78,7 +78,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Install via UPM (using Git URL)
 ```json
-"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Reflex/Assets/Reflex/#1.1.1"
+"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Reflex/Assets/Reflex/#1.2.0"
 ```
 
 ### Install manually (using .unitypackage)
