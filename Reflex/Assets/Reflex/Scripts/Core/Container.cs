@@ -56,6 +56,7 @@ namespace Reflex
         {
             Bindings.Clear();
             Singletons.Clear();
+            BindSingleton<Container>(this);
         }
         
         public BindingContractDefinition<TContract> Bind<TContract>()
