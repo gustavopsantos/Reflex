@@ -1,17 +1,33 @@
 using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
+using Reflex.Scripts.Core;
 using UnityEngine.SceneManagement;
 
 namespace Reflex.Injectors
 {
 	internal static class SceneInjector
 	{
-		internal static void Inject(Scene scene, Container container)
+		internal static void Inject(Scene scene, ContainerStack containerStack)
 		{
+			if (scene.TryFindAtRootObjects<Context>(out var sceneContext))
+			{
+				var container = containerStack.PushNew();
+				sceneContext.InstallBindings(container);
+				container.InstantiateNonLazySingletons();
+
+				void DisposeScopedContainer(Scene _)
+				{
+					containerStack.Pop().Dispose();
+					SceneManager.sceneUnloaded -= DisposeScopedContainer;
+				}
+
+				SceneManager.sceneUnloaded += DisposeScopedContainer;
+			}
+			
 			foreach (var monoBehaviour in GetEveryMonoBehaviourAtScene(scene))
 			{
-				MonoInjector.Inject(monoBehaviour, container);
+				MonoInjector.Inject(monoBehaviour, containerStack);
 			}
 		}
 

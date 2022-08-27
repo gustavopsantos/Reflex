@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7029822418999261011
+--- !u!1 &4856448146685425494
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,10 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7029822418999261009}
-  - component: {fileID: 4181045622533255815}
-  - component: {fileID: -3975741988705371585}
-  - component: {fileID: -4004743603848617394}
+  - component: {fileID: 8994539736064878123}
+  - component: {fileID: 4205440822519093766}
+  - component: {fileID: 6444303394517438101}
   m_Layer: 0
   m_Name: ProjectContext
   m_TagString: Untagged
@@ -19,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7029822418999261009
+--- !u!4 &8994539736064878123
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7029822418999261011}
+  m_GameObject: {fileID: 4856448146685425494}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -34,13 +33,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4181045622533255815
+--- !u!114 &4205440822519093766
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7029822418999261011}
+  m_GameObject: {fileID: 4856448146685425494}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 375be9c3303946fcb8668b9f5ec13a5a, type: 3}
@@ -48,33 +47,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Kind>k__BackingField: 0
   _monoInstallers:
-  - {fileID: -3975741988705371585}
-  - {fileID: -4004743603848617394}
---- !u!114 &-3975741988705371585
+  - {fileID: 6444303394517438101}
+--- !u!114 &6444303394517438101
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7029822418999261011}
+  m_GameObject: {fileID: 4856448146685425494}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 926b743c39a87144582c111accac404b, type: 3}
+  m_Script: {fileID: 11500000, guid: 0fba0d34441a67441923bd75b2040cc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PickupSoundEffect: {fileID: 2361240671020676878, guid: 90203e981266cfa47ae2e46ad3f1eac1,
-    type: 3}
---- !u!114 &-4004743603848617394
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7029822418999261011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdfe13b301bb29b4f9d25fa4d0fa57eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectGameSettings: {fileID: 11400000, guid: 12b3f7ddae7c0724499053988aae82c2,
-    type: 2}

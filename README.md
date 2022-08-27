@@ -78,7 +78,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Install via UPM (using Git URL)
 ```json
-"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Reflex/Assets/Reflex/#1.2.0"
+"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Reflex/Assets/Reflex/#2.0.0"
 ```
 
 ### Install manually (using .unitypackage)
@@ -94,7 +94,7 @@ Create a MonoInstaller to install your bindings in the project context, and reme
 ```csharp
 public class ProjectInstaller : MonoInstaller
 {
-    public override void InstallBindings(Container container)
+    public override void InstallBindings(IContainer container)
     {
         container.BindSingleton<int>(42);
         container.Bind<IDependencyOne>().To<DependencyOne>().AsTransient();
@@ -111,16 +111,16 @@ public class ProjectInstaller : MonoInstaller
 
 > Be aware that fields and properties with [MonoInject] are injected only into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Reflex/Assets/Reflex/Scripts/Injectors/MonoInjector.cs).  
 
-> If you want to instantiate a MonoBehaviour/Component at runtime and wants injection to happen, use the `Instantiate` method from Container.
+> If you want to instantiate a MonoBehaviour/Component at runtime and wants injection to happen, use the `Instantiate` method from IContainer.
 
 ```csharp
 public class MonoBehaviourInjection : MonoBehaviour
 {
-    [MonoInject] private readonly Container _container;
+    [MonoInject] private readonly IContainer _container;
     [MonoInject] public IDependencyOne DependencyOne { get; private set; }
 
     [MonoInject]
-    private void Inject(Container container, IDependencyOne dependencyOne)
+    private void Inject(IContainer container, IDependencyOne dependencyOne)
     {
         var dependencyTwo = container
             .Resolve(typeof(IDependencyTwo));
@@ -146,11 +146,11 @@ public class MonoBehaviourInjection : MonoBehaviour
 ```csharp
 public class NonMonoBehaviourInjection
 {
-    private readonly Container _container;
+    private readonly IContainer _container;
     private readonly IDependencyOne _dependencyOne;
     private readonly int _answerForLifeTheUniverseAndEverything;
 
-    public NonMonoBehaviourInjection(Container container, IDependencyOne dependencyOne, int answerForLifeTheUniverseAndEverything)
+    public NonMonoBehaviourInjection(IContainer container, IDependencyOne dependencyOne, int answerForLifeTheUniverseAndEverything)
     {
         _container = container;
         _dependencyOne = dependencyOne;

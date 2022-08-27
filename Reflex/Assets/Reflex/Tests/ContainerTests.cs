@@ -83,7 +83,7 @@ namespace Reflex.Tests
 			Container container = new Container();
 			container.Bind<IValuable>().To<Valuable>();
 			Action resolve = () => container.Resolve<IValuable>();
-			resolve.Should().Throw<ScopeNotHandledException>();
+			resolve.Should().Throw<BindingScopeNotHandledException>();
 		}
 
 		[Test]
@@ -92,7 +92,7 @@ namespace Reflex.Tests
 			Container container = new Container();
 			container.BindGenericContract(typeof(IFoo<>)).To(typeof(StringFoo));
 			Action resolve = () => container.ResolveGenericContract<object>(typeof(IFoo<>), typeof(string));
-			resolve.Should().Throw<ScopeNotHandledException>();
+			resolve.Should().Throw<BindingScopeNotHandledException>();
 		}
 
 		[Test]

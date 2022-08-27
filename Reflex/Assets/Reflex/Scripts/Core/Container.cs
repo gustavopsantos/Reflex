@@ -2,12 +2,13 @@
 using System.Linq;
 using System.Collections.Generic;
 using Reflex.Injectors;
+using Reflex.Scripts;
 using Reflex.Scripts.Utilities;
 using UnityEngine;
 
 namespace Reflex
 {
-    public class Container : IDisposable
+    public class Container : IContainer
     {
         internal readonly CompositeDisposable Disposables = new CompositeDisposable();
         internal readonly Dictionary<Type, Binding> Bindings = new Dictionary<Type, Binding>(); // TContract, Binding
@@ -18,9 +19,9 @@ namespace Reflex
         private readonly Resolver _transientResolver = new TransientResolver();
         private readonly Resolver _singletonLazyResolver = new SingletonLazyResolver();
 
-        public Container()
+        public void AddDisposable(IDisposable disposable)
         {
-            BindSingleton<Container>(this);
+            Disposables.TryAdd(disposable);
         }
 
         public T Instantiate<T>(T original) where T : Component
@@ -52,16 +53,14 @@ namespace Reflex
             Disposables.Dispose();
         }
 
-        public void Clear()
-        {
-            Bindings.Clear();
-            Singletons.Clear();
-            BindSingleton<Container>(this);
-        }
-        
         public BindingContractDefinition<TContract> Bind<TContract>()
         {
             return new BindingContractDefinition<TContract>(this);
+        }
+        
+        public BindingGenericContractDefinition BindGenericContract(Type genericContract)
+        {
+            return new BindingGenericContractDefinition(genericContract, this);
         }
 
         public void BindSingleton<TContract>(TContract instance)
@@ -72,9 +71,9 @@ namespace Reflex
                 Concrete = instance.GetType(),
                 Scope = BindingScope.SingletonLazy
             };
-            
-            Bindings.Add(typeof(TContract), binding);
-            Singletons.Add(typeof(TContract), instance);
+
+            Bindings[typeof(TContract)] = binding;
+            Singletons[typeof(TContract)] = instance;
         }
 
         public void BindSingleton<T>(Type contract, T instance)
@@ -90,18 +89,8 @@ namespace Reflex
             Singletons.Add(contract, instance);
         }
 
-        public BindingGenericContractDefinition BindGenericContract(Type genericContract)
-        {
-            return new BindingGenericContractDefinition(genericContract, this);
-        }
-
         public TContract Resolve<TContract>()
         {
-            if (typeof(TContract).Name == "ICollectableRegistry")
-            {
-                Debug.Log("B");
-            }
-            
             return (TContract) Resolve(typeof(TContract));
         }
 
@@ -111,6 +100,12 @@ namespace Reflex
             return resolver.Resolve(contract, this);
         }
 
+        public TCast ResolveGenericContract<TCast>(Type genericContract, params Type[] genericConcrete)
+        {
+            var contract = genericContract.MakeGenericType(genericConcrete);
+            return (TCast) Resolve(contract);
+        }
+        
         private Resolver MatchResolver(Type contract)
         {
             if (Bindings.TryGetValue(contract, out var binding))
@@ -121,17 +116,11 @@ namespace Reflex
                     case BindingScope.Transient: return _transientResolver;
                     case BindingScope.SingletonLazy: return _singletonLazyResolver;
                     case BindingScope.SingletonNonLazy: return _singletonNonLazyResolver;
-                    default: throw new ScopeNotHandledException(binding.Scope);
+                    default: throw new BindingScopeNotHandledException(binding.Scope);
                 }
             }
 
             throw new UnknownContractException(contract);
-        }
-
-        public TCast ResolveGenericContract<TCast>(Type genericContract, params Type[] genericConcrete)
-        {
-            var contract = genericContract.MakeGenericType(genericConcrete);
-            return (TCast) Resolve(contract);
         }
 
         internal Type GetConcreteTypeFor(Type contract)

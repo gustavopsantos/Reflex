@@ -2,9 +2,9 @@
 
 namespace Reflex
 {
-    internal class ScopeNotHandledException : Exception
+    internal class BindingScopeNotHandledException : Exception
     {
-        public ScopeNotHandledException(BindingScope scope) : base(GenerateMessage(scope))
+        public BindingScopeNotHandledException(BindingScope scope) : base(GenerateMessage(scope))
         {
         }
 

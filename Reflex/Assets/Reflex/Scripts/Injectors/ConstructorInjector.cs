@@ -1,15 +1,16 @@
 using System;
+using Reflex.Scripts;
 
 namespace Reflex.Injectors
 {
 	internal static class ConstructorInjector
 	{
-		internal static T ConstructAndInject<T>(Container container)
+		internal static T ConstructAndInject<T>(IContainer container)
 		{
 			return (T) ConstructAndInject(typeof(T), container);
 		}
 		
-		internal static object ConstructAndInject(Type concrete, Container container)
+		internal static object ConstructAndInject(Type concrete, IContainer container)
 		{
 			var info = TypeInfoRepository.Repository.Fetch(concrete);
 			var objects = ArrayPool<object>.Shared.Rent(info.ConstructorParameters.Length);
@@ -18,7 +19,10 @@ namespace Reflex.Injectors
 			try
 			{
 				var instance = info.Activator(objects);
-				container.Disposables.TryAdd(instance);
+				if (instance is IDisposable disposable)
+				{
+					container.AddDisposable(disposable);
+				}
 				ArrayPool<object>.Shared.Return(objects);
 				return instance;
 			}
@@ -28,7 +32,7 @@ namespace Reflex.Injectors
 			}
 		}
 
-		private static void GetConstructionObjects(Type[] parameters, Container container, ref object[] array)
+		private static void GetConstructionObjects(Type[] parameters, IContainer container, ref object[] array)
 		{
 			for (int i = 0; i < parameters.Length; i++)
 			{

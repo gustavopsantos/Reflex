@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Reflex.Scripts;
+using Reflex.Scripts.Core;
 using UnityEngine.SceneManagement;
 
 namespace Reflex.Injectors
@@ -9,28 +9,30 @@ namespace Reflex.Injectors
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
 		private static void AfterAssembliesLoaded()
 		{
+			var stack = new ContainerStack();
+			
 			if (TryGetProjectContext(out var projectContext))
 			{
-				projectContext.Clear();
-				projectContext.InstallBindings();
-				projectContext.Container.InstantiateNonLazySingletons();
-				SceneManager.sceneLoaded += (scene, mode) => SceneInjector.Inject(scene, projectContext.Container);
-				Application.quitting += projectContext.Container.Dispose;
+				var container = stack.PushNew();
+				projectContext.InstallBindings(container);
+				container.InstantiateNonLazySingletons();
+				SceneManager.sceneLoaded += (scene, mode) => SceneInjector.Inject(scene, stack);
+				Application.quitting += () => stack.Pop().Dispose();
 			}
 		}
 
-		private static bool TryGetProjectContext(out ProjectContext projectContext)
+		private static bool TryGetProjectContext(out Context projectContext)
 		{
-			projectContext = Resources.Load<ProjectContext>("ProjectContext");
+			projectContext = Resources.Load<Context>("ProjectContext");
 			ValidateProjectContext(projectContext);
 			return projectContext != null;
 		}
 
-		private static void ValidateProjectContext(ProjectContext context)
+		private static void ValidateProjectContext(Context projectContext)
 		{
-			if (context == null)
+			if (projectContext == null || projectContext.Kind != ContextKind.Project)
 			{
-				Debug.LogWarning($"Skipping {nameof(UnityInjector)}. A project context prefab named '{nameof(ProjectContext)}' should exist inside a Resources folder.");
+				Debug.LogWarning($"Skipping {nameof(UnityInjector)}. A context prefab named 'ProjectContext' with kind 'Project' should exist inside a Resources folder.");
 			}
 		}
 	}

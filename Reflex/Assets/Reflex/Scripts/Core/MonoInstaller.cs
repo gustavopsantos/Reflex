@@ -4,6 +4,6 @@ namespace Reflex.Scripts
 {
     public abstract class MonoInstaller : MonoBehaviour
     {
-        public abstract void InstallBindings(Container container);
+        public abstract void InstallBindings(IContainer container);
     }
 }
