@@ -14,4 +14,9 @@ public class Test : MonoBehaviour
     [Button] private void Bind() => _container.BindSingleton<string>("Override");
     [Button] private void OpenSceneOne() => SceneManager.LoadScene("SceneOne");
     [Button] private void OpenSceneTwo() => SceneManager.LoadScene("SceneTwo");
+    [Button] private void SpawnPlayer()
+    {
+        var prefab = Resources.Load<Player>("Player");
+        _container.Instantiate(prefab);
+    }
 }
