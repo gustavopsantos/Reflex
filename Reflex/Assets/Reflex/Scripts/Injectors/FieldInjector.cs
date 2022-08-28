@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Reflex.Scripts;
 using UnityEngine;
 
 namespace Reflex.Injectors
 {
 	internal static class FieldInjector
 	{
-		internal static void Inject(FieldInfo field, object instance, Container container)
+		internal static void Inject(FieldInfo field, object instance, IContainer container)
 		{
 			try
 			{
@@ -19,7 +20,7 @@ namespace Reflex.Injectors
 			}
 		}
 
-		internal static void InjectMany(IEnumerable<FieldInfo> fields, object instance, Container container)
+		internal static void InjectMany(IEnumerable<FieldInfo> fields, object instance, IContainer container)
 		{
 			foreach (var field in fields)
 			{

@@ -28,3 +28,8 @@ Reflex.Tests/Temp
 SharedProject/.idea
 Reflex/.idea
 Reflex.Benchmark/Builds
+Reflex/UserSettings
+Reflex.Benchmark/UserSettings
+Reflex.GettingStarted/UserSettings
+Reflex.PlatformBackendTests/UserSettings
+Reflex.Tests/UserSettings

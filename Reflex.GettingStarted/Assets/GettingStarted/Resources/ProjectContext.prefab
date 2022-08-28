@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7029822418999261009}
-  - component: {fileID: 7029822418999261010}
+  - component: {fileID: 4181045622533255815}
   - component: {fileID: -3975741988705371585}
   - component: {fileID: -4004743603848617394}
   m_Layer: 0
@@ -29,11 +29,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7029822418999261010
+--- !u!114 &4181045622533255815
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,9 +43,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7029822418999261011}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3f12a22344b7edc45bc286f8f14aa6c9, type: 3}
+  m_Script: {fileID: 11500000, guid: 375be9c3303946fcb8668b9f5ec13a5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Kind>k__BackingField: 0
   _monoInstallers:
   - {fileID: -3975741988705371585}
   - {fileID: -4004743603848617394}

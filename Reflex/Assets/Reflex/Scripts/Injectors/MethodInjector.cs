@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Reflex.Scripts;
 using UnityEngine;
 
 namespace Reflex.Injectors
 {
 	internal static class MethodInjector
 	{
-		internal static void Inject(MethodInfo method, object instance, Container container)
+		internal static void Inject(MethodInfo method, object instance, IContainer container)
 		{
 			var parameters = method.GetParameters();
 			
@@ -25,7 +26,7 @@ namespace Reflex.Injectors
 			}
 		}
 
-		internal static void InjectMany(IEnumerable<MethodInfo> methods, object instance, Container container)
+		internal static void InjectMany(IEnumerable<MethodInfo> methods, object instance, IContainer container)
 		{
 			foreach (var method in methods)
 			{

@@ -1,7 +1,8 @@
 {
   "dependencies": {
-    "com.unity.ide.rider": "1.2.1",
-    "com.unity.ide.visualstudio": "2.0.9",
-    "com.unity.ide.vscode": "1.2.3"
+    "com.madsbangh.easybuttons": "https://github.com/madsbangh/EasyButtons.git#upm",
+    "com.unity.ide.rider": "3.0.15",
+    "com.unity.ide.visualstudio": "2.0.16",
+    "com.unity.ide.vscode": "1.2.5"
   }
 }
