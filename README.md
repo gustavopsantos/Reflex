@@ -78,12 +78,20 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Install via UPM (using Git URL)
 ```json
-"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Reflex/Assets/Reflex/#2.0.0"
+"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Reflex/Assets/Reflex/#1.2.0"
 ```
 
 ### Install manually (using .unitypackage)
 1. Download the .unitypackage from [releases](https://github.com/gustavopsantos/reflex/releases) page.
 2. Import Reflex.X.X.X.unitypackage
+
+## Contexts
+
+### Project Context
+Code implemented, readme todo
+
+### Scene Context
+Code implemented, readme todo
 
 ## Getting Started
 
