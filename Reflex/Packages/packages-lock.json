@@ -64,6 +64,15 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.ugui": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0"
+      }
+    },
     "jp.hadashikick.vcontainer": {
       "version": "https://github.com/hadashiA/VContainer.git?path=/VContainer/Assets/VContainer/#1.8.6",
       "depth": 0,
@@ -87,7 +96,7 @@
     },
     "com.unity.modules.imgui": {
       "version": "1.0.0",
-      "depth": 2,
+      "depth": 1,
       "source": "builtin",
       "dependencies": {}
     },
@@ -104,6 +113,12 @@
       "dependencies": {}
     },
     "com.unity.modules.physics": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {}
+    },
+    "com.unity.modules.ui": {
       "version": "1.0.0",
       "depth": 0,
       "source": "builtin",
