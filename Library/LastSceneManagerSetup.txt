@@ -1,0 +1,5 @@
+sceneSetups:
+- path: Assets/Reflex.GettingStarted/Scenes/GettingStarted.unity
+  isLoaded: 1
+  isActive: 1
+  isSubScene: 0

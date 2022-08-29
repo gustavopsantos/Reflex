@@ -1,0 +1,29 @@
+{
+    "name": "com.madsbangh.easybuttons",
+    "version": "1.3.0",
+    "displayName": "Easy Buttons",
+    "description": "Add buttons to your inspector in Unity super easily with this simple attribute.",
+    "keywords": [
+        "button",
+        "editor",
+        "inspector"
+    ],
+    "author": {
+        "name": "Mads Bang Hoffensetz",
+        "url": "https://twitter.com/madsbangh"
+    },
+    "samples": [
+        {
+            "displayName": "Buttons Example",
+            "path": "Samples~/ButtonsExample"
+        },
+        {
+            "displayName": "Custom Editor Buttons Example",
+            "path": "Samples~/CustomEditorButtonsExample"
+        },
+        {
+            "displayName": "Scriptable Object Example",
+            "path": "Samples~/ScriptableObjectExample"
+        }
+    ]
+}

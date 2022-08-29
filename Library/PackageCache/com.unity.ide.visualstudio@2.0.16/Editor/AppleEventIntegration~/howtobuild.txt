@@ -1,0 +1,5 @@
+Bundle style (release)
+xcodebuild -configuration Release
+
+Standalone style (test)
+clang++ -D BUILD_APP -framework Foundation -framework AppKit main.mm

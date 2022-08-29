@@ -1,0 +1,37 @@
+SPACE AGE v1.0; November 5, 2002
+Windows TrueType font, free for personal use
+http://go.to/disneyfonts
+
+Please include this Space.txt file with any redistribution.
+
+INSTALLATION
+------------
+To install any TrueType font, simply copy it to your Windows\Fonts folder.
+
+
+---------
+SPACE AGE is an original font based on the logotype for Epcot's "Mission: Space" attraction. Version 1.0 contains capitals, alternate capitals, numerals, most punctuation, and some extended characters.
+
+
+SPECIAL CHARACTERS
+------------------
+The tilde and underscore characters contain horizontal lines useful for creating ligatures.
+To create a ligature connected at the top, use the tilde character ~ (example: s~p).
+To create a ligature connected at the bottom, use the underscore character _ (example: c_s).
+
+ALTERNATE CHARACTERS
+--------------------
+| (bar): oversize A
+[ (left bracket): alternate A
+] (right bracket): alternate A
+
+DINGBATS
+--------
+{ (left brace): SPACE logotype
+} (right brace): MISSION: SPACE logotype
+
+
+
+CONTACT
+-------
+Comments, questions, complaints, love notes - please send them to jcmagic@yahoo.com.

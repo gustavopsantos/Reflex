@@ -1,0 +1,19 @@
+{
+	"FileContentKeywordValidation":
+	{
+		"Keywords":
+		[
+			{
+				"Targets": "+",
+				"Files":
+				[
+					"Editor/Discovery.cs"
+				],
+				"Patterns":
+				[
+					"vswhere\\.exe"
+				]
+			}
+		]
+	}
+}

@@ -1,0 +1,28 @@
+{
+    "name": "VContainer",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Entities",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.entities",
+            "expression": "",
+            "define": "VCONTAINER_ECS_INTEGRATION"
+        },
+        {
+            "name": "com.cysharp.unitask",
+            "expression": "",
+            "define": "VCONTAINER_UNITASK_INTEGRATION"
+        }
+    ],
+    "noEngineReferences": false
+}

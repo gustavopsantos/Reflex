@@ -1,0 +1,10 @@
+{
+    "ErrorExceptions": [
+        {
+            "ValidationTest": "API Validation",
+            "ExceptionMessage": "Failed comparing against assemblies of previously promoted version of package. \nThis is most likely because the assemblies that were compared against were built with a different version of Unity. \nIf you are certain that there are no API changes warranting bumping the package version then you can add an exception for this error:\nRead more about this error and potential solutions at https://docs.unity3d.com/Packages/com.unity.package-validation-suite@latest/index.html?preview=1&subfolder=/manual/validation_exceptions.html#",
+            "PackageVersion": "2.0.11"
+        }
+    ],
+    "WarningExceptions": []
+}

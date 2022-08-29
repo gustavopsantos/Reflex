@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1db4d8ab51ca4ad48844c113bfbd80fa, type: 3}
+  m_Name: GameSettings
+  m_EditorClassIdentifier: 
+  EnemySpawner:
+    SpeedMin: 30
+    SpeedMax: 100
+    AccuracyMin: 0
+    AccuracyMax: 1
+    NumEnemiesIncreaseRate: 0.06
+    NumEnemiesStartAmount: 1.5
+    MinDelayBetweenSpawns: 0.3
+  GameRestartHandler:
+    RestartDelay: 3
+  GameInstaller:
+    EnemyFacadePrefab: {fileID: 158650, guid: 55f63c48150ecbb469e095dbde67c6e9, type: 2}
+    BulletPrefab: {fileID: 1211991173579106, guid: 4d22825d6393b964f90d550dd2acc50f,
+      type: 2}
+    ExplosionPrefab: {fileID: 100002, guid: 93a60ba8e409947b1a0334537c8b38c8, type: 2}
+  Player:
+    PlayerMoveHandler:
+      BoundaryBuffer: 4
+      BoundaryAdjustForce: 70
+      MoveSpeed: 250
+      SlowDownSpeed: 0.2
+    PlayerShootHandler:
+      Laser: {fileID: 8300000, guid: 34c638d8d99ccfd44a261f13505ab317, type: 3}
+      LaserVolume: 0.7
+      BulletLifetime: 1
+      BulletSpeed: 130
+      MaxShootInterval: 0.15
+      BulletOffsetDistance: 2
+    PlayerCollisionHandler:
+      HealthLoss: 15
+      HitForce: 1000
+      HitSound: {fileID: 8300000, guid: f9517356afb533a41b9e7cb6f155031e, type: 3}
+      HitSoundVolume: 1
+    PlayerHealthWatcher:
+      DeathSound: {fileID: 8300000, guid: 9cb65eb2505fbf443ac876ba177374f9, type: 3}
+      DeathSoundVolume: 1
+  Enemy:
+    DefaultSettings:
+      Accuracy: 1
+      Speed: 25
+    EnemyStateIdle:
+      Amplitude: 0.5
+      Frequency: 4
+    EnemyRotationHandler:
+      TurnSpeed: 10
+    EnemyStateFollow:
+      StrafeMultiplier: 0.5
+      StrafeChangeInterval: 0.8
+      TeleportNewDistance: 40
+    EnemyStateAttack:
+      ShootSound: {fileID: 8300000, guid: aa66f043685a31e4bb90d0b6128bc3e1, type: 3}
+      ShootSoundVolume: 0.8
+      BulletLifetime: 5
+      BulletSpeed: 30
+      BulletOffsetDistance: 2
+      ShootInterval: 0.4
+      ErrorRangeTheta: 30
+      AttackRangeBuffer: 8
+      StrafeMultiplier: 0.5
+      StrafeChangeInterval: 0.8
+    EnemyHealthWatcher:
+      DeathSound: {fileID: 8300000, guid: 9cb65eb2505fbf443ac876ba177374f9, type: 3}
+      DeathSoundVolume: 0.5
+    EnemyCommonSettings:
+      AttackDistance: 15
