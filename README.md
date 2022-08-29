@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="logo-crimson.png" width="250">
+  <img src="Graphics\logo-crimson.png" width="250">
 </p>
 <p align="center">
-  <img src="text-crimson.png" width="300">
+  <img src="Graphics\text-crimson.png" width="300">
 </p>
 
 Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) framework for [Unity](https://unity.com/). Making your classes independent of its dependencies, granting better separation of concerns. It achieves that by decoupling the usage of an object from its creation. This helps you to follow SOLID’s dependency inversion and single responsibility principles. Making your project more **readable, testable and scalable.**
