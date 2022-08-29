@@ -22,7 +22,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - `[Inject]` Property, field and method injection attribute
 
 ## Performance
-> Resolving ten thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Reflex.Benchmark/Assets/Benchmark/NestedBenchmarkReflex.cs).
+> Resolving ten thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Assets/Reflex.Benchmark/NestedBenchmarkReflex.cs).
 
 ### Android
 
@@ -78,7 +78,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Install via UPM (using Git URL)
 ```json
-"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Reflex/Assets/Reflex/#1.2.0"
+"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#2.0.0"
 ```
 
 ### Install manually (using .unitypackage)
@@ -99,7 +99,7 @@ A single root gameobject per scene that should contain a `Context` component wit
 
 ### Installing Bindings
 
-Create a MonoInstaller to install your bindings in the project context, and remember to add this component in the ProjectContext prefab, and reference it in the Mono Installers list of the ProjectContext. See [ProjectContext.prefab](Reflex.GettingStarted/Assets/GettingStarted/Resources/ProjectContext.prefab).
+Create a MonoInstaller to install your bindings in the project context, and remember to add this component in the ProjectContext prefab, and reference it in the Mono Installers list of the ProjectContext. See [ProjectContext.prefab](Assets/Reflex.GettingStarted/Resources/ProjectContext.prefab).
 
 ```csharp
 public class ProjectInstaller : MonoInstaller
@@ -119,7 +119,7 @@ public class ProjectInstaller : MonoInstaller
 
 ### MonoBehaviour Injection
 
-> Be aware that fields and properties with [Inject] are injected only into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Reflex/Assets/Reflex/Scripts/Injectors/MonoInjector.cs).  
+> Be aware that fields and properties with [Inject] are injected only into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Assets/Reflex/Scripts/Injectors/MonoInjector.cs).  
 
 > If you want to instantiate a MonoBehaviour/Component at runtime and wants injection to happen, use the `Instantiate` method from IContainer.
 
