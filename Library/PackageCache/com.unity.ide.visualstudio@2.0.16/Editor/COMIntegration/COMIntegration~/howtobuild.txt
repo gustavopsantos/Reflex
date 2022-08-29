@@ -1,6 +1,0 @@
-Direct style:
-cl /EHsc /std:c++17 COMIntegration.cpp /link Shlwapi.lib /out:"..\Release\COMIntegration.exe"
-
-CMake style:
-cmake ../COMIntegration~ -B ./build
-cmake --build ./build --config=release -- /p:OutDir=..
