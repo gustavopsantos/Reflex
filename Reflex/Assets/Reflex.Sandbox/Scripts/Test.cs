@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Test : MonoBehaviour
 {
-    [MonoInject] private IContainer _container;
+    [Inject] private IContainer _container;
 
     [Button] private void Log() => Debug.Log(_container.GetType().Name);
     [Button] private void ResolveInt() => Debug.Log(_container.Resolve<int>());

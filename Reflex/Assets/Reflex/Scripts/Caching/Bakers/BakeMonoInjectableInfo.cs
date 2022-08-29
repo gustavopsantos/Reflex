@@ -12,9 +12,9 @@ namespace Reflex
 		internal static MonoInjectableInfo Bake(MonoBehaviour monoBehaviour)
 		{
 			var type = monoBehaviour.GetType();
-			var fields = type.GetFields(Flags).Where(f => f.IsDefined(typeof(MonoInjectAttribute))).ToArray();
-			var properties = type.GetProperties(Flags).Where(p => p.CanWrite && p.IsDefined(typeof(MonoInjectAttribute))).ToArray();
-			var methods = type.GetMethods(Flags).Where(m => m.IsDefined(typeof(MonoInjectAttribute))).ToArray();
+			var fields = type.GetFields(Flags).Where(f => f.IsDefined(typeof(InjectAttribute))).ToArray();
+			var properties = type.GetProperties(Flags).Where(p => p.CanWrite && p.IsDefined(typeof(InjectAttribute))).ToArray();
+			var methods = type.GetMethods(Flags).Where(m => m.IsDefined(typeof(InjectAttribute))).ToArray();
 			return new MonoInjectableInfo(fields, properties, methods);
 		}
 	}

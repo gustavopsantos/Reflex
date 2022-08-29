@@ -5,8 +5,8 @@ public class Collectable : MonoBehaviour
 {
     [field: SerializeField] private string _id;
 
-    [MonoInject] private readonly ICollectableRegistry _collectableRegistry;
-    [MonoInject] private readonly PickupSoundEffect _pickupSoundEffect;
+    [Inject] private readonly ICollectableRegistry _collectableRegistry;
+    [Inject] private readonly PickupSoundEffect _pickupSoundEffect;
 
     private void Start()
     {

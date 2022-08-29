@@ -3,7 +3,7 @@ using Reflex.Scripts.Attributes;
 
 public class ResetGamePresenter : Presenter<ResetGameView>
 {
-    [MonoInject, Preserve]
+    [Inject, Preserve]
     private void Inject(IResetGame resetGame)
     {
         View.ResetButton.onClick.AddListener(resetGame.Reset);

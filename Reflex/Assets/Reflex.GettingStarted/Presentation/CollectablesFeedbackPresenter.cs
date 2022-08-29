@@ -3,7 +3,7 @@ using UnityEngine.Scripting;
 
 public class CollectablesFeedbackPresenter : Presenter<CollectablesFeedbackView>
 {
-    [MonoInject, Preserve]
+    [Inject, Preserve]
     private void Inject(ICollectableRegistry collectableRegistry)
     {
         Present(collectableRegistry);

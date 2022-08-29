@@ -3,6 +3,6 @@ using Reflex.Scripts.Attributes;
 
 public class Player : MonoBehaviour
 {
-    [MonoInject] public int Int;
-    [MonoInject] public string String;
+    [Inject] public int Int;
+    [Inject] public string String;
 }

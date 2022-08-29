@@ -19,7 +19,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - IL2CPP Friendly
 - Minimal code base
 - Contructor injection
-- `[MonoInject]` Property, field and method injection attribute
+- `[Inject]` Property, field and method injection attribute
 
 ## Performance
 > Resolving ten thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Reflex.Benchmark/Assets/Benchmark/NestedBenchmarkReflex.cs).
@@ -119,17 +119,17 @@ public class ProjectInstaller : MonoInstaller
 
 ### MonoBehaviour Injection
 
-> Be aware that fields and properties with [MonoInject] are injected only into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Reflex/Assets/Reflex/Scripts/Injectors/MonoInjector.cs).  
+> Be aware that fields and properties with [Inject] are injected only into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Reflex/Assets/Reflex/Scripts/Injectors/MonoInjector.cs).  
 
 > If you want to instantiate a MonoBehaviour/Component at runtime and wants injection to happen, use the `Instantiate` method from IContainer.
 
 ```csharp
 public class MonoBehaviourInjection : MonoBehaviour
 {
-    [MonoInject] private readonly IContainer _container;
-    [MonoInject] public IDependencyOne DependencyOne { get; private set; }
+    [Inject] private readonly IContainer _container;
+    [Inject] public IDependencyOne DependencyOne { get; private set; }
 
-    [MonoInject]
+    [Inject]
     private void Inject(IContainer container, IDependencyOne dependencyOne)
     {
         var dependencyTwo = container
@@ -181,7 +181,7 @@ public class NonMonoBehaviourInjection
 | ↓                                                    |
 | MonoBehaviour.Start                                  |
 
-> `Reflex.Injectors.SceneInjector.Inject` injects fields and properties decorated with [MonoInject] attribute.
+> `Reflex.Injectors.SceneInjector.Inject` injects fields, properties and methods decorated with [Inject] attribute.
 
 ## Author
 [![Twitter](https://img.shields.io/twitter/follow/codinggustavo.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=codinggustavo)  

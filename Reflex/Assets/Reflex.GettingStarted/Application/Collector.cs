@@ -3,7 +3,7 @@ using Reflex.Scripts.Attributes;
 
 public class Collector : MonoBehaviour
 {
-    [MonoInject] private readonly ICollectableRegistry _collectableRegistry;
+    [Inject] private readonly ICollectableRegistry _collectableRegistry;
 
     private void OnTriggerEnter(Collider other)
     {
