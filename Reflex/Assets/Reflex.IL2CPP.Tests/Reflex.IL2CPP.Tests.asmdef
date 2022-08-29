@@ -1,5 +1,6 @@
 {
-    "name": "IL2CPPTest",
+    "name": "Reflex.IL2CPP.Tests",
+    "rootNamespace": "",
     "references": [
         "GUID:b83fa2c9a1c9b78468588c16e6fad878"
     ],
