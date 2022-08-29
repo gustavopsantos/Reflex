@@ -1,5 +1,6 @@
 {
-    "name": "Presentation",
+    "name": "Reflex.GettingStarted.Infrastructure",
+    "rootNamespace": "",
     "references": [
         "GUID:e581b2ceaf7bf8941875ed43a11708b0",
         "GUID:b83fa2c9a1c9b78468588c16e6fad878"
