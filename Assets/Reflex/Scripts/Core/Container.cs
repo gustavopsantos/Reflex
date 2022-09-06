@@ -10,7 +10,6 @@ namespace Reflex
     public class Container : IContainer
     {
         internal readonly CompositeDisposable Disposables = new CompositeDisposable();
-        internal readonly Dictionary<Type, object> Singletons = new Dictionary<Type, object>(); // TContract, Instance
         internal readonly Dictionary<Type, Resolver> Resolvers = new Dictionary<Type, Resolver>(); // TContract, Resolver
 
         public void AddDisposable(IDisposable disposable)
@@ -59,13 +58,12 @@ namespace Reflex
 
         public void BindSingleton<TContract, TConcrete>() where TConcrete : TContract
         {
-            Resolvers[typeof(TContract)] = new SingletonResolver(typeof(TConcrete));
+            Resolvers[typeof(TContract)] = new SingletonResolver(typeof(TConcrete), null);
         }
 
         public void BindSingleton<TContract>(TContract instance)
         {
-            Singletons[typeof(TContract)] = instance;
-            Resolvers[typeof(TContract)] = new SingletonResolver(instance.GetType());
+            Resolvers[typeof(TContract)] = new SingletonResolver(instance.GetType(), instance);
         }
 
         public TContract Resolve<TContract>()
@@ -81,12 +79,6 @@ namespace Reflex
             }
 
             throw new UnknownContractException(contract);
-        }
-
-        internal object RegisterSingletonInstance(Type contract, object concrete)
-        {
-            Singletons.Add(contract, concrete);
-            return concrete;
         }
     }
 }

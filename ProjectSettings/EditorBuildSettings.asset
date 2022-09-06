@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/SceneContextSandbox/Scenes/SceneOne.unity
+    path: Assets/Reflex.Sandbox/Scenes/SceneOne.unity
     guid: f528ad3d355a5ef488f900115329f198
   - enabled: 1
-    path: Assets/SceneContextSandbox/Scenes/SceneTwo.unity
+    path: Assets/Reflex.Sandbox/Scenes/SceneTwo.unity
     guid: 5fb3905581a42cd4bbf5694b5942af33
   m_configObjects: {}
