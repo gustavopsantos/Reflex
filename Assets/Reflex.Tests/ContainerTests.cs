@@ -47,21 +47,10 @@ namespace Reflex.Tests
 		}
 
 		[Test]
-		public void Resolve_SimpleBindWithoutScopeDefinition_ShouldThrowScopeNotHandledException()
-		{
-			Container container = new Container();
-			container.Bind<IValuable>().To<Valuable>();
-			Action resolve = () => container.Resolve<IValuable>();
-			resolve.Should().Throw<BindingScopeNotHandledException>();
-		}
-
-		[Test]
 		public void Resolve_AsTransient_ShouldReturnAlwaysANewInstance()
 		{
 			Container container = new Container();
-
-			container.Bind<IValuable>().To<Valuable>().AsTransient();
-
+			container.BindTransient<IValuable, Valuable>();
 			container.Resolve<IValuable>().Value = 123;
 			container.Resolve<IValuable>().Value.Should().Be(default(int));
 		}
@@ -70,7 +59,7 @@ namespace Reflex.Tests
 		public void Resolve_AsSingleton_ShouldReturnAlwaysSameInstance()
 		{
 			Container container = new Container();
-			container.Bind<IValuable>().To<Valuable>().AsSingleton();
+			container.BindSingleton<IValuable, Valuable>();
 			container.Resolve<IValuable>().Value = 123;
 			container.Resolve<IValuable>().Value.Should().Be(123);
 		}
@@ -87,7 +76,7 @@ namespace Reflex.Tests
 		public void Resolve_KnownDependencyAsTransientWithUnknownDependency_ShouldThrowUnknownContractException()
 		{
 			Container container = new Container();
-			container.Bind<IClassWithDependency>().To<ClassWithDependency>().AsTransient();
+			container.BindTransient<IClassWithDependency, ClassWithDependency>();
 			Action resolve = () => container.Resolve<IClassWithDependency>();
 			resolve.Should().Throw<UnknownContractException>();
 		}
@@ -96,7 +85,7 @@ namespace Reflex.Tests
 		public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowUnknownContractException()
 		{
 			Container container = new Container();
-			container.Bind<IClassWithDependency>().To<ClassWithDependency>().AsSingleton();
+			container.BindSingleton<IClassWithDependency, ClassWithDependency>();
 			Action resolve = () => container.Resolve<IClassWithDependency>();
 			resolve.Should().Throw<UnknownContractException>();
 		}
@@ -113,7 +102,7 @@ namespace Reflex.Tests
 		public void Resolve_ValueTypeAsTransient_ShouldReturnDefault()
 		{
 			Container container = new Container();
-			container.Bind<int>().To<int>().AsTransient();
+			container.BindTransient<int, int>();
 			container.Resolve<int>().Should().Be(default);
 		}
 
@@ -121,7 +110,7 @@ namespace Reflex.Tests
 		public void Resolve_StringAsTransient_ShouldReturnDefault()
 		{
 			Container container = new Container();
-			container.Bind<string>().To<string>().AsTransient();
+			container.BindTransient<string, string>();
 			container.Resolve<string>().Should().Be(default);
 		}
 		
@@ -140,7 +129,7 @@ namespace Reflex.Tests
 		{
 			Container container = new Container();
 			container.BindSingleton(42);
-			container.Bind<MyStruct>().To<MyStruct>().AsTransient();
+			container.BindTransient<MyStruct, MyStruct>();
 			container.Resolve<MyStruct>().Value.Should().Be(42);
 		}
 
@@ -183,9 +172,9 @@ namespace Reflex.Tests
 		public void Resolve_ClassWithGenericDependency_WithNormalDefinition_ValuesShouldBe42AndABC()
 		{
 			Container container = new Container();
-			container.Bind<Xing>().To<Xing>().AsTransient();
-			container.Bind<ISetup<int>>().To<IntSetup>().AsTransient();
-			container.Bind<ISetup<string>>().To<StringSetup>().AsTransient();
+			container.BindTransient<Xing, Xing>();
+			container.BindTransient<ISetup<int>, IntSetup>();
+			container.BindTransient<ISetup<string>, StringSetup>();
 			var instance = container.Construct<Xing>();
 			instance.Int.Should().Be(42);
 			instance.String.Should().Be("abc");
@@ -206,7 +195,7 @@ namespace Reflex.Tests
 		{
 			Container container = new Container();
 			SomeSingleton.ConstructorCalled = false;
-			container.Bind<SomeSingleton>().To<SomeSingleton>().AsSingleton();
+			container.BindSingleton<SomeSingleton, SomeSingleton>();
 			SomeSingleton.ConstructorCalled.Should().BeFalse();
 		}
 	}

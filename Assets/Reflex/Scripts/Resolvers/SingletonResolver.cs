@@ -4,6 +4,13 @@ namespace Reflex
 {
     internal class SingletonResolver : Resolver
     {
+        private readonly Type _concrete;
+
+        public SingletonResolver(Type concrete)
+        {
+            _concrete = concrete;
+        }
+        
         internal override object Resolve(Type contract, Container container)
         {
             if (container.Singletons.TryGetValue(contract, out var instance))
@@ -14,10 +21,9 @@ namespace Reflex
             return CreateAndRegisterSingletonInstance(contract, container);
         }
 
-        private static object CreateAndRegisterSingletonInstance(Type contract, Container container)
+        private object CreateAndRegisterSingletonInstance(Type contract, Container container)
         {
-            var concrete = container.GetConcreteTypeFor(contract);
-            var instance = container.Construct(concrete);
+            var instance = container.Construct(_concrete);
             return container.RegisterSingletonInstance(contract, instance);
         }
     }

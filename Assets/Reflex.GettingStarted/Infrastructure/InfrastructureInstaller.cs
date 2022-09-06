@@ -8,6 +8,6 @@ public class InfrastructureInstaller : MonoInstaller
     public override void InstallBindings(IContainer container)
     {
         container.BindSingleton<IGameSettings>(_scriptableObjectGameSettings);
-        container.Bind<ICollectableRegistry>().To<PlayerPrefsCollectableRegistry>().AsSingleton();
+        container.BindSingleton<ICollectableRegistry, PlayerPrefsCollectableRegistry>();
     }
 }

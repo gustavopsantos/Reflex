@@ -59,11 +59,16 @@ namespace Reflex.Scripts.Core
             return ConstructorInjector.ConstructAndInject(concrete, this);
         }
 
-        public BindingContractDefinition<TContract> Bind<TContract>()
+        public void BindSingleton<TContract, TConcrete>() where TConcrete : TContract
         {
-            return _stack.Peek().Bind<TContract>();
+            _stack.Peek().BindSingleton<TContract, TConcrete>();
         }
-        
+
+        public void BindTransient<TContract, TConcrete>() where TConcrete : TContract
+        {
+            _stack.Peek().BindTransient<TContract, TConcrete>();
+        }
+
         public TContract Resolve<TContract>()
         {
             return (TContract) Resolve(typeof(TContract));

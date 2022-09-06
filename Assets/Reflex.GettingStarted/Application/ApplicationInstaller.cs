@@ -6,8 +6,8 @@ public class ApplicationInstaller : MonoInstaller
     
     public override void InstallBindings(IContainer container)
     {
-        container.Bind<IResetGame>().To<ResetGame>().AsSingleton();
-        container.Bind<IGetPlayerInput>().To<GetPlayerInput>().AsSingleton();
         container.BindSingleton(PickupSoundEffect);
+        container.BindSingleton<IResetGame, ResetGame>();
+        container.BindSingleton<IGetPlayerInput, GetPlayerInput>();
     }
 }

@@ -10,11 +10,11 @@ namespace Benchmark
 
         private void Start()
         {
-            _container.Bind<IA>().To<A>().AsTransient();
-            _container.Bind<IB>().To<B>().AsTransient();
-            _container.Bind<IC>().To<C>().AsTransient();
-            _container.Bind<ID>().To<D>().AsTransient();
-            _container.Bind<IE>().To<E>().AsTransient();
+            _container.BindTransient<IA, A>();
+            _container.BindTransient<IB, B>();
+            _container.BindTransient<IC, C>();
+            _container.BindTransient<ID, D>();
+            _container.BindTransient<IE, E>();
         }
 
         protected override int Order => 0;

@@ -10,7 +10,8 @@ namespace Reflex.Scripts
         GameObject Instantiate(GameObject original);
         T Construct<T>();
         object Construct(Type concrete);
-        BindingContractDefinition<TContract> Bind<TContract>();
+        void BindSingleton<TContract, TConcrete>() where TConcrete : TContract;
+        void BindTransient<TContract, TConcrete>() where TConcrete : TContract;
         void BindSingleton<TContract>(TContract instance);
         TContract Resolve<TContract>();
         object Resolve(Type contract);

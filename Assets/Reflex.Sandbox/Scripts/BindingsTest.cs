@@ -22,6 +22,10 @@ public class BindingsTest : MonoBehaviour
     private void Start()
     {
         var container = new Container();
+        container.BindSingleton(new LocalTimeSource());
         container.BindFunction<ITimeSource>(() => new  UtcTimeSource());
+        
+        container.BindTransient<ITimeSource, UtcTimeSource>();
+        container.BindSingleton<ITimeSource, LocalTimeSource>();
     }
 }

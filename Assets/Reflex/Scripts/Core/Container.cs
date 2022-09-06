@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using Reflex.Injectors;
 using Reflex.Scripts;
@@ -11,12 +10,8 @@ namespace Reflex
     public class Container : IContainer
     {
         internal readonly CompositeDisposable Disposables = new CompositeDisposable();
-        internal readonly Dictionary<Type, Binding> Bindings = new Dictionary<Type, Binding>(); // TContract, Binding
         internal readonly Dictionary<Type, object> Singletons = new Dictionary<Type, object>(); // TContract, Instance
-
-        private readonly Resolver _methodResolver = new MethodResolver();
-        private readonly Resolver _transientResolver = new TransientResolver();
-        private readonly Resolver _singletonResolver = new SingletonResolver();
+        internal readonly Dictionary<Type, Resolver> Resolvers = new Dictionary<Type, Resolver>(); // TContract, Resolver
 
         public void AddDisposable(IDisposable disposable)
         {
@@ -54,44 +49,23 @@ namespace Reflex
 
         public void BindFunction<TContract>(Func<TContract> function)
         {
-            var binding = new Binding
-            {
-                Scope = BindingScope.Method,
-                Method = function as Func<object>,
-            };
-
-            Bindings.Add(typeof(TContract), binding);
+            Resolvers.Add(typeof(TContract), new FunctionResolver(function as Func<object>));
         }
 
-        public BindingContractDefinition<TContract> Bind<TContract>()
+        public void BindTransient<TContract, TConcrete>() where TConcrete : TContract
         {
-            return new BindingContractDefinition<TContract>(this);
+            Resolvers[typeof(TContract)] = new TransientResolver(typeof(TConcrete));
         }
-        
+
+        public void BindSingleton<TContract, TConcrete>() where TConcrete : TContract
+        {
+            Resolvers[typeof(TContract)] = new SingletonResolver(typeof(TConcrete));
+        }
+
         public void BindSingleton<TContract>(TContract instance)
         {
-            var binding = new Binding
-            {
-                Contract = typeof(TContract),
-                Concrete = instance.GetType(),
-                Scope = BindingScope.Singleton
-            };
-
-            Bindings[typeof(TContract)] = binding;
             Singletons[typeof(TContract)] = instance;
-        }
-
-        public void BindSingleton<T>(Type contract, T instance)
-        {
-            var binding = new Binding
-            {
-                Contract = contract,
-                Concrete = instance.GetType(),
-                Scope = BindingScope.Singleton
-            };
-            
-            Bindings.Add(contract, binding);
-            Singletons.Add(contract, instance);
+            Resolvers[typeof(TContract)] = new SingletonResolver(instance.GetType());
         }
 
         public TContract Resolve<TContract>()
@@ -101,50 +75,18 @@ namespace Reflex
 
         public object Resolve(Type contract)
         {
-            var resolver = MatchResolver(contract);
-            return resolver.Resolve(contract, this);
-        }
-
-        private Resolver MatchResolver(Type contract)
-        {
-            if (Bindings.TryGetValue(contract, out var binding))
+            if (Resolvers.TryGetValue(contract, out var resolver))
             {
-                switch (binding.Scope)
-                {
-                    case BindingScope.Method: return _methodResolver;
-                    case BindingScope.Transient: return _transientResolver;
-                    case BindingScope.Singleton: return _singletonResolver;
-                    default: throw new BindingScopeNotHandledException(binding.Scope);
-                }
+                return resolver.Resolve(contract, this);
             }
 
             throw new UnknownContractException(contract);
-        }
-
-        internal Type GetConcreteTypeFor(Type contract)
-        {
-            return Bindings[contract].Concrete;
         }
 
         internal object RegisterSingletonInstance(Type contract, object concrete)
         {
             Singletons.Add(contract, concrete);
             return concrete;
-        }
-
-        internal bool TryGetMethod(Type contract, out Func<object> method)
-        {
-            if (Bindings.TryGetValue(contract, out var binding))
-            {
-                if (binding.Scope == BindingScope.Method)
-                {
-                    method = binding.Method;
-                    return true;
-                }
-            }
-
-            method = null;
-            return false;
         }
     }
 }

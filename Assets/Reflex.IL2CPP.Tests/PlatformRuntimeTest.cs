@@ -12,7 +12,7 @@ namespace IL2CPPTest
         private void Start()
         {
             _container.BindSingleton(42);
-            _container.Bind<ITestGenericStructure<int>>().To<TestGenericStructure<int>>().AsTransient();
+            _container.BindTransient<ITestGenericStructure<int>, TestGenericStructure<int>>();
         }
 
         private void OnGUI()
