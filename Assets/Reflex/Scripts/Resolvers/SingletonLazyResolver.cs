@@ -6,7 +6,7 @@ namespace Reflex
     {
         internal override object Resolve(Type contract, Container container)
         {
-            if (container.TryGetSingletonInstance(contract, out var instance))
+            if (container.Singletons.TryGetValue(contract, out var instance))
             {
                 return instance;
             }

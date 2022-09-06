@@ -134,11 +134,6 @@ namespace Reflex
             return concrete;
         }
 
-        internal bool TryGetSingletonInstance(Type contract, out object instance)
-        {
-            return Singletons.TryGetValue(contract, out instance);
-        }
-
         internal bool TryGetMethod(Type contract, out Func<object> method)
         {
             if (Bindings.TryGetValue(contract, out var binding))
