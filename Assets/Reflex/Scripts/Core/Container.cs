@@ -58,11 +58,6 @@ namespace Reflex
             return new BindingContractDefinition<TContract>(this);
         }
         
-        public BindingGenericContractDefinition BindGenericContract(Type genericContract)
-        {
-            return new BindingGenericContractDefinition(genericContract, this);
-        }
-
         public void BindSingleton<TContract>(TContract instance)
         {
             var binding = new Binding
@@ -100,12 +95,6 @@ namespace Reflex
             return resolver.Resolve(contract, this);
         }
 
-        public TCast ResolveGenericContract<TCast>(Type genericContract, params Type[] genericConcrete)
-        {
-            var contract = genericContract.MakeGenericType(genericConcrete);
-            return (TCast) Resolve(contract);
-        }
-        
         private Resolver MatchResolver(Type contract)
         {
             if (Bindings.TryGetValue(contract, out var binding))

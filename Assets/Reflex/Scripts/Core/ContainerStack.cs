@@ -64,11 +64,6 @@ namespace Reflex.Scripts.Core
             return _stack.Peek().Bind<TContract>();
         }
         
-        public BindingGenericContractDefinition BindGenericContract(Type genericContract)
-        {
-            return new BindingGenericContractDefinition(genericContract, _stack.Peek());
-        }
-
         public TContract Resolve<TContract>()
         {
             return (TContract) Resolve(typeof(TContract));

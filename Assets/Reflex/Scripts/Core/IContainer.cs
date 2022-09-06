@@ -12,9 +12,7 @@ namespace Reflex.Scripts
         object Construct(Type concrete);
         BindingContractDefinition<TContract> Bind<TContract>();
         void BindSingleton<TContract>(TContract instance);
-        BindingGenericContractDefinition BindGenericContract(Type genericContract);
         TContract Resolve<TContract>();
         object Resolve(Type contract);
-        TCast ResolveGenericContract<TCast>(Type genericContract, params Type[] genericConcrete);
     }
 }

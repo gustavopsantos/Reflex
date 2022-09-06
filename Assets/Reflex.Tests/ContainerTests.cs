@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
-using FluentAssertions;
 using NUnit.Framework;
-using UnityEngine;
+using FluentAssertions;
 
 namespace Reflex.Tests
 {
@@ -32,35 +30,6 @@ namespace Reflex.Tests
 			}
 		}
 
-		private interface IFoo<T>
-		{
-		}
-
-		private class StringFoo : IFoo<string>
-		{
-		}
-
-		private class ObjectFoo : IFoo<object>
-		{
-		}
-
-		private abstract class Pair<T1, T2> : IPair
-		{
-			public Type[] Types
-			{
-				get { return new[] {typeof(T1), typeof(T2)}; }
-			}
-		}
-
-		private interface IPair
-		{
-			Type[] Types { get; }
-		}
-
-		private class IntStringPair : Pair<int, string>
-		{
-		}
-
 		[Test]
 		public void Resolve_ValueTypeSingleton_ShouldReturn42()
 		{
@@ -84,34 +53,6 @@ namespace Reflex.Tests
 			container.Bind<IValuable>().To<Valuable>();
 			Action resolve = () => container.Resolve<IValuable>();
 			resolve.Should().Throw<BindingScopeNotHandledException>();
-		}
-
-		[Test]
-		public void Resolve_GenericBindWithoutScopeDefinition_ShouldThrowScopeNotHandledException()
-		{
-			Container container = new Container();
-			container.BindGenericContract(typeof(IFoo<>)).To(typeof(StringFoo));
-			Action resolve = () => container.ResolveGenericContract<object>(typeof(IFoo<>), typeof(string));
-			resolve.Should().Throw<BindingScopeNotHandledException>();
-		}
-
-		[Test]
-		public void Resolve_GenericBindWithMultipleTypes_ShouldNotThrow()
-		{
-			Container container = new Container();
-			container.BindGenericContract(typeof(Pair<,>)).To(typeof(IntStringPair)).AsTransient();
-			Action resolve = () => container.ResolveGenericContract<object>(typeof(Pair<,>), typeof(int), typeof(string));
-			resolve.Should().NotThrow();
-		}
-
-		[Test]
-		public void Resolve_GenericBindWithMultipleTypes_ShouldReturnCorrectBinding()
-		{
-			Container container = new Container();
-			container.BindGenericContract(typeof(Pair<,>)).To(typeof(IntStringPair)).AsTransient();
-			var pair = container.ResolveGenericContract<IPair>(typeof(Pair<,>), typeof(int), typeof(string));
-			pair.Types[0].Should().Be(typeof(int));
-			pair.Types[1].Should().Be(typeof(string));
 		}
 
 		[Test]
@@ -166,24 +107,6 @@ namespace Reflex.Tests
 			Container container = new Container();
 			container.Bind<IValuable>().FromMethod(() => new Valuable {Value = 42});
 			container.Resolve<IValuable>().Value.Should().Be(42);
-		}
-
-		[Test]
-		public void Resolve_GenericTypeOfString_ShouldReturnImplementationWithStringAsGenericTypeArgument()
-		{
-			Container container = new Container();
-			container.BindGenericContract(typeof(IFoo<>)).To(typeof(StringFoo)).AsSingletonLazy();
-			var foo = container.ResolveGenericContract<object>(typeof(IFoo<>), typeof(string));
-			foo.GetType().GetInterfaces().First().GenericTypeArguments.First().Should().Be(typeof(string));
-		}
-
-		[Test]
-		public void Resolve_GenericTypeOfObject_ShouldReturnImplementationWithObjectAsGenericTypeArgument()
-		{
-			Container container = new Container();
-			container.BindGenericContract(typeof(IFoo<>)).To(typeof(ObjectFoo)).AsSingletonLazy();
-			var foo = container.ResolveGenericContract<object>(typeof(IFoo<>), typeof(object));
-			foo.GetType().GetInterfaces().First().GenericTypeArguments.First().Should().Be(typeof(object));
 		}
 
 		[Test]
@@ -266,22 +189,6 @@ namespace Reflex.Tests
 			var instance = container.Construct<Xing>();
 			instance.Int.Should().Be(42);
 			instance.String.Should().Be("abc");
-		}
-		
-		[Test]
-		public void Resolve_ClassWithGenericDependency_WithMergedDefinition_ValuesShouldBe42AndABC()
-		{
-			Container container = new Container();
-			container.Bind<Xing>().To<Xing>().AsTransient();
-			container.BindGenericContract(typeof(ISetup<>)).To(typeof(IntSetup), typeof(StringSetup)).AsTransient();
-			var instance = container.Construct<Xing>();
-			instance.Int.Should().Be(42);
-			instance.String.Should().Be("abc");
-		}
-
-
-		internal class ConstructorCalledException : Exception
-		{
 		}
 		
 		private class SomeSingleton
