@@ -1,7 +1,7 @@
 {
   "name": "com.gustavopsantos.reflex",
   "displayName": "Reflex",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "unity": "2021.3",
   "description": "Minimal dependency injection framework for Unity",
   "keywords": ["Dependency Injection", "IoC", "DI", "DI Container"],

@@ -24,9 +24,9 @@ namespace Reflex.Scripts.Core
         
         public void Dispose()
         {
-            while (_stack.TryPop(out var container))
+            while (_stack.Count > 0)
             {
-                container.Dispose();
+                _stack.Pop().Dispose();
             }
         }
 
