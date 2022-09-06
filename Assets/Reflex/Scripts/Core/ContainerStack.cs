@@ -94,12 +94,6 @@ namespace Reflex.Scripts.Core
             throw new Exception("Could not resolve");
         }
 
-        public TCast ResolveGenericContract<TCast>(Type genericContract, params Type[] genericConcrete)
-        {
-            var contract = genericContract.MakeGenericType(genericConcrete);
-            return (TCast) Resolve(contract);
-        }
-
         public void BindSingleton<TContract>(TContract instance)
         {
             _stack.Peek().BindSingleton<TContract>(instance);
