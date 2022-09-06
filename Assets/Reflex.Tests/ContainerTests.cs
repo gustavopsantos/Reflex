@@ -70,7 +70,7 @@ namespace Reflex.Tests
 		public void Resolve_AsSingleton_ShouldReturnAlwaysSameInstance()
 		{
 			Container container = new Container();
-			container.Bind<IValuable>().To<Valuable>().AsSingletonLazy();
+			container.Bind<IValuable>().To<Valuable>().AsSingleton();
 			container.Resolve<IValuable>().Value = 123;
 			container.Resolve<IValuable>().Value.Should().Be(123);
 		}
@@ -96,7 +96,7 @@ namespace Reflex.Tests
 		public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowUnknownContractException()
 		{
 			Container container = new Container();
-			container.Bind<IClassWithDependency>().To<ClassWithDependency>().AsSingletonLazy();
+			container.Bind<IClassWithDependency>().To<ClassWithDependency>().AsSingleton();
 			Action resolve = () => container.Resolve<IClassWithDependency>();
 			resolve.Should().Throw<UnknownContractException>();
 		}
@@ -206,19 +206,8 @@ namespace Reflex.Tests
 		{
 			Container container = new Container();
 			SomeSingleton.ConstructorCalled = false;
-			container.Bind<SomeSingleton>().To<SomeSingleton>().AsSingletonLazy();
-			container.InstantiateNonLazySingletons();
+			container.Bind<SomeSingleton>().To<SomeSingleton>().AsSingleton();
 			SomeSingleton.ConstructorCalled.Should().BeFalse();
-		}
-		
-		[Test]
-		public void Bind_NonLazySingleton_ThenInvokeInstantiateNonLazySingletons_ShouldRunConstructor()
-		{
-			Container container = new Container();
-			SomeSingleton.ConstructorCalled = false;
-			container.Bind<SomeSingleton>().To<SomeSingleton>().AsSingletonNonLazy();
-			container.InstantiateNonLazySingletons();
-			SomeSingleton.ConstructorCalled.Should().BeTrue();
 		}
 	}
 }

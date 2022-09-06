@@ -3,9 +3,8 @@
     internal enum BindingScope
     {
         None,
+        Method,
         Transient,
-        SingletonLazy,
-        SingletonNonLazy,
-        Method
+        Singleton,
     }
 }

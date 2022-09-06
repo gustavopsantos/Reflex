@@ -2,7 +2,7 @@
 
 namespace Reflex
 {
-    internal class SingletonLazyResolver : Resolver
+    internal class SingletonResolver : Resolver
     {
         internal override object Resolve(Type contract, Container container)
         {

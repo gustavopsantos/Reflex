@@ -15,7 +15,6 @@ namespace Reflex.Injectors
 			{
 				var container = stack.PushNew();
 				projectContext.InstallBindings(container);
-				container.InstantiateNonLazySingletons();
 				SceneManager.sceneLoaded += (scene, mode) => SceneInjector.Inject(scene, stack);
 				Application.quitting += () => stack.Pop().Dispose();
 			}

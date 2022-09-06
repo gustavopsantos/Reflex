@@ -14,10 +14,9 @@ namespace Reflex
         internal readonly Dictionary<Type, Binding> Bindings = new Dictionary<Type, Binding>(); // TContract, Binding
         internal readonly Dictionary<Type, object> Singletons = new Dictionary<Type, object>(); // TContract, Instance
 
-        private Resolver _singletonNonLazyResolver;
         private readonly Resolver _methodResolver = new MethodResolver();
         private readonly Resolver _transientResolver = new TransientResolver();
-        private readonly Resolver _singletonLazyResolver = new SingletonLazyResolver();
+        private readonly Resolver _singletonResolver = new SingletonResolver();
 
         public void AddDisposable(IDisposable disposable)
         {
@@ -75,7 +74,7 @@ namespace Reflex
             {
                 Contract = typeof(TContract),
                 Concrete = instance.GetType(),
-                Scope = BindingScope.SingletonLazy
+                Scope = BindingScope.Singleton
             };
 
             Bindings[typeof(TContract)] = binding;
@@ -88,7 +87,7 @@ namespace Reflex
             {
                 Contract = contract,
                 Concrete = instance.GetType(),
-                Scope = BindingScope.SingletonLazy
+                Scope = BindingScope.Singleton
             };
             
             Bindings.Add(contract, binding);
@@ -114,8 +113,7 @@ namespace Reflex
                 {
                     case BindingScope.Method: return _methodResolver;
                     case BindingScope.Transient: return _transientResolver;
-                    case BindingScope.SingletonLazy: return _singletonLazyResolver;
-                    case BindingScope.SingletonNonLazy: return _singletonNonLazyResolver;
+                    case BindingScope.Singleton: return _singletonResolver;
                     default: throw new BindingScopeNotHandledException(binding.Scope);
                 }
             }
@@ -147,23 +145,6 @@ namespace Reflex
 
             method = null;
             return false;
-        }
-        
-        internal void InstantiateNonLazySingletons()
-        {
-            _singletonNonLazyResolver = new SingletonLazyResolver();
-
-            var nonLazyBindings = Bindings.Values.Where(IsSingletonNonLazy).ToArray();
-            foreach (var binding in nonLazyBindings)
-            {
-                Resolve(binding.Contract);
-            }
-            _singletonNonLazyResolver = new SingletonNonLazyResolver();
-        }
-
-        private static bool IsSingletonNonLazy(Binding binding)
-        {
-            return binding.Scope == BindingScope.SingletonNonLazy;
         }
     }
 }

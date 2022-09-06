@@ -17,19 +17,11 @@
             }
         }
 
-        public void AsSingletonLazy()
+        public void AsSingleton()
         {
             foreach (var binding in _bindings)
             {
-                binding.Scope = BindingScope.SingletonLazy;
-            }
-        }
-
-        public void AsSingletonNonLazy()
-        {
-            foreach (var binding in _bindings)
-            {
-                binding.Scope = BindingScope.SingletonNonLazy;
+                binding.Scope = BindingScope.Singleton;
             }
         }
     }

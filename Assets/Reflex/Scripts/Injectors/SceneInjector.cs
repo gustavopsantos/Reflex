@@ -14,7 +14,6 @@ namespace Reflex.Injectors
 			{
 				var container = containerStack.PushNew();
 				sceneContext.InstallBindings(container);
-				container.InstantiateNonLazySingletons();
 
 				void DisposeScopedContainer(Scene _)
 				{
