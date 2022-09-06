@@ -105,7 +105,7 @@ namespace Reflex.Tests
 		public void Resolve_FromMethod_ShouldExecuteBindedMethod()
 		{
 			Container container = new Container();
-			container.Bind<IValuable>().FromMethod(() => new Valuable {Value = 42});
+			container.BindFunction<IValuable>(() => new Valuable {Value = 42});
 			container.Resolve<IValuable>().Value.Should().Be(42);
 		}
 

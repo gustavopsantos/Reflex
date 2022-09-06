@@ -53,6 +53,17 @@ namespace Reflex
             Disposables.Dispose();
         }
 
+        public void BindFunction<TContract>(Func<TContract> function)
+        {
+            var binding = new Binding
+            {
+                Scope = BindingScope.Method,
+                Method = function as Func<object>,
+            };
+
+            Bindings.Add(typeof(TContract), binding);
+        }
+
         public BindingContractDefinition<TContract> Bind<TContract>()
         {
             return new BindingContractDefinition<TContract>(this);

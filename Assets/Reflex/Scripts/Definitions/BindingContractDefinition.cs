@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Reflex
+﻿namespace Reflex
 {
     public class BindingContractDefinition<TContract>
     {
@@ -21,17 +19,6 @@ namespace Reflex
 
             _container.Bindings.Add(typeof(TContract), binding);
             return new BindingScopeDefinition(binding);
-        }
-
-        public void FromMethod(Func<TContract> method)
-        {
-            var binding = new Binding
-            {
-                Scope = BindingScope.Method,
-                Method = method as Func<object>
-            };
-
-            _container.Bindings.Add(typeof(TContract), binding);
         }
     }
 }
