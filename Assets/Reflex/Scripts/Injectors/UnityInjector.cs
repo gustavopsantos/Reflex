@@ -20,18 +20,18 @@ namespace Reflex.Injectors
 			}
 		}
 
-		private static bool TryGetProjectContext(out Context projectContext)
+		private static bool TryGetProjectContext(out ProjectContext projectContext)
 		{
-			projectContext = Resources.Load<Context>("ProjectContext");
+			projectContext = Resources.Load<ProjectContext>("ProjectContext");
 			ValidateProjectContext(projectContext);
 			return projectContext != null;
 		}
 
-		private static void ValidateProjectContext(Context projectContext)
+		private static void ValidateProjectContext(ProjectContext projectContext)
 		{
-			if (projectContext == null || projectContext.Kind != ContextKind.Project)
+			if (projectContext == null)
 			{
-				Debug.LogWarning($"Skipping {nameof(UnityInjector)}. A context prefab named 'ProjectContext' with kind 'Project' should exist inside a Resources folder.");
+				Debug.LogWarning($"Skipping {nameof(UnityInjector)}. A context prefab named 'ProjectContext' with component 'ProjectContext' attached to it should exist inside a Resources folder.");
 			}
 		}
 	}

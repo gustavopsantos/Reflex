@@ -88,11 +88,11 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 ## Contexts
 
 ### Project Context
-A single prefab named `ProjectContext` that should live inside a `Resources` folder and should contain a `Context` component with `Kind` set as Project
+A single prefab named `ProjectContext` that should live inside a `Resources` folder and should contain a `ProjectContext` component attached
 > Obligatory to have
 
 ### Scene Context
-A single root gameobject per scene that should contain a `Context` component with `Kind` set to `Scene`
+A single root gameobject per scene that should contain a `SceneContext` component attached
 > Non-Obligatory to have
 
 ## Getting Started

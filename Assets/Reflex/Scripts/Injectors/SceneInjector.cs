@@ -10,7 +10,7 @@ namespace Reflex.Injectors
 	{
 		internal static void Inject(Scene scene, ContainerStack containerStack)
 		{
-			if (scene.TryFindAtRootObjects<Context>(out var sceneContext))
+			if (scene.TryFindAtRootObjects<AContext>(out var sceneContext))
 			{
 				var container = containerStack.PushNew();
 				sceneContext.InstallBindings(container);

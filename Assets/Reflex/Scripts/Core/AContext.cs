@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace Reflex.Scripts.Core
 {
-    public class Context : MonoInstaller
+    public abstract class AContext : MonoInstaller
     {
-        [field: SerializeField] public ContextKind Kind { get; private set; }
         [SerializeField] private List<MonoInstaller> _monoInstallers = new List<MonoInstaller>();
 
         public override void InstallBindings(IContainer container)
@@ -14,8 +13,6 @@ namespace Reflex.Scripts.Core
             {
                 monoInstaller.InstallBindings(container);
             }
-
-            Debug.Log($"{Kind} Bindings Installed");
         }
     }
 }
