@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Domain.Generics;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -17,7 +18,7 @@ namespace Benchmark.Utilities
 
 		private readonly RingBuffer<long> _samples = new RingBuffer<long>(SampleCount);
 
-		private readonly InitOnlyProperty<GUIStyle> Style = new InitOnlyProperty<GUIStyle>(() => new GUIStyle("label")
+		private readonly Lazy<GUIStyle> Style = new Lazy<GUIStyle>(() => new GUIStyle("label")
 		{
 			fontSize = 48,
 			alignment = TextAnchor.MiddleCenter
