@@ -1,6 +1,6 @@
 ﻿using Reflex.Scripts;
 
-public class ApplicationInstaller : MonoInstaller
+public class ApplicationInstaller : Installer
 {
     public PickupSoundEffect PickupSoundEffect;
     

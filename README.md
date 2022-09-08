@@ -99,10 +99,10 @@ A single root gameobject per scene that should contain a `SceneContext` componen
 
 ### Installing Bindings
 
-Create a MonoInstaller to install your bindings in the project context, and remember to add this component in the ProjectContext prefab, and reference it in the Mono Installers list of the ProjectContext. See [ProjectContext.prefab](Assets/Reflex.GettingStarted/Resources/ProjectContext.prefab).
+Create a Installer to install your bindings in the project context, and remember to add this component in the ProjectContext prefab, and reference it in the Installers list of the ProjectContext. See [ProjectContext.prefab](Assets/Reflex.GettingStarted/Resources/ProjectContext.prefab).
 
 ```csharp
-public class ProjectInstaller : MonoInstaller
+public class ProjectInstaller : Installer
 {
     public override void InstallBindings(IContainer container)
     {

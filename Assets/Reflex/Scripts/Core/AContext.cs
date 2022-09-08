@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace Reflex.Scripts.Core
 {
-    public abstract class AContext : MonoInstaller
+    public abstract class AContext : Installer
     {
-        [SerializeField] private List<MonoInstaller> _monoInstallers = new List<MonoInstaller>();
+        [SerializeField] private List<Installer> _installers = new List<Installer>();
 
         public override void InstallBindings(IContainer container)
         {
-            foreach (var monoInstaller in _monoInstallers)
+            foreach (var installer in _installers)
             {
-                monoInstaller.InstallBindings(container);
+                installer.InstallBindings(container);
             }
         }
     }

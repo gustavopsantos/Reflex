@@ -1,7 +1,7 @@
 ﻿using Reflex.Scripts;
 using UnityEngine;
 
-public class InfrastructureInstaller : MonoInstaller
+public class InfrastructureInstaller : Installer
 {
     [SerializeField] private ScriptableObjectGameSettings _scriptableObjectGameSettings;
 
