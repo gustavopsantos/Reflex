@@ -8,17 +8,15 @@ namespace Benchmark.Utilities
 {
 	public abstract class MonoProfiler : MonoBehaviour
 	{
-		[SerializeField, Min(1)] public int _iterations;
-		[SerializeField] public string _identifier;
-		private readonly Stopwatch _stopwatch = new Stopwatch();
-		private string _ticks;
-		private Rect _area;
-
 		private const int SampleCount = 32;
-
+		
+		[SerializeField] public string _identifier;
+		[SerializeField, Min(1)] public int _iterations;
+		
+		private Rect _area;
+		private readonly Stopwatch _stopwatch = new Stopwatch();
 		private readonly RingBuffer<long> _samples = new RingBuffer<long>(SampleCount);
-
-		private readonly Lazy<GUIStyle> Style = new Lazy<GUIStyle>(() => new GUIStyle("label")
+		private readonly Lazy<GUIStyle> _style = new Lazy<GUIStyle>(() => new GUIStyle("label")
 		{
 			fontSize = 48,
 			alignment = TextAnchor.MiddleCenter
@@ -46,7 +44,7 @@ namespace Benchmark.Utilities
 
 		private void OnGUI()
 		{
-			GUI.Label(_area, $"{_identifier}: {Average(_samples)}", Style.Value);
+			GUI.Label(_area, $"{_identifier}: {Average(_samples)}", _style.Value);
 		}
 
 		private static long Average(RingBuffer<long> buffer)
