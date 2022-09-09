@@ -24,11 +24,29 @@ namespace Reflex
             Disposables.TryAdd(disposable);
         }
 
-        public T Instantiate<T>(T original) where T : Component
+        public MonoBehaviour InjectMono(MonoBehaviour instance, bool recursive = false)
         {
-            var instance = UnityEngine.Object.Instantiate<T>(original);
-            instance.GetComponentsInChildren<MonoBehaviour>().ForEach(mb => MonoInjector.Inject(mb, this));
+            if (recursive)
+                MonoInstantiate.InjectMonoBehaviour(instance, this);
+            else
+                MonoInjector.Inject(instance, this);
+
             return instance;
+        }
+
+        public T Instantiate<T>(T original, Transform container = null) where T : Component
+        {
+            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, parent));
+        }
+
+        public T Instantiate<T>(T original, Transform container, bool worldPositionStays) where T : Component
+        {
+            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, parent, worldPositionStays));
+        }
+
+        public T Instantiate<T>(T original, Vector3 position, Quaternion rotation, Transform container = null) where T : Component
+        {
+            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, position, rotation, parent));
         }
 
         public GameObject Instantiate(GameObject original)
@@ -42,7 +60,7 @@ namespace Reflex
         {
             return ConstructorInjector.ConstructAndInject<T>(this);
         }
-        
+
         public object Construct(Type concrete)
         {
             return ConstructorInjector.ConstructAndInject(concrete, this);
@@ -57,7 +75,7 @@ namespace Reflex
         {
             return new BindingContractDefinition<TContract>(this);
         }
-        
+
         public BindingGenericContractDefinition BindGenericContract(Type genericContract)
         {
             return new BindingGenericContractDefinition(genericContract, this);
@@ -84,7 +102,7 @@ namespace Reflex
                 Concrete = instance.GetType(),
                 Scope = BindingScope.SingletonLazy
             };
-            
+
             Bindings.Add(contract, binding);
             Singletons.Add(contract, instance);
         }
@@ -105,7 +123,7 @@ namespace Reflex
             var contract = genericContract.MakeGenericType(genericConcrete);
             return (TCast) Resolve(contract);
         }
-        
+
         private Resolver MatchResolver(Type contract)
         {
             if (Bindings.TryGetValue(contract, out var binding))
@@ -153,7 +171,7 @@ namespace Reflex
             method = null;
             return false;
         }
-        
+
         internal void InstantiateNonLazySingletons()
         {
             _singletonNonLazyResolver = new SingletonLazyResolver();
@@ -163,6 +181,7 @@ namespace Reflex
             {
                 Resolve(binding.Contract);
             }
+
             _singletonNonLazyResolver = new SingletonNonLazyResolver();
         }
 

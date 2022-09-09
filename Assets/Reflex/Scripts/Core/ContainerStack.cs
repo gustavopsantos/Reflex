@@ -2,6 +2,7 @@
 using UnityEngine;
 using Reflex.Injectors;
 using System.Collections.Generic;
+using Reflex.Scripts.Utilities;
 
 namespace Reflex.Scripts.Core
 {
@@ -16,12 +17,12 @@ namespace Reflex.Scripts.Core
             _stack.Push(container);
             return container;
         }
-        
+
         internal Container Pop()
         {
             return _stack.Pop();
         }
-        
+
         public void Dispose()
         {
             while (_stack.TryPop(out var container))
@@ -35,11 +36,29 @@ namespace Reflex.Scripts.Core
             _stack.Peek().AddDisposable(disposable);
         }
 
-        public T Instantiate<T>(T original) where T : Component
+        public MonoBehaviour InjectMono(MonoBehaviour instance, bool recursive = false)
         {
-            var instance = UnityEngine.Object.Instantiate<T>(original);
-            instance.GetComponentsInChildren<MonoBehaviour>().ForEach(mb => MonoInjector.Inject(mb, this));
+            if (recursive)
+                MonoInstantiate.InjectMonoBehaviour(instance, this);
+            else
+                MonoInjector.Inject(instance, this);
+
             return instance;
+        }
+
+        public T Instantiate<T>(T original, Transform container = null) where T : Component
+        {
+            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, parent));
+        }
+
+        public T Instantiate<T>(T original, Transform container, bool worldPositionStays) where T : Component
+        {
+            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, parent, worldPositionStays));
+        }
+
+        public T Instantiate<T>(T original, Vector3 position, Quaternion rotation, Transform container = null) where T : Component
+        {
+            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, position, rotation, parent));
         }
 
         public GameObject Instantiate(GameObject original)
@@ -63,7 +82,7 @@ namespace Reflex.Scripts.Core
         {
             return _stack.Peek().Bind<TContract>();
         }
-        
+
         public BindingGenericContractDefinition BindGenericContract(Type genericContract)
         {
             return new BindingGenericContractDefinition(genericContract, _stack.Peek());
