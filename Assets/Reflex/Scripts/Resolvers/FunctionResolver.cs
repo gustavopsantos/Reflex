@@ -1,4 +1,5 @@
 using System;
+using Reflex.Scripts;
 
 namespace Reflex
 {
@@ -11,7 +12,7 @@ namespace Reflex
             _function = function;
         }
         
-        internal override object Resolve(Type contract, Container container)
+        internal override object Resolve(IContainer container)
         {
             return _function.Invoke();
         }

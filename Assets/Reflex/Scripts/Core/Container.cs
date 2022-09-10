@@ -75,7 +75,7 @@ namespace Reflex
         {
             if (Resolvers.TryGetValue(contract, out var resolver))
             {
-                return resolver.Resolve(contract, this);
+                return resolver.Resolve(this);
             }
 
             throw new UnknownContractException(contract);

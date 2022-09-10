@@ -1,4 +1,5 @@
 ﻿using System;
+using Reflex.Scripts;
 
 namespace Reflex
 {
@@ -13,7 +14,7 @@ namespace Reflex
             _concrete = concrete;
         }
 
-        internal override object Resolve(Type contract, Container container)
+        internal override object Resolve(IContainer container)
         {
             if (_instance == null)
             {

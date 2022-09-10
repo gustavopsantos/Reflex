@@ -1,5 +1,6 @@
 ﻿using System;
 using Reflex.Injectors;
+using Reflex.Scripts;
 
 namespace Reflex
 {
@@ -12,7 +13,7 @@ namespace Reflex
             _concrete = concrete;
         }
         
-        internal override object Resolve(Type contract, Container container)
+        internal override object Resolve(IContainer container)
         {
             return ConstructorInjector.ConstructAndInject(_concrete, container);
         }
