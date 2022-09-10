@@ -15,14 +15,7 @@ namespace Reflex.Injectors
 				var container = containerStack.PushNew();
 				sceneContext.InstallBindings(container);
 				container.InstantiateNonLazySingletons();
-
-				void DisposeScopedContainer(Scene _)
-				{
-					containerStack.Pop().Dispose();
-					SceneManager.sceneUnloaded -= DisposeScopedContainer;
-				}
-
-				SceneManager.sceneUnloaded += DisposeScopedContainer;
+				scene.OnUnload(() => containerStack.Pop().Dispose());
 			}
 			
 			foreach (var monoBehaviour in GetEveryMonoBehaviourAtScene(scene))

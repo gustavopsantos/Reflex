@@ -1,4 +1,7 @@
-﻿using UnityEngine.SceneManagement;
+﻿using System;
+using Reflex.Scripts.Utilities;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Reflex
 {
@@ -18,6 +21,15 @@ namespace Reflex
 
             finding = default;
             return false;
+        }
+
+        internal static void OnUnload(this Scene scene, Action callback)
+        {
+            var gameObject = new GameObject("SceneUnloadHook");
+            gameObject.hideFlags = HideFlags.HideInHierarchy;
+            SceneManager.MoveGameObjectToScene(gameObject, scene);
+            var hook = gameObject.AddComponent<MonoBehaviourEventHook>();
+            hook.OnDestroyEvent += () => callback?.Invoke();
         }
     }
 }
