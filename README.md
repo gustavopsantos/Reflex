@@ -78,7 +78,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Install via UPM (using Git URL)
 ```json
-"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#2.0.1"
+"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#2.0.2"
 ```
 
 ### Install manually (using .unitypackage)
@@ -89,7 +89,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Project Context
 A single prefab named `ProjectContext` that should live inside a `Resources` folder and should contain a `ProjectContext` component attached
-> Obligatory to have
+> Non-Obligatory to have
 
 ### Scene Context
 A single root gameobject per scene that should contain a `SceneContext` component attached
