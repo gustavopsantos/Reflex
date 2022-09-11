@@ -10,7 +10,7 @@ namespace Reflex
     public class Container : IContainer
     {
         internal readonly CompositeDisposable Disposables = new CompositeDisposable();
-        internal readonly Dictionary<Type, Resolver> Resolvers = new Dictionary<Type, Resolver>(); // TContract, Resolver
+        internal readonly Dictionary<Type, Resolver> Resolvers = new Dictionary<Type, Resolver>();
 
         public void AddDisposable(IDisposable disposable)
         {
@@ -38,7 +38,8 @@ namespace Reflex
         
         public object Construct(Type concrete)
         {
-            return ConstructorInjector.ConstructAndInject(concrete, this);
+            var container = Resolve<IContainer>();
+            return ConstructorInjector.ConstructAndInject(concrete, container);
         }
 
         public void Dispose()
