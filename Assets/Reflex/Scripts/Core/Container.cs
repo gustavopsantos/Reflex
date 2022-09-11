@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using Reflex.Injectors;
-using Reflex.Scripts;
-using Reflex.Scripts.Utilities;
 using UnityEngine;
+using Reflex.Scripts;
+using Reflex.Injectors;
+using Reflex.Scripts.Utilities;
+using System.Collections.Generic;
 
 namespace Reflex
 {
@@ -11,6 +11,23 @@ namespace Reflex
     {
         internal readonly CompositeDisposable Disposables = new CompositeDisposable();
         internal readonly Dictionary<Type, Resolver> Resolvers = new Dictionary<Type, Resolver>();
+
+        public Container()
+        {
+            Resolvers[typeof(IContainer)] = new SingletonResolver(typeof(Container), this);
+        }
+        
+        public Container Scope()
+        {
+            var scoped = new Container();
+
+            foreach (var pair in Resolvers)
+            {
+                scoped.Resolvers[pair.Key] = pair.Value;
+            }
+
+            return scoped;
+        }
 
         public void AddDisposable(IDisposable disposable)
         {
@@ -38,8 +55,7 @@ namespace Reflex
         
         public object Construct(Type concrete)
         {
-            var container = Resolve<IContainer>();
-            return ConstructorInjector.ConstructAndInject(concrete, container);
+            return ConstructorInjector.ConstructAndInject(concrete, this);
         }
 
         public void Dispose()
