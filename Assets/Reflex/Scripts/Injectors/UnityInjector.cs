@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Reflex.Scripts.Core;
+using Reflex.Scripts.Utilities;
 using UnityEngine.SceneManagement;
 
 namespace Reflex.Injectors
@@ -9,22 +10,21 @@ namespace Reflex.Injectors
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
 		private static void AfterAssembliesLoaded()
 		{
-			var stack = new ContainerStack();
-			
-			if (TryGetProjectContext(out var projectContext))
-			{
-				var container = stack.PushNew();
-				projectContext.InstallBindings(container);
-				Application.quitting += () => stack.Pop().Dispose();
-			}
-			
-			SceneManager.sceneLoaded += (scene, mode) => SceneInjector.Inject(scene, stack);
+			var projectContainer = CreateProjectContainer();
+			SceneManager.sceneLoaded += (scene, mode) => SceneInjector.Inject(scene, projectContainer);
 		}
 
-		private static bool TryGetProjectContext(out ProjectContext projectContext)
+		private static Container CreateProjectContainer()
 		{
-			projectContext = Resources.Load<ProjectContext>("ProjectContext");
-			return projectContext != null;
+			var container = new Container();
+			Application.quitting += () => container.Dispose();
+
+			if (ResourcesUtilities.TryLoad<ProjectContext>("ProjectContext", out var projectContext))
+			{
+				projectContext.InstallBindings(container);
+			}
+
+			return container;
 		}
 	}
 }

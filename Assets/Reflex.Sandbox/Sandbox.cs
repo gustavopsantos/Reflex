@@ -38,15 +38,19 @@ public class Sandbox : MonoBehaviour
     [Button]
     private void Run()
     {
-        using var outer = new Container();
-        outer.BindSingleton<Foo, Foo>();
-        Debug.Log(outer.Resolve<Foo>().Value);
+        using (var outer = new Container())
+        {
+            outer.BindSingleton<Foo, Foo>();
+            Debug.Log(outer.Resolve<Foo>().Value);
 
-        using var inner = outer.Scope();
-        inner.BindSingleton<DependsOnFoo, DependsOnFoo>();
+            using (var inner = outer.Scope())
+            {
+                inner.BindSingleton<DependsOnFoo, DependsOnFoo>();
 
-        Debug.Log(inner.Resolve<Foo>().Value);
-        Debug.Log(inner.Resolve<DependsOnFoo>().Value);
-        Debug.Log(inner.Resolve<DependsOnFoo>().Value);
+                Debug.Log(inner.Resolve<Foo>().Value);
+                Debug.Log(inner.Resolve<DependsOnFoo>().Value);
+                Debug.Log(inner.Resolve<DependsOnFoo>().Value);
+            }
+        }
     }
 }

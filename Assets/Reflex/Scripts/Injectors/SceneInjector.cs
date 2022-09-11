@@ -8,19 +8,27 @@ namespace Reflex.Injectors
 {
 	internal static class SceneInjector
 	{
-		internal static void Inject(Scene scene, ContainerStack containerStack)
+		internal static void Inject(Scene scene, Container projectContainer)
 		{
-			if (scene.TryFindAtRootObjects<SceneContext>(out var sceneContext))
-			{
-				var container = containerStack.PushNew();
-				sceneContext.InstallBindings(container);
-				scene.OnUnload(() => containerStack.Pop().Dispose());
-			}
+			var sceneContainer = CreateSceneContainer(scene, projectContainer);
 			
 			foreach (var monoBehaviour in GetEveryMonoBehaviourAtScene(scene))
 			{
-				MonoInjector.Inject(monoBehaviour, containerStack);
+				MonoInjector.Inject(monoBehaviour, sceneContainer);
 			}
+		}
+		
+		private static Container CreateSceneContainer(Scene scene, Container projectContainer)
+		{
+			var container = projectContainer.Scope();
+			scene.OnUnload(() => container.Dispose());
+
+			if (scene.TryFindAtRootObjects<SceneContext>(out var sceneContext))
+			{
+				sceneContext.InstallBindings(container);
+			}
+
+			return container;
 		}
 
 		private static IEnumerable<MonoBehaviour> GetEveryMonoBehaviourAtScene(Scene scene)
