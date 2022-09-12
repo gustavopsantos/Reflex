@@ -1,6 +1,7 @@
 using System;
 using FluentAssertions;
 using NUnit.Framework;
+using Reflex.Scripts;
 
 namespace Reflex.Tests
 {
@@ -110,6 +111,35 @@ namespace Reflex.Tests
                 }
 
                 outer.Resolve<Foo>().IsDisposed.Should().BeTrue();
+            }
+        }
+
+        [Test]
+        public void ResolvingContainerFromInnerScopeShouldResolveInner()
+        {
+            using (var outer = new Container())
+            {
+                using (var inner = outer.Scope())
+                {
+                    inner.Resolve<Container>().Should().Be(inner);
+                    inner.Resolve<IContainer>().Should().Be(inner);
+                }
+            }
+        }
+        
+        [Test]
+        public void ResolvingContainerFromOuterScopeShouldResolveOuter()
+        {
+            using (var outer = new Container())
+            {
+                using (var inner = outer.Scope())
+                {
+                    inner.Resolve<Container>();
+                    inner.Resolve<IContainer>();
+                }
+                
+                outer.Resolve<Container>().Should().Be(outer);
+                outer.Resolve<IContainer>().Should().Be(outer);
             }
         }
     }

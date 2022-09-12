@@ -14,8 +14,7 @@ namespace Reflex
 
         public Container()
         {
-            BindSingleton<Container>(this);
-            BindSingleton<IContainer>(this);
+            InjectSelf();
         }
         
         public void Dispose()
@@ -31,8 +30,15 @@ namespace Reflex
             {
                 scoped._resolvers[pair.Key] = pair.Value;
             }
-
+            
+            scoped.InjectSelf();
             return scoped;
+        }
+
+        private void InjectSelf()
+        {
+            BindSingleton<Container>(this);
+            BindSingleton<IContainer>(this);
         }
 
         public void AddDisposable(IDisposable disposable)
