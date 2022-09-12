@@ -8,7 +8,7 @@ namespace Reflex.Injectors
 {
 	internal static class FieldInjector
 	{
-		internal static void Inject(FieldInfo field, object instance, IContainer container)
+		private static void Inject(FieldInfo field, object instance, IContainer container)
 		{
 			try
 			{

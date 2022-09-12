@@ -8,7 +8,7 @@ namespace Reflex.Injectors
 {
 	internal static class PropertyInjector
 	{
-		internal static void Inject(PropertyInfo property, object instance, IContainer container)
+		private static void Inject(PropertyInfo property, object instance, IContainer container)
 		{
 			try
 			{

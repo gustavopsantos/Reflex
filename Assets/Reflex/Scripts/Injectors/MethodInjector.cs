@@ -9,7 +9,7 @@ namespace Reflex.Injectors
 {
 	internal static class MethodInjector
 	{
-		internal static void Inject(MethodInfo method, object instance, IContainer container)
+		private static void Inject(MethodInfo method, object instance, IContainer container)
 		{
 			var parameters = method.GetParameters();
 			
