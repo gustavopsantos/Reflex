@@ -1,6 +1,5 @@
 ﻿using System;
 using Reflex.Injectors;
-using Reflex.Scripts;
 
 namespace Reflex
 {
@@ -13,7 +12,7 @@ namespace Reflex
             _concrete = concrete;
         }
         
-        public object Resolve(IContainer container)
+        public object Resolve(Container container)
         {
             return ConstructorInjector.ConstructAndInject(_concrete, container);
         }

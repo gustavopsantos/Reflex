@@ -1,5 +1,4 @@
 ﻿using System;
-using Reflex.Scripts;
 
 namespace Reflex
 {
@@ -8,13 +7,12 @@ namespace Reflex
         private object _instance;
         private readonly Type _concrete;
 
-        public SingletonResolver(Type concrete, object instance)
+        public SingletonResolver(Type concrete)
         {
-            _instance = instance;
             _concrete = concrete;
         }
 
-        public object Resolve(IContainer container)
+        public object Resolve(Container container)
         {
             if (_instance == null)
             {

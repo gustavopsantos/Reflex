@@ -34,7 +34,7 @@ namespace Reflex.Tests
 		public void Resolve_ValueTypeSingleton_ShouldReturn42()
 		{
 			Container container = new Container();
-			container.BindSingleton(42);
+			container.BindInstance(42);
 			container.Resolve<int>().Should().Be(42);
 		}
 
@@ -128,7 +128,7 @@ namespace Reflex.Tests
 		public void Resolve_ValueTypeAsTransient_CustomConstructor_ValueShouldReturn42()
 		{
 			Container container = new Container();
-			container.BindSingleton(42);
+			container.BindInstance(42);
 			container.BindTransient<MyStruct, MyStruct>();
 			container.Resolve<MyStruct>().Value.Should().Be(42);
 		}

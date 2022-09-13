@@ -1,11 +1,10 @@
-using Reflex.Scripts;
 using UnityEngine;
 
 namespace Reflex.Injectors
 {
 	internal static class MonoInjector
 	{
-		internal static void Inject(MonoBehaviour monoBehaviour, IContainer container)
+		internal static void Inject(MonoBehaviour monoBehaviour, Container container)
 		{
 			var info = MonoInjectableCache.Cache[monoBehaviour];
 			FieldInjector.InjectMany(info.InjectableFields, monoBehaviour, container);

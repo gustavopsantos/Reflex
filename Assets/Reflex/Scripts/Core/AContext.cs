@@ -7,7 +7,7 @@ namespace Reflex.Scripts.Core
     {
         [SerializeField] private List<Installer> _installers = new List<Installer>();
 
-        public override void InstallBindings(IContainer container)
+        public override void InstallBindings(Container container)
         {
             foreach (var installer in _installers)
             {

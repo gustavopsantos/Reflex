@@ -1,13 +1,12 @@
 ﻿using System;
 using UnityEngine;
-using Reflex.Scripts;
 using Reflex.Injectors;
 using Reflex.Scripts.Utilities;
 using System.Collections.Generic;
 
 namespace Reflex
 {
-    public class Container : IContainer
+    public class Container : IDisposable
     {
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
         private readonly Dictionary<Type, IResolver> _resolvers = new Dictionary<Type, IResolver>();
@@ -37,8 +36,7 @@ namespace Reflex
 
         private void InjectSelf()
         {
-            BindSingleton<Container>(this);
-            BindSingleton<IContainer>(this);
+            BindInstance<Container>(this);
         }
 
         public void AddDisposable(IDisposable disposable)
@@ -50,6 +48,11 @@ namespace Reflex
         {
             _resolvers.Add(typeof(TContract), new FunctionResolver(function as Func<object>));
         }
+        
+        public void BindInstance<TContract>(TContract instance)
+        {
+            _resolvers[typeof(TContract)] = new InstanceResolver(instance);
+        }
 
         public void BindTransient<TContract, TConcrete>() where TConcrete : TContract
         {
@@ -58,12 +61,7 @@ namespace Reflex
 
         public void BindSingleton<TContract, TConcrete>() where TConcrete : TContract
         {
-            _resolvers[typeof(TContract)] = new SingletonResolver(typeof(TConcrete), null);
-        }
-
-        public void BindSingleton<TContract>(TContract instance)
-        {
-            _resolvers[typeof(TContract)] = new SingletonResolver(instance.GetType(), instance);
+            _resolvers[typeof(TContract)] = new SingletonResolver(typeof(TConcrete));
         }
         
         public T Construct<T>()

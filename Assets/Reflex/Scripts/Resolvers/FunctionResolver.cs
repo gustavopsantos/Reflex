@@ -1,5 +1,4 @@
 using System;
-using Reflex.Scripts;
 
 namespace Reflex
 {
@@ -12,7 +11,7 @@ namespace Reflex
             _function = function;
         }
 
-        public object Resolve(IContainer container)
+        public object Resolve(Container container)
         {
             return _function.Invoke();
         }

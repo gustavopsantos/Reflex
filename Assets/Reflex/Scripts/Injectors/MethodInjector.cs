@@ -9,7 +9,7 @@ namespace Reflex.Injectors
 {
 	internal static class MethodInjector
 	{
-		private static void Inject(MethodInfo method, object instance, IContainer container)
+		private static void Inject(MethodInfo method, object instance, Container container)
 		{
 			var parameters = method.GetParameters();
 			
@@ -26,7 +26,7 @@ namespace Reflex.Injectors
 			}
 		}
 
-		internal static void InjectMany(IEnumerable<MethodInfo> methods, object instance, IContainer container)
+		internal static void InjectMany(IEnumerable<MethodInfo> methods, object instance, Container container)
 		{
 			foreach (var method in methods)
 			{

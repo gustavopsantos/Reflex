@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Reflex.Scripts;
 using UnityEngine;
 
 namespace Reflex.Injectors
 {
 	internal static class PropertyInjector
 	{
-		private static void Inject(PropertyInfo property, object instance, IContainer container)
+		private static void Inject(PropertyInfo property, object instance, Container container)
 		{
 			try
 			{
@@ -20,7 +19,7 @@ namespace Reflex.Injectors
 			}
 		}
 
-		internal static void InjectMany(IEnumerable<PropertyInfo> properties, object instance, IContainer container)
+		internal static void InjectMany(IEnumerable<PropertyInfo> properties, object instance, Container container)
 		{
 			foreach (var property in properties)
 			{

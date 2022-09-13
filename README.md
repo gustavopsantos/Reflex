@@ -104,7 +104,7 @@ Create a Installer to install your bindings in the project context, and remember
 ```csharp
 public class ProjectInstaller : Installer
 {
-    public override void InstallBindings(IContainer container)
+    public override void InstallBindings(Container container)
     {
         container.BindSingleton<int>(42);
         container.Bind<IDependencyOne>().To<DependencyOne>().AsTransient();
@@ -121,16 +121,16 @@ public class ProjectInstaller : Installer
 
 > Be aware that fields and properties with [Inject] are injected only into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Assets/Reflex/Scripts/Injectors/MonoInjector.cs).  
 
-> If you want to instantiate a MonoBehaviour/Component at runtime and wants injection to happen, use the `Instantiate` method from IContainer.
+> If you want to instantiate a MonoBehaviour/Component at runtime and wants injection to happen, use the `Instantiate` method from Container.
 
 ```csharp
 public class MonoBehaviourInjection : MonoBehaviour
 {
-    [Inject] private readonly IContainer _container;
+    [Inject] private readonly Container _container;
     [Inject] public IDependencyOne DependencyOne { get; private set; }
 
     [Inject]
-    private void Inject(IContainer container, IDependencyOne dependencyOne)
+    private void Inject(Container container, IDependencyOne dependencyOne)
     {
         var dependencyTwo = container
             .Resolve(typeof(IDependencyTwo));
@@ -156,11 +156,11 @@ public class MonoBehaviourInjection : MonoBehaviour
 ```csharp
 public class NonMonoBehaviourInjection
 {
-    private readonly IContainer _container;
+    private readonly Container _container;
     private readonly IDependencyOne _dependencyOne;
     private readonly int _answerForLifeTheUniverseAndEverything;
 
-    public NonMonoBehaviourInjection(IContainer container, IDependencyOne dependencyOne, int answerForLifeTheUniverseAndEverything)
+    public NonMonoBehaviourInjection(Container container, IDependencyOne dependencyOne, int answerForLifeTheUniverseAndEverything)
     {
         _container = container;
         _dependencyOne = dependencyOne;

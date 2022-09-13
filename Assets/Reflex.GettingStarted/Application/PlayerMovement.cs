@@ -1,16 +1,16 @@
-﻿using Reflex.Scripts;
+﻿using Reflex;
 using UnityEngine;
 using Reflex.Scripts.Attributes;
 
 public class PlayerMovement : MonoBehaviour, IPlayerMovement
 {
-    [Inject] private readonly IContainer _container;
+    [Inject] private readonly Container _container;
     [Inject] private readonly IGameSettings _gameSettings;
     [Inject] private readonly IGetPlayerInput _getPlayerInput;
 
     private void Start()
     {
-        _container.BindSingleton<IPlayerMovement>(this);
+        _container.BindInstance<IPlayerMovement>(this);
     }
 
     private void Update()

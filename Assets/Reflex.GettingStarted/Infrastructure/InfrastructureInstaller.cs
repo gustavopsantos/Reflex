@@ -1,13 +1,14 @@
-﻿using Reflex.Scripts;
-using UnityEngine;
+﻿using UnityEngine;
+using Reflex;
+using Reflex.Scripts;
 
 public class InfrastructureInstaller : Installer
 {
     [SerializeField] private ScriptableObjectGameSettings _scriptableObjectGameSettings;
 
-    public override void InstallBindings(IContainer container)
+    public override void InstallBindings(Container container)
     {
-        container.BindSingleton<IGameSettings>(_scriptableObjectGameSettings);
+        container.BindInstance<IGameSettings>(_scriptableObjectGameSettings);
         container.BindSingleton<ICollectableRegistry, PlayerPrefsCollectableRegistry>();
     }
 }

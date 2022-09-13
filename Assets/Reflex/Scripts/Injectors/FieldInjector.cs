@@ -8,7 +8,7 @@ namespace Reflex.Injectors
 {
 	internal static class FieldInjector
 	{
-		private static void Inject(FieldInfo field, object instance, IContainer container)
+		private static void Inject(FieldInfo field, object instance, Container container)
 		{
 			try
 			{
@@ -20,7 +20,7 @@ namespace Reflex.Injectors
 			}
 		}
 
-		internal static void InjectMany(IEnumerable<FieldInfo> fields, object instance, IContainer container)
+		internal static void InjectMany(IEnumerable<FieldInfo> fields, object instance, Container container)
 		{
 			foreach (var field in fields)
 			{

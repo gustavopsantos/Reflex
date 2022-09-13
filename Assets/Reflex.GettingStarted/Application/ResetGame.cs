@@ -1,11 +1,11 @@
-﻿using Reflex.Scripts;
+﻿using Reflex;
 
 public class ResetGame : IResetGame
 {
-    private readonly IContainer _container;
+    private readonly Container _container;
     private readonly ICollectableRegistry _collectableRegistry;
 
-    public ResetGame(IContainer container, ICollectableRegistry collectableRegistry)
+    public ResetGame(Container container, ICollectableRegistry collectableRegistry)
     {
         _container = container;
         _collectableRegistry = collectableRegistry;

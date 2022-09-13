@@ -1,7 +1,6 @@
 using System;
 using FluentAssertions;
 using NUnit.Framework;
-using Reflex.Scripts;
 
 namespace Reflex.Tests
 {
@@ -40,7 +39,7 @@ namespace Reflex.Tests
         {
             using (var outer = new Container())
             {
-                outer.BindSingleton(42);
+                outer.BindInstance(42);
 
                 using (var inner = outer.Scope())
                 {
@@ -54,11 +53,11 @@ namespace Reflex.Tests
         {
             using (var outer = new Container())
             {
-                outer.BindSingleton("outer");
+                outer.BindInstance("outer");
 
                 using (var inner = outer.Scope())
                 {
-                    inner.BindSingleton("inner");
+                    inner.BindInstance("inner");
                     inner.Resolve<string>().Should().Be("inner");
                 }
             }
@@ -69,11 +68,11 @@ namespace Reflex.Tests
         {
             using (var outer = new Container())
             {
-                outer.BindSingleton("outer");
+                outer.BindInstance("outer");
 
                 using (var inner = outer.Scope())
                 {
-                    inner.BindSingleton("inner");
+                    inner.BindInstance("inner");
                 }
 
                 outer.Resolve<string>().Should().Be("outer");
@@ -86,7 +85,7 @@ namespace Reflex.Tests
             using (var outer = new Container())
             {
                 var foo = new Foo();
-                outer.BindSingleton(foo);
+                outer.BindInstance(foo);
 
                 using (var inner = outer.Scope())
                 {
@@ -122,7 +121,6 @@ namespace Reflex.Tests
                 using (var inner = outer.Scope())
                 {
                     inner.Resolve<Container>().Should().Be(inner);
-                    inner.Resolve<IContainer>().Should().Be(inner);
                 }
             }
         }
@@ -135,11 +133,9 @@ namespace Reflex.Tests
                 using (var inner = outer.Scope())
                 {
                     inner.Resolve<Container>();
-                    inner.Resolve<IContainer>();
                 }
                 
                 outer.Resolve<Container>().Should().Be(outer);
-                outer.Resolve<IContainer>().Should().Be(outer);
             }
         }
     }
