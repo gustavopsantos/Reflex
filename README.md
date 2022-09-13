@@ -85,16 +85,6 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 1. Download the .unitypackage from [releases](https://github.com/gustavopsantos/reflex/releases) page.
 2. Import Reflex.X.X.X.unitypackage
 
-## Contexts
-
-### Project Context
-A single prefab named `ProjectContext` that should live inside a `Resources` folder and should contain a `ProjectContext` component attached
-> Non-Obligatory to have
-
-### Scene Context
-A single root gameobject per scene that should contain a `SceneContext` component attached
-> Non-Obligatory to have
-
 ## Getting Started
 
 ### Installing Bindings
@@ -106,7 +96,7 @@ public class ProjectInstaller : Installer
 {
     public override void InstallBindings(Container container)
     {
-        container.BindSingleton<int>(42);
+        container.BindInstance<int>(42);
         container.Bind<IDependencyOne>().To<DependencyOne>().AsTransient();
         container.Bind<IDependencyTwo>().To<DependencyTwo>().AsSingletonLazy();
         container.BindGenericContract(typeof(SetupAsset<>)).To(
@@ -182,6 +172,33 @@ public class NonMonoBehaviourInjection
 | MonoBehaviour.Start                                  |
 
 > `Reflex.Injectors.SceneInjector.Inject` injects fields, properties and methods decorated with [Inject] attribute.
+
+## Contexts
+
+### Project Context
+A single prefab named `ProjectContext` that should live inside a `Resources` folder and should contain a `ProjectContext` component attached
+> Non-Obligatory to have
+
+### Scene Context
+A single root gameobject per scene that should contain a `SceneContext` component attached
+> Non-Obligatory to have
+
+## Bindings
+
+### Bind Function
+Binds a function to a type. Every time resolve is called to this binding, the function binded will be invoked.
+
+### Bind Instance
+Binds a object instance to a type. Every time resolve is called, this instance will be returned.
+> Instances provided by the user, since not created by Reflex, will not be disposed automatically, we strongly recomend using BindSingleton.
+
+### Bind Transient
+Binds a factory. Every time the resolve is called, a new instance will be provided.
+> Instances will be disposed once the container that provided the instances are disposed.
+
+### Bind Singleton
+Binds a factory. Every time the resolve is called, the same instance will be provided.
+> The instance will be disposed once the container that provided the instance are disposed.
 
 ## Author
 [![Twitter](https://img.shields.io/twitter/follow/codinggustavo.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=codinggustavo)  
