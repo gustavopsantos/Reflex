@@ -4,7 +4,7 @@ using Reflex.Scripts;
 
 namespace Reflex
 {
-    internal class TransientResolver : Resolver
+    internal class TransientResolver : IResolver
     {
         private readonly Type _concrete;
 
@@ -13,7 +13,7 @@ namespace Reflex
             _concrete = concrete;
         }
         
-        internal override object Resolve(IContainer container)
+        public object Resolve(IContainer container)
         {
             return ConstructorInjector.ConstructAndInject(_concrete, container);
         }

@@ -3,7 +3,7 @@ using Reflex.Scripts;
 
 namespace Reflex
 {
-    internal class FunctionResolver : Resolver
+    internal class FunctionResolver : IResolver
     {
         private readonly Func<object> _function;
 
@@ -11,8 +11,8 @@ namespace Reflex
         {
             _function = function;
         }
-        
-        internal override object Resolve(IContainer container)
+
+        public object Resolve(IContainer container)
         {
             return _function.Invoke();
         }

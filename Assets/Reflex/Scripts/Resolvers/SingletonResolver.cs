@@ -3,7 +3,7 @@ using Reflex.Scripts;
 
 namespace Reflex
 {
-    internal class SingletonResolver : Resolver
+    internal class SingletonResolver : IResolver
     {
         private object _instance;
         private readonly Type _concrete;
@@ -14,7 +14,7 @@ namespace Reflex
             _concrete = concrete;
         }
 
-        internal override object Resolve(IContainer container)
+        public object Resolve(IContainer container)
         {
             if (_instance == null)
             {
