@@ -15,14 +15,12 @@ namespace UnityEditor.TreeViewExamples
 		// All columns
 		private enum MyColumns
 		{
-			Kind,
 			Name,
 			Resolutions,
 		}
 
 		private enum SortOption
 		{
-			Kind,
 			Name,
 			Resolutions,
 		}
@@ -30,9 +28,21 @@ namespace UnityEditor.TreeViewExamples
 		private readonly SortOption[] _sortOptions = 
 		{
 			SortOption.Name, 
-			SortOption.Kind,
 			SortOption.Resolutions, 
 		};
+		
+		public MultiColumnTreeView (TreeViewState state, MultiColumnHeader multiColumnHeader, TreeModel<MyTreeElement> model) : base (state, multiColumnHeader, model)
+		{
+			Assert.AreEqual(_sortOptions.Length , Enum.GetValues(typeof(MyColumns)).Length, "Ensure number of sort options are in sync with number of MyColumns enum values");
+			rowHeight = kRowHeights;
+			columnIndexForTreeFoldouts = 0;
+			showAlternatingRowBackgrounds = true;
+			showBorder = true;
+			customFoldoutYOffset = (kRowHeights - EditorGUIUtility.singleLineHeight) * 0.5f; // center foldout in the row since we also center content. See RowGUI
+			extraSpaceBeforeIconAndLabel = kToggleWidth;
+			multiColumnHeader.sortingChanged += (_) => SortIfNeeded (rootItem, GetRows());
+			Reload();
+		}
 
 		private static void TreeToList (TreeViewItem root, IList<TreeViewItem> result)
 		{
@@ -63,19 +73,6 @@ namespace UnityEditor.TreeViewExamples
 					}
 				}
 			}
-		}
-
-		public MultiColumnTreeView (TreeViewState state, MultiColumnHeader multiColumnHeader, TreeModel<MyTreeElement> model) : base (state, multiColumnHeader, model)
-		{
-			Assert.AreEqual(_sortOptions.Length , Enum.GetValues(typeof(MyColumns)).Length, "Ensure number of sort options are in sync with number of MyColumns enum values");
-			rowHeight = kRowHeights;
-			columnIndexForTreeFoldouts = 1;
-			showAlternatingRowBackgrounds = true;
-			showBorder = true;
-			customFoldoutYOffset = (kRowHeights - EditorGUIUtility.singleLineHeight) * 0.5f; // center foldout in the row since we also center content. See RowGUI
-			extraSpaceBeforeIconAndLabel = kToggleWidth;
-			multiColumnHeader.sortingChanged += (_) => SortIfNeeded (rootItem, GetRows());
-			Reload();
 		}
 
 
@@ -120,9 +117,6 @@ namespace UnityEditor.TreeViewExamples
 
 				switch (sortOption)
 				{
-					case SortOption.Kind:
-						orderedQuery = orderedQuery.ThenBy(l => l.data.Kind, ascending);
-						break;
 					case SortOption.Name:
 						orderedQuery = orderedQuery.ThenBy(l => l.data.Name, ascending);
 						break;
@@ -145,8 +139,6 @@ namespace UnityEditor.TreeViewExamples
 					return myTypes.Order(l => l.data.Name, ascending);
 				case SortOption.Resolutions:
 					return myTypes.Order(l => l.data.Resolutions, ascending);
-				case SortOption.Kind:
-					return myTypes.Order(l => l.data.Kind, ascending);
 				default:
 					Assert.IsTrue(false, "Unhandled enum");
 					break;
@@ -173,11 +165,6 @@ namespace UnityEditor.TreeViewExamples
 
 			switch (column)
 			{
-				case MyColumns.Kind:
-					var style = new GUIStyle(EditorStyles.boldLabel);
-					style.alignment = TextAnchor.MiddleCenter;
-					GUI.Label(cellRect, item.data.Kind, style);
-					break;
 				case MyColumns.Name:
 					DrawItemNameColumn(cellRect, item, ref args);
 					break;
@@ -214,19 +201,6 @@ namespace UnityEditor.TreeViewExamples
 		{
 			var columns = new[] 
 			{
-				new MultiColumnHeaderState.Column 
-				{
-					headerContent = new GUIContent(EditorGUIUtility.FindTexture("FilterByType"), "Sed hendrerit mi enim, eu iaculis leo tincidunt at."),
-					contextMenuText = "Type",
-					headerTextAlignment = TextAlignment.Center,
-					sortedAscending = true,
-					sortingArrowAlignment = TextAlignment.Right,
-					width = 30, 
-					minWidth = 30,
-					maxWidth = 60,
-					autoResize = false,
-					allowToggleVisibility = true
-				},
 				new MultiColumnHeaderState.Column 
 				{
 					headerContent = new GUIContent("Name"),
