@@ -97,12 +97,8 @@ public class ProjectInstaller : Installer
     public override void InstallBindings(Container container)
     {
         container.BindInstance<int>(42);
-        container.Bind<IDependencyOne>().To<DependencyOne>().AsTransient();
-        container.Bind<IDependencyTwo>().To<DependencyTwo>().AsSingletonLazy();
-        container.BindGenericContract(typeof(SetupAsset<>)).To(
-            typeof(SetupEnemy),
-            typeof(SetupLevel)
-        ).AsSingletonNonLazy();
+        container.BindTransient<IDependencyOne, DependencyOne>();
+        container.BindSingleton<IDependencyTwo, DependencyTwo>();
     }
 }
 ```
@@ -133,10 +129,6 @@ public class MonoBehaviourInjection : MonoBehaviour
 
         var answerForLifeTheUniverseAndEverything = _container
             .Resolve<int>();
-
-        var setupForDynamicType = _container
-            .ResolveGenericContract<SetupScriptableObject>(
-                typeof(SetupAsset<>), typeof(Enemy));
     }
 }
 ```
