@@ -1,6 +1,8 @@
 {
     "name": "Reflex.Editor",
-    "references": [],
+    "references": [
+        "GUID:b83fa2c9a1c9b78468588c16e6fad878"
+    ],
     "includePlatforms": [
         "Editor"
     ],

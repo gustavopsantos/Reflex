@@ -9,34 +9,32 @@ namespace UnityEditor.TreeViewExamples
 {
 	internal class MultiColumnTreeView : TreeViewWithTreeModel<MyTreeElement>
 	{
-		const float kRowHeights = 20f;
-		const float kToggleWidth = 18f;
-		public bool showControls = true;
+		private const float kRowHeights = 20f;
+		private const float kToggleWidth = 18f;
 
 		// All columns
-		enum MyColumns
+		private enum MyColumns
 		{
 			Kind,
 			Name,
 			Resolutions,
 		}
 
-		public enum SortOption
+		private enum SortOption
 		{
 			Kind,
 			Name,
 			Resolutions,
 		}
 
-		// Sort options per column
-		SortOption[] m_SortOptions = 
+		private readonly SortOption[] _sortOptions = 
 		{
 			SortOption.Name, 
 			SortOption.Kind,
 			SortOption.Resolutions, 
 		};
 
-		public static void TreeToList (TreeViewItem root, IList<TreeViewItem> result)
+		private static void TreeToList (TreeViewItem root, IList<TreeViewItem> result)
 		{
 			if (root == null)
 				throw new NullReferenceException("root");
@@ -69,17 +67,14 @@ namespace UnityEditor.TreeViewExamples
 
 		public MultiColumnTreeView (TreeViewState state, MultiColumnHeader multiColumnHeader, TreeModel<MyTreeElement> model) : base (state, multiColumnHeader, model)
 		{
-			Assert.AreEqual(m_SortOptions.Length , Enum.GetValues(typeof(MyColumns)).Length, "Ensure number of sort options are in sync with number of MyColumns enum values");
-
-			// Custom setup
+			Assert.AreEqual(_sortOptions.Length , Enum.GetValues(typeof(MyColumns)).Length, "Ensure number of sort options are in sync with number of MyColumns enum values");
 			rowHeight = kRowHeights;
 			columnIndexForTreeFoldouts = 1;
 			showAlternatingRowBackgrounds = true;
 			showBorder = true;
 			customFoldoutYOffset = (kRowHeights - EditorGUIUtility.singleLineHeight) * 0.5f; // center foldout in the row since we also center content. See RowGUI
 			extraSpaceBeforeIconAndLabel = kToggleWidth;
-			multiColumnHeader.sortingChanged += OnSortingChanged;
-			
+			multiColumnHeader.sortingChanged += (_) => SortIfNeeded (rootItem, GetRows());
 			Reload();
 		}
 
@@ -93,12 +88,7 @@ namespace UnityEditor.TreeViewExamples
 			return rows;
 		}
 
-		void OnSortingChanged (MultiColumnHeader multiColumnHeader)
-		{
-			SortIfNeeded (rootItem, GetRows());
-		}
-
-		void SortIfNeeded (TreeViewItem root, IList<TreeViewItem> rows)
+		private void SortIfNeeded (TreeViewItem root, IList<TreeViewItem> rows)
 		{
 			if (rows.Count <= 1)
 				return;
@@ -114,7 +104,7 @@ namespace UnityEditor.TreeViewExamples
 			Repaint();
 		}
 
-		void SortByMultipleColumns ()
+		private void SortByMultipleColumns ()
 		{
 			var sortedColumns = multiColumnHeader.state.sortedColumns;
 
@@ -125,7 +115,7 @@ namespace UnityEditor.TreeViewExamples
 			var orderedQuery = InitialOrder (myTypes, sortedColumns);
 			for (int i=1; i<sortedColumns.Length; i++)
 			{
-				SortOption sortOption = m_SortOptions[sortedColumns[i]];
+				SortOption sortOption = _sortOptions[sortedColumns[i]];
 				bool ascending = multiColumnHeader.IsSortedAscending(sortedColumns[i]);
 
 				switch (sortOption)
@@ -134,7 +124,7 @@ namespace UnityEditor.TreeViewExamples
 						orderedQuery = orderedQuery.ThenBy(l => l.data.Kind, ascending);
 						break;
 					case SortOption.Name:
-						orderedQuery = orderedQuery.ThenBy(l => l.data.name, ascending);
+						orderedQuery = orderedQuery.ThenBy(l => l.data.Name, ascending);
 						break;
 					case SortOption.Resolutions:
 						orderedQuery = orderedQuery.ThenBy(l => l.data.Resolutions, ascending);
@@ -145,14 +135,14 @@ namespace UnityEditor.TreeViewExamples
 			rootItem.children = orderedQuery.Cast<TreeViewItem> ().ToList ();
 		}
 
-		IOrderedEnumerable<TreeViewItem<MyTreeElement>> InitialOrder(IEnumerable<TreeViewItem<MyTreeElement>> myTypes, int[] history)
+		private IOrderedEnumerable<TreeViewItem<MyTreeElement>> InitialOrder(IEnumerable<TreeViewItem<MyTreeElement>> myTypes, int[] history)
 		{
-			SortOption sortOption = m_SortOptions[history[0]];
+			SortOption sortOption = _sortOptions[history[0]];
 			bool ascending = multiColumnHeader.IsSortedAscending(history[0]);
 			switch (sortOption)
 			{
 				case SortOption.Name:
-					return myTypes.Order(l => l.data.name, ascending);
+					return myTypes.Order(l => l.data.Name, ascending);
 				case SortOption.Resolutions:
 					return myTypes.Order(l => l.data.Resolutions, ascending);
 				case SortOption.Kind:
@@ -163,7 +153,7 @@ namespace UnityEditor.TreeViewExamples
 			}
 
 			// default
-			return myTypes.Order(l => l.data.name, ascending);
+			return myTypes.Order(l => l.data.Name, ascending);
 		}
 
 		protected override void RowGUI (RowGUIArgs args)
@@ -264,33 +254,6 @@ namespace UnityEditor.TreeViewExamples
 
 			var state =  new MultiColumnHeaderState(columns);
 			return state;
-		}
-	}
-
-	static class MyExtensionMethods
-	{
-		public static IOrderedEnumerable<T> Order<T, TKey>(this IEnumerable<T> source, Func<T, TKey> selector, bool ascending)
-		{
-			if (ascending)
-			{
-				return source.OrderBy(selector);
-			}
-			else
-			{
-				return source.OrderByDescending(selector);
-			}
-		}
-
-		public static IOrderedEnumerable<T> ThenBy<T, TKey>(this IOrderedEnumerable<T> source, Func<T, TKey> selector, bool ascending)
-		{
-			if (ascending)
-			{
-				return source.ThenBy(selector);
-			}
-			else
-			{
-				return source.ThenByDescending(selector);
-			}
 		}
 	}
 }

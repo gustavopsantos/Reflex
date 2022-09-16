@@ -1,6 +1,7 @@
 namespace Reflex.Scripts.Core
 {
-    internal static class ContainerTree
+    public static class ContainerTree
     {
+        public static Node<Container> Root { get; internal set; }
     }
 }

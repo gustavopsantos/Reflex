@@ -18,6 +18,7 @@ namespace Reflex.Injectors
 		{
 			var container = new Container();
 			Application.quitting += () => container.Dispose();
+			ContainerTree.Root = new Scripts.Core.Node<Container>(container);
 
 			if (ResourcesUtilities.TryLoad<ProjectContext>("ProjectContext", out var projectContext))
 			{

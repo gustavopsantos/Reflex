@@ -25,11 +25,11 @@ namespace UnityEditor.TreeViewExamples
 				T current = stack.Pop();
 				result.Add(current);
 
-				if (current.children != null && current.children.Count > 0)
+				if (current.Children != null && current.Children.Count > 0)
 				{
-					for (int i = current.children.Count - 1; i >= 0; i--)
+					for (int i = current.Children.Count - 1; i >= 0; i--)
 					{
-						stack.Push((T)current.children[i]);
+						stack.Push((T)current.Children[i]);
 					}
 				}
 			}
@@ -46,27 +46,27 @@ namespace UnityEditor.TreeViewExamples
 			// Clear old states
 			foreach (var element in list)
 			{
-				element.parent = null;
-				element.children = null;
+				element.Parent = null;
+				element.Children = null;
 			}
 
 			// Set child and parent references using depth info
 			for (int parentIndex = 0; parentIndex < list.Count; parentIndex++)
 			{
 				var parent = list[parentIndex];
-				bool alreadyHasValidChildren = parent.children != null;
+				bool alreadyHasValidChildren = parent.Children != null;
 				if (alreadyHasValidChildren)
 					continue;
 
-				int parentDepth = parent.depth;
+				int parentDepth = parent.Depth;
 				int childCount = 0;
 
 				// Count children based depth value, we are looking at children until it's the same depth as this object
 				for (int i = parentIndex + 1; i < list.Count; i++)
 				{
-					if (list[i].depth == parentDepth + 1)
+					if (list[i].Depth == parentDepth + 1)
 						childCount++;
-					if (list[i].depth <= parentDepth)
+					if (list[i].Depth <= parentDepth)
 						break;
 				}
 
@@ -78,19 +78,19 @@ namespace UnityEditor.TreeViewExamples
 					childCount = 0;
 					for (int i = parentIndex + 1; i < list.Count; i++)
 					{
-						if (list[i].depth == parentDepth + 1)
+						if (list[i].Depth == parentDepth + 1)
 						{
-							list[i].parent = parent;
+							list[i].Parent = parent;
 							childList.Add(list[i]);
 							childCount++;
 						}
 
-						if (list[i].depth <= parentDepth)
+						if (list[i].Depth <= parentDepth)
 							break;
 					}
 				}
 
-				parent.children = childList;
+				parent.Children = childList;
 			}
 
 			return list[0];
@@ -102,22 +102,22 @@ namespace UnityEditor.TreeViewExamples
 			if (list.Count == 0)
 				throw new ArgumentException("list should have items, count is 0, check before calling ValidateDepthValues", "list");
 
-			if (list[0].depth != -1)
-				throw new ArgumentException("list item at index 0 should have a depth of -1 (since this should be the hidden root of the tree). Depth is: " + list[0].depth, "list");
+			if (list[0].Depth != -1)
+				throw new ArgumentException("list item at index 0 should have a depth of -1 (since this should be the hidden root of the tree). Depth is: " + list[0].Depth, "list");
 
 			for (int i = 0; i < list.Count - 1; i++)
 			{
-				int depth = list[i].depth;
-				int nextDepth = list[i + 1].depth;
+				int depth = list[i].Depth;
+				int nextDepth = list[i + 1].Depth;
 				if (nextDepth > depth && nextDepth - depth > 1)
 					throw new ArgumentException(string.Format("Invalid depth info in input list. Depth cannot increase more than 1 per row. Index {0} has depth {1} while index {2} has depth {3}", i, depth, i + 1, nextDepth));
 			}
 
 			for (int i = 1; i < list.Count; ++i)
-				if (list[i].depth < 0)
+				if (list[i].Depth < 0)
 					throw new ArgumentException("Invalid depth value for item at index " + i + ". Only the first item (the root) should have depth below 0.");
 
-			if (list.Count > 1 && list[1].depth != 0)
+			if (list.Count > 1 && list[1].Depth != 0)
 				throw new ArgumentException("Input list item at index 1 is assumed to have a depth of 0", "list");
 		}
 
@@ -127,7 +127,7 @@ namespace UnityEditor.TreeViewExamples
 			if (root == null)
 				throw new ArgumentNullException("root", "The root is null");
 
-			if (!root.hasChildren)
+			if (!root.HasChildren)
 				return;
 
 			Stack<TreeElement> stack = new Stack<TreeElement>();
@@ -135,11 +135,11 @@ namespace UnityEditor.TreeViewExamples
 			while (stack.Count > 0)
 			{
 				TreeElement current = stack.Pop();
-				if (current.children != null)
+				if (current.Children != null)
 				{
-					foreach (var child in current.children)
+					foreach (var child in current.Children)
 					{
-						child.depth = current.depth + 1;
+						child.Depth = current.Depth + 1;
 						stack.Push(child);
 					}
 				}
@@ -151,7 +151,7 @@ namespace UnityEditor.TreeViewExamples
 		{
 			while (child != null)
 			{
-				child = (T)child.parent;
+				child = (T)child.Parent;
 				if (elements.Contains(child))
 					return true;
 			}
@@ -175,8 +175,8 @@ namespace UnityEditor.TreeViewExamples
 		{
 			public TestElement (string name, int depth)
 			{
-				this.name = name;
-				this.depth = depth;
+				this.Name = name;
+				this.Depth = depth;
 			}
 		}
 
@@ -186,16 +186,16 @@ namespace UnityEditor.TreeViewExamples
 		{
 			// Arrange
 			TestElement root = new TestElement("root", -1);
-			root.children = new List<TreeElement>();
-			root.children.Add(new TestElement("A", 0));
-			root.children.Add(new TestElement("B", 0));
-			root.children.Add(new TestElement("C", 0));
+			root.Children = new List<TreeElement>();
+			root.Children.Add(new TestElement("A", 0));
+			root.Children.Add(new TestElement("B", 0));
+			root.Children.Add(new TestElement("C", 0));
 
-			root.children[1].children = new List<TreeElement>();
-			root.children[1].children.Add(new TestElement("Bchild", 1));
+			root.Children[1].Children = new List<TreeElement>();
+			root.Children[1].Children.Add(new TestElement("Bchild", 1));
 
-			root.children[1].children[0].children = new List<TreeElement>();
-			root.children[1].children[0].children.Add(new TestElement("Bchildchild", 2));
+			root.Children[1].Children[0].Children = new List<TreeElement>();
+			root.Children[1].Children[0].Children.Add(new TestElement("Bchildchild", 2));
 
 			// Test
 			List<TestElement> result = new List<TestElement>();
@@ -206,7 +206,7 @@ namespace UnityEditor.TreeViewExamples
 			Assert.AreEqual(namesInCorrectOrder.Length, result.Count, "Result count is not match");
 			for (int i = 0; i < namesInCorrectOrder.Length; ++i)
 			{
-				Assert.AreEqual(namesInCorrectOrder[i], result[i].name);
+				Assert.AreEqual(namesInCorrectOrder[i], result[i].Name);
 			}
 			TreeElementUtility.ValidateDepthValues(result);
 		}
@@ -228,10 +228,10 @@ namespace UnityEditor.TreeViewExamples
 			TestElement root = TreeElementUtility.ListToTree(list);
 
 			// Assert
-			Assert.AreEqual("root", root.name);
-			Assert.AreEqual(3, root.children.Count);
-			Assert.AreEqual("C", root.children[2].name);
-			Assert.AreEqual("Bchildchild", root.children[1].children[0].children[0].name);
+			Assert.AreEqual("root", root.Name);
+			Assert.AreEqual(3, root.Children.Count);
+			Assert.AreEqual("C", root.Children[2].Name);
+			Assert.AreEqual("Bchildchild", root.Children[1].Children[0].Children[0].Name);
 		}
 
 		[Test]
@@ -256,7 +256,7 @@ namespace UnityEditor.TreeViewExamples
 			}
 
 			// Assert
-			Assert.IsTrue(catchedException, "We require the root.depth to be -1, here it is: " + list[0].depth);
+			Assert.IsTrue(catchedException, "We require the root.depth to be -1, here it is: " + list[0].Depth);
 		
 		}
 

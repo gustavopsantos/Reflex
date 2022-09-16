@@ -7,43 +7,43 @@ namespace UnityEditor.TreeViewExamples
 	[Serializable]
 	public class TreeElement
 	{
-		[SerializeField] int m_ID;
-		[SerializeField] string m_Name;
-		[SerializeField] int m_Depth;
-		[NonSerialized] TreeElement m_Parent;
-		[NonSerialized] List<TreeElement> m_Children = new List<TreeElement>();
+		[SerializeField] private int _id;
+		[SerializeField] private string _name;
+		[SerializeField] private int _depth;
+		[NonSerialized] private TreeElement _parent;
+		[NonSerialized] private List<TreeElement> _children = new List<TreeElement>();
 
-		public int depth
+		public int Depth
 		{
-			get { return m_Depth; }
-			set { m_Depth = value; }
+			get { return _depth; }
+			set { _depth = value; }
 		}
 
-		public TreeElement parent
+		public TreeElement Parent
 		{
-			get { return m_Parent; }
-			set { m_Parent = value; }
+			get { return _parent; }
+			set { _parent = value; }
 		}
 
-		public List<TreeElement> children
+		public List<TreeElement> Children
 		{
-			get { return m_Children; }
-			set { m_Children = value; }
+			get { return _children; }
+			set { _children = value; }
 		}
 
-		public bool hasChildren
+		public bool HasChildren
 		{
-			get { return children != null && children.Count > 0; }
+			get { return Children != null && Children.Count > 0; }
 		}
 
-		public string name
+		public string Name
 		{
-			get { return m_Name; } set { m_Name = value; }
+			get { return _name; } set { _name = value; }
 		}
 
-		public int id
+		public int Id
 		{
-			get { return m_ID; } set { m_ID = value; }
+			get { return _id; } set { _id = value; }
 		}
 
 		public TreeElement ()
@@ -52,9 +52,9 @@ namespace UnityEditor.TreeViewExamples
 
 		public TreeElement (string name, int depth, int id)
 		{
-			m_Name = name;
-			m_ID = id;
-			m_Depth = depth;
+			_name = name;
+			_id = id;
+			_depth = depth;
 		}
 	}
 }
