@@ -12,7 +12,7 @@ namespace UnityEditor.TreeViewExamples
         // private const string ContainerIcon = "d_PrefabModel On Icon";
         private const string ContainerIcon = "PreMatCube";
         private const string ObjectIcon = "curvekeyframeselected";
-        private const string ContractIcon = "P4_Updating";
+        private const string ResolverIcon = "P4_Updating";
         
         [NonSerialized] private bool _isInitialized;
         [SerializeField] private TreeViewState _treeViewState; // Serialized in the window layout file so it survives assembly reloading
@@ -81,6 +81,13 @@ namespace UnityEditor.TreeViewExamples
             parent.Children.Add(child);
             child.Parent = parent;
 
+            foreach (var resolver in node.Value._resolvers)
+            {
+                var r = new MyTreeElement($"{resolver.Key}", child.Depth + 1, ++_id, ResolverIcon, "R");
+                child.Children.Add(r);
+                r.Parent = child;
+            }
+
             foreach (var c in node.Children)
             {
                 BuildDataRecursively(child, c);
@@ -117,7 +124,7 @@ namespace UnityEditor.TreeViewExamples
             scopedContainer.Parent = sceneContainer;
             sceneContainer.Children.Add(scopedContainer);
 
-            var projectContainerResolver = new MyTreeElement("SingletonResolver<ITimeSource>", 1, 3, ContractIcon, "R");
+            var projectContainerResolver = new MyTreeElement("SingletonResolver<ITimeSource>", 1, 3, ResolverIcon, "R");
             projectContainerResolver.Parent = projectContainer;
             projectContainer.Children.Add(projectContainerResolver);
 

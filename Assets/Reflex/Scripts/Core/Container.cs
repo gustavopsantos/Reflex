@@ -10,7 +10,7 @@ namespace Reflex
     {
         public string Name { get; }
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
-        private readonly Dictionary<Type, IResolver> _resolvers = new Dictionary<Type, IResolver>();
+        internal readonly Dictionary<Type, IResolver> _resolvers = new Dictionary<Type, IResolver>();
 
         public Container(string name)
         {
