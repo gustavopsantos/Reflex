@@ -21,7 +21,7 @@ namespace Reflex.Injectors
 		
 		private static Container CreateSceneContainer(Scene scene, Container projectContainer)
 		{
-			var container = projectContainer.Scope();
+			var container = projectContainer.Scope(scene.name);
 			scene.OnUnload(() => container.Dispose());
 
 			if (scene.TryFindAtRootObjects<SceneContext>(out var sceneContext))

@@ -8,11 +8,13 @@ namespace Reflex
 {
     public class Container : IDisposable
     {
+        public string Name { get; }
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
         private readonly Dictionary<Type, IResolver> _resolvers = new Dictionary<Type, IResolver>();
 
-        public Container()
+        public Container(string name)
         {
+            Name = name;
             InjectSelf();
         }
         
@@ -21,9 +23,9 @@ namespace Reflex
             _disposables.Dispose();
         }
         
-        public Container Scope()
+        public Container Scope(string name)
         {
-            var scoped = new Container();
+            var scoped = new Container(name);
 
             foreach (var pair in _resolvers)
             {

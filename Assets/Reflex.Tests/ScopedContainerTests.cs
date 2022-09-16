@@ -37,11 +37,11 @@ namespace Reflex.Tests
         [Test]
         public void InnerContainerCanResolveBindingFromOuterScope()
         {
-            using (var outer = new Container())
+            using (var outer = new Container(string.Empty))
             {
                 outer.BindInstance(42);
 
-                using (var inner = outer.Scope())
+                using (var inner = outer.Scope(string.Empty))
                 {
                     inner.Resolve<int>().Should().Be(42);
                 }
@@ -51,11 +51,11 @@ namespace Reflex.Tests
         [Test]
         public void InnerContainerCanOverrideBindingFromOuterScope()
         {
-            using (var outer = new Container())
+            using (var outer = new Container(string.Empty))
             {
                 outer.BindInstance("outer");
 
-                using (var inner = outer.Scope())
+                using (var inner = outer.Scope(string.Empty))
                 {
                     inner.BindInstance("inner");
                     inner.Resolve<string>().Should().Be("inner");
@@ -66,11 +66,11 @@ namespace Reflex.Tests
         [Test]
         public void OuterContainerShouldNotBeAffectedByInnerContainerOverride()
         {
-            using (var outer = new Container())
+            using (var outer = new Container(string.Empty))
             {
                 outer.BindInstance("outer");
 
-                using (var inner = outer.Scope())
+                using (var inner = outer.Scope(string.Empty))
                 {
                     inner.BindInstance("inner");
                 }
@@ -82,12 +82,12 @@ namespace Reflex.Tests
         [Test]
         public void InnerScopeBindingCanResolveOuterDependency()
         {
-            using (var outer = new Container())
+            using (var outer = new Container(string.Empty))
             {
                 var foo = new Foo();
                 outer.BindInstance(foo);
 
-                using (var inner = outer.Scope())
+                using (var inner = outer.Scope(string.Empty))
                 {
                     inner.BindSingleton<DependsOnFoo, DependsOnFoo>();
                     inner.Resolve<DependsOnFoo>().Foo.Should().Be(foo);
@@ -98,11 +98,11 @@ namespace Reflex.Tests
         [Test]
         public void DisposingInnerScopeShouldNotDisposeInstancesFromOuterScope()
         {
-            using (var outer = new Container())
+            using (var outer = new Container(string.Empty))
             {
                 outer.BindSingleton<Foo, Foo>();
 
-                using (var inner = outer.Scope())
+                using (var inner = outer.Scope(string.Empty))
                 {
                     inner.BindSingleton<DependsOnFoo, DependsOnFoo>();
                     inner.Resolve<Foo>();
@@ -116,9 +116,9 @@ namespace Reflex.Tests
         [Test]
         public void ResolvingContainerFromInnerScopeShouldResolveInner()
         {
-            using (var outer = new Container())
+            using (var outer = new Container(string.Empty))
             {
-                using (var inner = outer.Scope())
+                using (var inner = outer.Scope(string.Empty))
                 {
                     inner.Resolve<Container>().Should().Be(inner);
                 }
@@ -128,9 +128,9 @@ namespace Reflex.Tests
         [Test]
         public void ResolvingContainerFromOuterScopeShouldResolveOuter()
         {
-            using (var outer = new Container())
+            using (var outer = new Container(string.Empty))
             {
-                using (var inner = outer.Scope())
+                using (var inner = outer.Scope(string.Empty))
                 {
                     inner.Resolve<Container>();
                 }

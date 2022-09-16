@@ -38,12 +38,12 @@ public class Sandbox : MonoBehaviour
     [Button]
     private void Run()
     {
-        using (var outer = new Container())
+        using (var outer = new Container(string.Empty))
         {
             outer.BindSingleton<Foo, Foo>();
             Debug.Log(outer.Resolve<Foo>().Value);
 
-            using (var inner = outer.Scope())
+            using (var inner = outer.Scope(string.Empty))
             {
                 inner.BindSingleton<DependsOnFoo, DependsOnFoo>();
 

@@ -72,7 +72,12 @@ namespace UnityEditor.TreeViewExamples
 
         private void BuildDataRecursively(MyTreeElement parent, Node<Container> node)
         {
-            var child = new MyTreeElement("NoName", parent.Depth + 1, ++_id, ContainerIcon, "C");
+            if (node == null)
+            {
+                return;
+            }
+            
+            var child = new MyTreeElement(node.Value.Name, parent.Depth + 1, ++_id, ContainerIcon, "C");
             parent.Children.Add(child);
             child.Parent = parent;
 

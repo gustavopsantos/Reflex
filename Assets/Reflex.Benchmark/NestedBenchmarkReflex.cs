@@ -1,3 +1,4 @@
+using System;
 using Benchmark.NestedModel;
 using Benchmark.Utilities;
 using Reflex;
@@ -6,7 +7,7 @@ namespace Benchmark
 {
     public class NestedBenchmarkReflex : MonoProfiler
     {
-        private readonly Container _container = new Container();
+        private readonly Container _container = new Container(string.Empty);
 
         private void Start()
         {

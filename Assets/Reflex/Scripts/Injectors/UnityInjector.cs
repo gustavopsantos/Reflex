@@ -16,7 +16,7 @@ namespace Reflex.Injectors
 
 		private static Container CreateProjectContainer()
 		{
-			var container = new Container();
+			var container = new Container("Project");
 			Application.quitting += () => container.Dispose();
 			ContainerTree.Root = new Scripts.Core.Node<Container>(container);
 

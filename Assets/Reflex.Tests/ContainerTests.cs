@@ -33,7 +33,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_ValueTypeSingleton_ShouldReturn42()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			container.BindInstance(42);
 			container.Resolve<int>().Should().Be(42);
 		}
@@ -41,7 +41,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_UninstalledValueType_ShouldThrowUnknownContractException()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			Action resolve = () => container.Resolve<int>();
 			resolve.Should().Throw<UnknownContractException>();
 		}
@@ -49,7 +49,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_AsTransient_ShouldReturnAlwaysANewInstance()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			container.BindTransient<IValuable, Valuable>();
 			container.Resolve<IValuable>().Value = 123;
 			container.Resolve<IValuable>().Value.Should().Be(default(int));
@@ -58,7 +58,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_AsSingleton_ShouldReturnAlwaysSameInstance()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			container.BindSingleton<IValuable, Valuable>();
 			container.Resolve<IValuable>().Value = 123;
 			container.Resolve<IValuable>().Value.Should().Be(123);
@@ -67,7 +67,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_UnknownDependency_ShouldThrowUnknownContractException()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			Action resolve = () => container.Resolve<IValuable>();
 			resolve.Should().Throw<UnknownContractException>();
 		}
@@ -75,7 +75,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_KnownDependencyAsTransientWithUnknownDependency_ShouldThrowUnknownContractException()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			container.BindTransient<IClassWithDependency, ClassWithDependency>();
 			Action resolve = () => container.Resolve<IClassWithDependency>();
 			resolve.Should().Throw<UnknownContractException>();
@@ -84,7 +84,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowUnknownContractException()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			container.BindSingleton<IClassWithDependency, ClassWithDependency>();
 			Action resolve = () => container.Resolve<IClassWithDependency>();
 			resolve.Should().Throw<UnknownContractException>();
@@ -93,7 +93,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_FromMethod_ShouldExecuteBindedMethod()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			container.BindFunction<IValuable>(() => new Valuable {Value = 42});
 			container.Resolve<IValuable>().Value.Should().Be(42);
 		}
@@ -101,7 +101,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_ValueTypeAsTransient_ShouldReturnDefault()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			container.BindTransient<int, int>();
 			container.Resolve<int>().Should().Be(default);
 		}
@@ -109,7 +109,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_StringAsTransient_ShouldReturnDefault()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			container.BindTransient<string, string>();
 			container.Resolve<string>().Should().Be(default);
 		}
@@ -127,7 +127,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_ValueTypeAsTransient_CustomConstructor_ValueShouldReturn42()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			container.BindInstance(42);
 			container.BindTransient<MyStruct, MyStruct>();
 			container.Resolve<MyStruct>().Value.Should().Be(42);
@@ -171,7 +171,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Resolve_ClassWithGenericDependency_WithNormalDefinition_ValuesShouldBe42AndABC()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			container.BindTransient<Xing, Xing>();
 			container.BindTransient<ISetup<int>, IntSetup>();
 			container.BindTransient<ISetup<string>, StringSetup>();
@@ -193,7 +193,7 @@ namespace Reflex.Tests
 		[Test]
 		public void Bind_LazySingleton_ThenInvokeInstantiateNonLazySingletons_ShouldNotRunConstructor()
 		{
-			Container container = new Container();
+			Container container = new Container(string.Empty);
 			SomeSingleton.ConstructorCalled = false;
 			container.BindSingleton<SomeSingleton, SomeSingleton>();
 			SomeSingleton.ConstructorCalled.Should().BeFalse();

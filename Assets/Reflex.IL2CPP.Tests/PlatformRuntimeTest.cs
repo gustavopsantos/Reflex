@@ -7,7 +7,7 @@ namespace IL2CPPTest
 {
     public class PlatformRuntimeTest : MonoBehaviour
     {
-        private readonly Container _container = new Container();
+        private readonly Container _container = new Container(string.Empty);
 
         private void Start()
         {
