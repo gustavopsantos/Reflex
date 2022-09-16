@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace UnityEditor.TreeViewExamples
+namespace Reflex.Editor.DebuggingWindow
 {
 	internal class MultiColumnTreeView : TreeViewWithTreeModel<MyTreeElement>
 	{
@@ -169,7 +170,7 @@ namespace UnityEditor.TreeViewExamples
 					DrawItemNameColumn(cellRect, item, ref args);
 					break;
 				case MyColumns.Resolutions:
-					GUI.Label(cellRect, item.data.Resolutions.ToString());
+					GUI.Label(cellRect, item.data.Resolutions.Invoke());
 					break;
 			}
 		}

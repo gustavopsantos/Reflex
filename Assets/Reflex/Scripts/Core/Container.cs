@@ -8,7 +8,11 @@ namespace Reflex
 {
     public class Container : IDisposable
     {
+        public Container Parent { get; private set; }
+        public IReadOnlyList<Container> Children => _children;
+        
         public string Name { get; }
+        private readonly List<Container> _children = new List<Container>();
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
         internal readonly Dictionary<Type, IResolver> _resolvers = new Dictionary<Type, IResolver>();
 
@@ -26,6 +30,8 @@ namespace Reflex
         public Container Scope(string name)
         {
             var scoped = new Container(name);
+            scoped.Parent = this;
+            _children.Add(scoped);
 
             foreach (var pair in _resolvers)
             {

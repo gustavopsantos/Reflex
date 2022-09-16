@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Reflex.Scripts.Core;
+using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using Container = Reflex.Container;
 
-namespace UnityEditor.TreeViewExamples
+namespace Reflex.Editor.DebuggingWindow
 {
     public class ReflexDebuggerWindow : EditorWindow
     {
@@ -70,25 +70,25 @@ namespace UnityEditor.TreeViewExamples
 
         private int _id = -1;
 
-        private void BuildDataRecursively(MyTreeElement parent, Node<Container> node)
+        private void BuildDataRecursively(MyTreeElement parent, Container container)
         {
-            if (node == null)
+            if (container == null)
             {
                 return;
             }
             
-            var child = new MyTreeElement(node.Value.Name, parent.Depth + 1, ++_id, ContainerIcon, "C");
+            var child = new MyTreeElement(container.Name, parent.Depth + 1, ++_id, ContainerIcon, () => string.Empty);
             parent.Children.Add(child);
             child.Parent = parent;
 
-            foreach (var resolver in node.Value._resolvers)
+            foreach (var pair in container._resolvers)
             {
-                var r = new MyTreeElement($"{resolver.Key}", child.Depth + 1, ++_id, ResolverIcon, "R");
+                var r = new MyTreeElement($"{pair.Value.GetType().Name}<{pair.Key}> → Foo", child.Depth + 1, ++_id, ResolverIcon, () => pair.Value.Resolutions.ToString());
                 child.Children.Add(r);
                 r.Parent = child;
             }
 
-            foreach (var c in node.Children)
+            foreach (var c in container.Children)
             {
                 BuildDataRecursively(child, c);
             }
@@ -96,7 +96,7 @@ namespace UnityEditor.TreeViewExamples
 
         private IList<MyTreeElement> GetData()
         {
-            var root = new MyTreeElement("Root", -1, ++_id, ContainerIcon, "-");
+            var root = new MyTreeElement("Root", -1, ++_id, ContainerIcon, () => string.Empty);
             BuildDataRecursively(root, ContainerTree.Root);
 
             var list = new List<MyTreeElement>();
@@ -104,48 +104,6 @@ namespace UnityEditor.TreeViewExamples
             return list;
         }
         
-        private static IList<MyTreeElement> GetMockedData()
-        {
-            var root = new MyTreeElement("Root", -1, 0, ContainerIcon, "-");
-
-            var projectContainer = new MyTreeElement("ProjectContainer", 0, 1, ContainerIcon, "C");
-            projectContainer.Parent = root;
-            root.Children.Add(projectContainer);
-
-            var projectContainer2 = new MyTreeElement("ProjectContainer2", 0, 5, ContainerIcon, "C");
-            projectContainer2.Parent = root;
-            root.Children.Add(projectContainer2);
-
-            var sceneContainer = new MyTreeElement("SceneContainer", 1, 2, ContainerIcon, "C");
-            sceneContainer.Parent = projectContainer;
-            projectContainer.Children.Add(sceneContainer);
-
-            var scopedContainer = new MyTreeElement("ScopedContainer", 2, 6, ContainerIcon, "C");
-            scopedContainer.Parent = sceneContainer;
-            sceneContainer.Children.Add(scopedContainer);
-
-            var projectContainerResolver = new MyTreeElement("SingletonResolver<ITimeSource>", 1, 3, ResolverIcon, "R");
-            projectContainerResolver.Parent = projectContainer;
-            projectContainer.Children.Add(projectContainerResolver);
-
-            var timeSourceInstance = new MyTreeElement("LocalTimeSource", 2, 4, ObjectIcon, "O");
-            timeSourceInstance.Parent = projectContainerResolver;
-            projectContainerResolver.Children.Add(timeSourceInstance);
-
-            var list = new List<MyTreeElement>()
-            {
-                root,
-                projectContainer,
-                sceneContainer,
-                scopedContainer,
-                projectContainerResolver,
-                timeSourceInstance,
-                projectContainer2,
-            };
-
-            return list;
-        }
-
         private void OnGUI()
         {
             InitIfNeeded();

@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace UnityEditor.TreeViewExamples
+namespace Reflex.Editor.DebuggingWindow
 {
     internal class TreeViewWithTreeModel<T> : TreeView where T : TreeElement
     {

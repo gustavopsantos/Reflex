@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace UnityEditor.TreeViewExamples
+namespace Reflex.Editor.DebuggingWindow
 {
     // The TreeModel is a utility class working on a list of serializable TreeElements where the order and the depth of each TreeElement define
     // the tree structure. Note that the TreeModel itself is not serializable (in Unity we are currently limited to serializing lists/arrays) but the 

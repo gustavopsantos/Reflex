@@ -11,7 +11,6 @@ namespace Reflex.Injectors
 		internal static void Inject(Scene scene, Container projectContainer)
 		{
 			var sceneContainer = CreateSceneContainer(scene, projectContainer);
-			ContainerTree.Root.Children.Add(new Scripts.Core.Node<Container>(sceneContainer));
 			
 			foreach (var monoBehaviour in GetEveryMonoBehaviourAtScene(scene))
 			{

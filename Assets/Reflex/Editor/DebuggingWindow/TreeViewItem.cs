@@ -1,6 +1,6 @@
 using UnityEditor.IMGUI.Controls;
 
-namespace UnityEditor.TreeViewExamples
+namespace Reflex.Editor.DebuggingWindow
 {
     internal class TreeViewItem<T> : TreeViewItem where T : TreeElement
     {

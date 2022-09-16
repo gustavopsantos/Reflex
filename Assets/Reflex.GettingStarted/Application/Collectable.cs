@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using Reflex;
+using UnityEngine;
 using Reflex.Scripts.Attributes;
 
 public class Collectable : MonoBehaviour
 {
     [field: SerializeField] private string _id;
 
+    [Inject] private readonly Container _container;
     [Inject] private readonly ICollectableRegistry _collectableRegistry;
     [Inject] private readonly PickupSoundEffect _pickupSoundEffect;
 
@@ -14,6 +16,12 @@ public class Collectable : MonoBehaviour
         {
             Disable();
         }
+    }
+
+    [ContextMenu("SolveSomething")]
+    private void SolveSomething()
+    {
+        _container.Resolve<PickupSoundEffect>();
     }
 
     private void OnMouseDown()
