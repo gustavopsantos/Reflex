@@ -78,7 +78,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Install via UPM (using Git URL)
 ```json
-"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#2.0.2"
+"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#3.0.0"
 ```
 
 ### Install manually (using .unitypackage)
@@ -151,13 +151,13 @@ public class NonMonoBehaviourInjection
 }
 ```
 
-## Order of Execution
+## Order of Execution when a Scene is Loaded
 
 | Events                                               |
 |:----------------------------------------------------:|
-| UnityEngine.SceneManagement.SceneManager.sceneLoaded |
-| ↓                                                    |
 | MonoBehaviour.Awake                                  |
+| ↓                                                    |
+| UnityEngine.SceneManagement.SceneManager.sceneLoaded |
 | ↓                                                    |
 | Reflex.Injectors.SceneInjector.Inject                |
 | ↓                                                    |
