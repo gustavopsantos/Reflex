@@ -5,18 +5,18 @@ namespace Reflex
 {
     internal class TransientResolver : IResolver
     {
-        private readonly Type _concrete;
+        public Type Concrete { get; }
         public int Resolutions { get; private set; }
 
         public TransientResolver(Type concrete)
         {
-            _concrete = concrete;
+            Concrete = concrete;
         }
 
         public object Resolve(Container container)
         {
             Resolutions++;
-            return ConstructorInjector.ConstructAndInject(_concrete, container);
+            return ConstructorInjector.ConstructAndInject(Concrete, container);
         }
     }
 }

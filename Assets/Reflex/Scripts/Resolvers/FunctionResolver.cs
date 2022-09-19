@@ -4,6 +4,7 @@ namespace Reflex
 {
     internal class FunctionResolver : IResolver
     {
+        public Type Concrete { get; }
         private readonly Func<object> _function;
         public int Resolutions { get; private set; }
 

@@ -83,7 +83,8 @@ namespace Reflex.Editor.DebuggingWindow
 
             foreach (var pair in container._resolvers)
             {
-                var r = new MyTreeElement($"{pair.Value.GetType().Name}<{pair.Key}> → Foo", child.Depth + 1, ++_id, ResolverIcon, () => pair.Value.Resolutions.ToString());
+                var t = pair.Value.Concrete != null ? pair.Value.Concrete.Name : "-";
+                var r = new MyTreeElement($"{pair.Value.GetType().Name}<{pair.Key}> → {t}", child.Depth + 1, ++_id, ResolverIcon, () => pair.Value.Resolutions.ToString());
                 child.Children.Add(r);
                 r.Parent = child;
             }

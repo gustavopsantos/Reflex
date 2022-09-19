@@ -5,12 +5,12 @@ namespace Reflex
     internal class SingletonResolver : IResolver
     {
         private object _instance;
-        private readonly Type _concrete;
+        public Type Concrete { get; }
         public int Resolutions { get; private set; }
 
         public SingletonResolver(Type concrete)
         {
-            _concrete = concrete;
+            Concrete = concrete;
         }
 
         public object Resolve(Container container)
@@ -19,7 +19,7 @@ namespace Reflex
             
             if (_instance == null)
             {
-                _instance = container.Construct(_concrete);
+                _instance = container.Construct(Concrete);
             }
 
             return _instance;
