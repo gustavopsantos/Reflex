@@ -151,13 +151,13 @@ public class NonMonoBehaviourInjection
 }
 ```
 
-## Order of Execution
+## Order of Execution when a Scene is Loaded
 
 | Events                                               |
 |:----------------------------------------------------:|
-| UnityEngine.SceneManagement.SceneManager.sceneLoaded |
-| ↓                                                    |
 | MonoBehaviour.Awake                                  |
+| ↓                                                    |
+| UnityEngine.SceneManagement.SceneManager.sceneLoaded |
 | ↓                                                    |
 | Reflex.Injectors.SceneInjector.Inject                |
 | ↓                                                    |
