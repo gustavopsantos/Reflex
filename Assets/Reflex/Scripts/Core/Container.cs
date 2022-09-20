@@ -107,16 +107,9 @@ namespace Reflex
             throw new UnknownContractException(contract);
         }
         
-        public T Instantiate<T>(T original) where T : Component
+        public T Instantiate<T>(T original, Transform parent = null) where T : Component
         {
-            var instance = UnityEngine.Object.Instantiate<T>(original);
-            instance.GetComponentsInChildren<MonoBehaviour>().ForEach(mb => MonoInjector.Inject(mb, this));
-            return instance;
-        }
-
-        public GameObject Instantiate(GameObject original)
-        {
-            var instance = UnityEngine.Object.Instantiate<GameObject>(original);
+            var instance = UnityEngine.Object.Instantiate<T>(original, parent);
             instance.GetComponentsInChildren<MonoBehaviour>().ForEach(mb => MonoInjector.Inject(mb, this));
             return instance;
         }
