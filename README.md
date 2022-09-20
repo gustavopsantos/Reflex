@@ -173,7 +173,7 @@ A single prefab named `ProjectContext` that should live inside a `Resources` fol
 
 ### Scene Context
 A single root gameobject per scene that should contain a `SceneContext` component attached
-> Non-Obligatory to have
+> Non-Obligatory to have, but scenes without it wont be injected
 
 ## Bindings
 

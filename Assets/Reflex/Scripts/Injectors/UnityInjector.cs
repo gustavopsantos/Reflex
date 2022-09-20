@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Reflex.Scripts.Core;
+using Reflex.Scripts.Events;
 using Reflex.Scripts.Utilities;
-using UnityEngine.SceneManagement;
 
 namespace Reflex.Injectors
 {
@@ -11,7 +11,8 @@ namespace Reflex.Injectors
 		private static void AfterAssembliesLoaded()
 		{
 			var projectContainer = CreateProjectContainer();
-			SceneManager.sceneLoaded += (scene, mode) => SceneInjector.Inject(scene, projectContainer);
+			//SceneManager.sceneLoaded += (scene, mode) => SceneInjector.Inject(scene, projectContainer);
+			UnityStaticEvents.OnSceneEarlyAwake += scene => SceneInjector.Inject(scene, projectContainer);
 		}
 
 		private static Container CreateProjectContainer()
