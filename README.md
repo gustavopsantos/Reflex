@@ -155,11 +155,11 @@ public class NonMonoBehaviourInjection
 
 | Events                                               |
 |:----------------------------------------------------:|
-| MonoBehaviour.Awake                                  |
-| ↓                                                    |
-| UnityEngine.SceneManagement.SceneManager.sceneLoaded |
+| SceneContext.Awake(DefaultExecutionOrder(-10000))    |
 | ↓                                                    |
 | Reflex.Injectors.SceneInjector.Inject                |
+| ↓                                                    |
+| MonoBehaviour.Awake                                  |
 | ↓                                                    |
 | MonoBehaviour.Start                                  |
 
