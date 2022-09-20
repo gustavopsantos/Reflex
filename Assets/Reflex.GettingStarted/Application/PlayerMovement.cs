@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour, IPlayerMovement
 
     private void Start()
     {
-        _container.BindInstance<IPlayerMovement>(this);
+        _container.BindInstanceAs<IPlayerMovement>(this);
     }
 
     private void Update()

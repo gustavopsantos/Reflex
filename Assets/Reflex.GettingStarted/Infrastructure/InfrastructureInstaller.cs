@@ -8,7 +8,7 @@ public class InfrastructureInstaller : Installer
 
     public override void InstallBindings(Container container)
     {
-        container.BindInstance<IGameSettings>(_scriptableObjectGameSettings);
+        container.BindInstanceAs<IGameSettings>(_scriptableObjectGameSettings);
         container.BindSingleton<ICollectableRegistry, PlayerPrefsCollectableRegistry>();
     }
 }

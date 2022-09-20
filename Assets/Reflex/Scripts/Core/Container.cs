@@ -44,7 +44,7 @@ namespace Reflex
 
         private void InjectSelf()
         {
-            BindInstance<Container>(this);
+            BindInstance(this);
         }
 
         public void AddDisposable(IDisposable disposable)
@@ -52,12 +52,22 @@ namespace Reflex
             _disposables.TryAdd(disposable);
         }
 
+        public bool Contains(Type type)
+        {
+            return _resolvers.ContainsKey(type);
+        }
+
         public void BindFunction<TContract>(Func<TContract> function)
         {
             _resolvers.Add(typeof(TContract), new FunctionResolver(function as Func<object>));
         }
         
-        public void BindInstance<TContract>(TContract instance)
+        public void BindInstance(object instance)
+        {
+            _resolvers[instance.GetType()] = new InstanceResolver(instance);
+        }
+        
+        public void BindInstanceAs<TContract>(TContract instance)
         {
             _resolvers[typeof(TContract)] = new InstanceResolver(instance);
         }
