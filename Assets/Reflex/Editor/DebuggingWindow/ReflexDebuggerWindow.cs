@@ -107,6 +107,7 @@ namespace Reflex.Editor.DebuggingWindow
         
         private void OnGUI()
         {
+            Repaint();
             InitIfNeeded();
             SearchBar(SearchBarRect);
             DoTreeView(MultiColumnTreeViewRect);
