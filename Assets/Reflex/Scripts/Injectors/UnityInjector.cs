@@ -2,6 +2,9 @@
 using Reflex.Scripts.Core;
 using Reflex.Scripts.Events;
 using Reflex.Scripts.Utilities;
+using UnityEngine.Scripting;
+
+[assembly: AlwaysLinkAssembly] // https://docs.unity3d.com/ScriptReference/Scripting.AlwaysLinkAssemblyAttribute.html
 
 namespace Reflex.Injectors
 {
