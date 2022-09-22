@@ -10,7 +10,7 @@ namespace Reflex.Injectors
 {
 	internal static class UnityInjector
 	{
-		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		private static void AfterAssembliesLoaded()
 		{
 			var projectContainer = CreateProjectContainer();
