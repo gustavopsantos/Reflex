@@ -3,6 +3,9 @@ using UnityEngine;
 using Reflex.Injectors;
 using Reflex.Scripts.Utilities;
 using System.Collections.Generic;
+using System.Linq;
+using Reflex.Scripts.Enums;
+using Reflex.Scripts.Extensions;
 
 namespace Reflex
 {
@@ -107,10 +110,10 @@ namespace Reflex
             throw new UnknownContractException(contract);
         }
         
-        public T Instantiate<T>(T original, Transform parent = null) where T : Component
+        public T Instantiate<T>(T original, Transform parent = null, MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
         {
             var instance = UnityEngine.Object.Instantiate<T>(original, parent);
-            instance.GetComponentsInChildren<MonoBehaviour>().ForEach(mb => MonoInjector.Inject(mb, this));
+            instance.GetInjectables(injectionMode).ForEach(mb => MonoInjector.Inject(mb, this));
             return instance;
         }
     }

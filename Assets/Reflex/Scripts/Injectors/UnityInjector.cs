@@ -11,7 +11,7 @@ namespace Reflex.Injectors
 	internal static class UnityInjector
 	{
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-		private static void AfterAssembliesLoaded()
+		private static void BeforeAwakeOfFirstSceneOnly()
 		{
 			var projectContainer = CreateProjectContainer();
 			//SceneManager.sceneLoaded += (scene, mode) => SceneInjector.Inject(scene, projectContainer);
