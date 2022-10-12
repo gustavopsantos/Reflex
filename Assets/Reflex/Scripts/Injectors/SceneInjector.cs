@@ -33,7 +33,10 @@ namespace Reflex.Injectors
 
 		private static IEnumerable<MonoBehaviour> GetEveryMonoBehaviourAtScene(Scene scene)
 		{
-			return scene.GetRootGameObjects().SelectMany(gameObject => gameObject.GetComponentsInChildren<MonoBehaviour>(true));
+			return scene
+				.GetRootGameObjects()
+				.SelectMany(gameObject => gameObject.GetComponentsInChildren<MonoBehaviour>(true))
+				.Where(m => m != null); // Skips missing scripts
 		}
 	}
 }
