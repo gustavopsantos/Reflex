@@ -67,12 +67,17 @@ namespace Reflex
         
         public void BindInstance(object instance)
         {
-            _resolvers[instance.GetType()] = new InstanceResolver(instance);
+            BindInstanceAs(instance, instance.GetType());
         }
         
         public void BindInstanceAs<TContract>(TContract instance)
         {
-            _resolvers[typeof(TContract)] = new InstanceResolver(instance);
+            BindInstanceAs(instance, typeof(TContract));
+        }
+        
+        public void BindInstanceAs(object instance, Type asType)
+        {
+            _resolvers[asType] = new InstanceResolver(instance);
         }
 
         public void BindTransient<TContract, TConcrete>() where TConcrete : TContract

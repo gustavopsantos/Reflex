@@ -1,7 +1,7 @@
 {
   "name": "com.gustavopsantos.reflex",
   "displayName": "Reflex",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "unity": "2019.3",
   "description": "Minimal dependency injection framework for Unity",
   "keywords": ["Dependency Injection", "IoC", "DI", "DI Container"],
