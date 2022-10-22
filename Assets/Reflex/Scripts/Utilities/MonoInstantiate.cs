@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Reflex.Scripts.Utilities
 {
-    internal class MonoInstantiate
+    internal static class MonoInstantiate
     {
         private static Transform _hiddenParent;
 
@@ -43,9 +43,22 @@ namespace Reflex.Scripts.Utilities
 
             instance.GetInjectables(injectionMode).ForEach(mb => MonoInjector.Inject(mb, container));
 
+            instance.gameObject.RestoreRectTransform(original);
             instance.gameObject.SetActive(prefabWasActive);
 
             return instance;
+        }
+
+        internal static void RestoreRectTransform(this GameObject gameObject, Component original)
+        {
+            if (gameObject.TryGetComponent<RectTransform>(out var rectTransform) && original.TryGetComponent<RectTransform>(out var originalRectTransform))
+            {
+                rectTransform.offsetMax = originalRectTransform.offsetMax;
+                rectTransform.offsetMin = originalRectTransform.offsetMin;
+                rectTransform.anchorMax = originalRectTransform.anchorMax;
+                rectTransform.anchorMin = originalRectTransform.anchorMin;
+                rectTransform.localScale = originalRectTransform.localScale;
+            }
         }
     }
 }
