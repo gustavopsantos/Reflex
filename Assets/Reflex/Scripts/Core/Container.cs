@@ -115,11 +115,24 @@ namespace Reflex
             throw new UnknownContractException(contract);
         }
         
-        public T Instantiate<T>(T original, Transform parent = null, MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
+        public void InjectMono(Component instance, MonoInjectionMode injectionMode = MonoInjectionMode.Single)
         {
-            var instance = UnityEngine.Object.Instantiate<T>(original, parent);
             instance.GetInjectables(injectionMode).ForEach(mb => MonoInjector.Inject(mb, this));
-            return instance;
+        }
+
+        public T Instantiate<T>(T original, Transform container = null, MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
+        {
+            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, parent), injectionMode);
+        }
+
+        public T Instantiate<T>(T original, Transform container, bool worldPositionStays, MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
+        {
+            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, parent, worldPositionStays), injectionMode);
+        }
+
+        public T Instantiate<T>(T original, Vector3 position, Quaternion rotation, Transform container = null, MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
+        {
+            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, position, rotation, parent), injectionMode);
         }
     }
 }
