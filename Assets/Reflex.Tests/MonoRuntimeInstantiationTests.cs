@@ -5,10 +5,11 @@ using Reflex.Scripts.Attributes;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Reflex.PlayModeTests
+namespace Reflex.Tests
 {
     public class MonoRuntimeInstantiationTests
     {
+        [ExecuteInEditMode]
         private class MonoEventHook : MonoBehaviour
         {
             public readonly List<string> ExecutionOrder = new List<string>();
@@ -37,7 +38,7 @@ namespace Reflex.PlayModeTests
             {
                 var prefab = new GameObject("Prefab").AddComponent<MonoEventHook>();
                 var instance = container.Instantiate(prefab);
-                yield return new WaitForEndOfFrame();
+                yield return null;
                 string.Join(",", instance.ExecutionOrder).Should().Be("Inject,Awake,Start");
             }
         }
