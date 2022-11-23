@@ -22,14 +22,14 @@ namespace Reflex
             finding = default;
             return false;
         }
-
-        internal static void OnUnload(this Scene scene, Action callback)
+        
+        internal static IDisposable OnUnload(this Scene scene, Action callback)
         {
             var gameObject = new GameObject("SceneUnloadHook");
             gameObject.hideFlags = HideFlags.HideInHierarchy;
             SceneManager.MoveGameObjectToScene(gameObject, scene);
             var hook = gameObject.AddComponent<MonoBehaviourEventHook>();
-            hook.OnDestroyEvent += () => callback?.Invoke();
+            return hook.OnDestroyEvent.Subscribe(() => callback?.Invoke());
         }
     }
 }

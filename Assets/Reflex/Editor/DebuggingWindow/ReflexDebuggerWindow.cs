@@ -63,6 +63,7 @@ namespace Reflex.Editor.DebuggingWindow
                 var treeModel = new TreeModel<MyTreeElement>(GetData());
 
                 TreeView = new MultiColumnTreeView(_treeViewState, multiColumnHeader, treeModel);
+                TreeView.ExpandAll();
 
                 _searchField = new SearchField();
                 _searchField.downOrUpArrowKeyPressed += TreeView.SetFocusAndEnsureSelectedItem;

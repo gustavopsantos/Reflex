@@ -13,7 +13,7 @@ namespace Reflex
     {
         public Container Parent { get; private set; }
         public IReadOnlyList<Container> Children => _children;
-        
+
         public string Name { get; }
         private readonly List<Container> _children = new List<Container>();
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
@@ -24,12 +24,24 @@ namespace Reflex
             Name = name;
             InjectSelf();
         }
-        
+
         public void Dispose()
         {
+            foreach (var child in _children.Reversed())
+            {
+                child.Dispose();
+            }
+
+            Debug.Log($"Disposing container: {Name}");
             _disposables.Dispose();
+
+            if (Parent != null)
+            {
+                Parent._children.Remove(this);
+                Parent = null;
+            }
         }
-        
+
         public Container Scope(string name)
         {
             var scoped = new Container(name);
@@ -40,7 +52,7 @@ namespace Reflex
             {
                 scoped._resolvers[pair.Key] = pair.Value;
             }
-            
+
             scoped.InjectSelf();
             return scoped;
         }
@@ -64,17 +76,17 @@ namespace Reflex
         {
             _resolvers.Add(typeof(TContract), new FunctionResolver(function as Func<object>));
         }
-        
+
         public void BindInstance(object instance)
         {
             BindInstanceAs(instance, instance.GetType());
         }
-        
+
         public void BindInstanceAs<TContract>(TContract instance)
         {
             BindInstanceAs(instance, typeof(TContract));
         }
-        
+
         public void BindInstanceAs(object instance, Type asType)
         {
             _resolvers[asType] = new InstanceResolver(instance);
@@ -89,12 +101,12 @@ namespace Reflex
         {
             _resolvers[typeof(TContract)] = new SingletonResolver(typeof(TConcrete));
         }
-        
+
         public T Construct<T>()
         {
             return ConstructorInjector.ConstructAndInject<T>(this);
         }
-        
+
         public object Construct(Type concrete)
         {
             return ConstructorInjector.ConstructAndInject(concrete, this);
@@ -114,25 +126,31 @@ namespace Reflex
 
             throw new UnknownContractException(contract);
         }
-        
+
         public void InjectMono(Component instance, MonoInjectionMode injectionMode = MonoInjectionMode.Single)
         {
             instance.GetInjectables(injectionMode).ForEach(mb => MonoInjector.Inject(mb, this));
         }
 
-        public T Instantiate<T>(T original, Transform container = null, MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
+        public T Instantiate<T>(T original, Transform container = null,
+            MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
         {
-            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, parent), injectionMode);
+            return MonoInstantiate.Instantiate(original, container, this,
+                (parent) => UnityEngine.Object.Instantiate<T>(original, parent), injectionMode);
         }
 
-        public T Instantiate<T>(T original, Transform container, bool worldPositionStays, MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
+        public T Instantiate<T>(T original, Transform container, bool worldPositionStays,
+            MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
         {
-            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, parent, worldPositionStays), injectionMode);
+            return MonoInstantiate.Instantiate(original, container, this,
+                (parent) => UnityEngine.Object.Instantiate<T>(original, parent, worldPositionStays), injectionMode);
         }
 
-        public T Instantiate<T>(T original, Vector3 position, Quaternion rotation, Transform container = null, MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
+        public T Instantiate<T>(T original, Vector3 position, Quaternion rotation, Transform container = null,
+            MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
         {
-            return MonoInstantiate.Instantiate(original, container, this, (parent) => UnityEngine.Object.Instantiate<T>(original, position, rotation, parent), injectionMode);
+            return MonoInstantiate.Instantiate(original, container, this,
+                (parent) => UnityEngine.Object.Instantiate<T>(original, position, rotation, parent), injectionMode);
         }
     }
 }

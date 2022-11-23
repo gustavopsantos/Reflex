@@ -2,6 +2,7 @@ using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 using Reflex.Scripts.Core;
+using Reflex.Scripts.Utilities;
 using UnityEngine.SceneManagement;
 
 namespace Reflex.Injectors
@@ -21,8 +22,18 @@ namespace Reflex.Injectors
 		private static Container CreateSceneContainer(Scene scene, Container projectContainer)
 		{
 			var container = projectContainer.Scope(scene.name);
-			scene.OnUnload(() => container.Dispose());
-
+			
+			var subscription = scene.OnUnload(() =>
+			{
+				container.Dispose();
+			}); 
+			
+			// If app is being closed, all containers will be disposed by depth first search starting from project container root, see UnityInjector.cs
+			Application.quitting += () =>
+			{
+				subscription.Dispose();
+			};
+			
 			if (scene.TryFindAtRootObjects<SceneContext>(out var sceneContext))
 			{
 				sceneContext.InstallBindings(container);
