@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.madsbangh.easybuttons": "https://github.com/madsbangh/EasyButtons.git#upm",
+    "com.unity.nuget.newtonsoft-json":"3.0.2",
     "com.svermeulen.extenject": "https://github.com/modesttree/Zenject.git?path=/UnityProject/Assets/Plugins/Zenject/#9.2.0",
     "com.unity.ide.rider": "3.0.15",
     "com.unity.ide.visualstudio": "2.0.16",
