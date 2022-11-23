@@ -208,7 +208,7 @@ namespace Reflex.Editor.DebuggingWindow
 					headerTextAlignment = TextAlignment.Left,
 					sortedAscending = true,
 					sortingArrowAlignment = TextAlignment.Center,
-					width = 320, 
+					width = 800, 
 					minWidth = 60,
 					autoResize = false,
 					allowToggleVisibility = false
@@ -219,8 +219,8 @@ namespace Reflex.Editor.DebuggingWindow
 					headerTextAlignment = TextAlignment.Left,
 					sortedAscending = true,
 					sortingArrowAlignment = TextAlignment.Left,
-					width = 110,
-					minWidth = 60,
+					minWidth = 74,
+					maxWidth = 74,
 					autoResize = true
 				},
 			};

@@ -13,17 +13,20 @@ namespace Reflex.Editor.DebuggingWindow
         private const string ContainerIcon = "PreMatCube";
         private const string ObjectIcon = "curvekeyframeselected";
         private const string ResolverIcon = "P4_Updating";
-        
-        [NonSerialized] private bool _isInitialized;
-        [SerializeField] private TreeViewState _treeViewState; // Serialized in the window layout file so it survives assembly reloading
-        [SerializeField] private MultiColumnHeaderState _multiColumnHeaderState;
-        
-        private SearchField _searchField;
-        
-        private MultiColumnTreeView TreeView { get; set; }
-        private Rect SearchBarRect => new Rect(20f, 10f, position.width - 40f, 20f);
-        private Rect MultiColumnTreeViewRect => new Rect(20, 30, position.width - 40, position.height - 50);
 
+        [NonSerialized] private bool _isInitialized;
+
+        [SerializeField]
+        private TreeViewState _treeViewState; // Serialized in the window layout file so it survives assembly reloading
+
+        [SerializeField] private MultiColumnHeaderState _multiColumnHeaderState;
+
+        private SearchField _searchField;
+
+        private MultiColumnTreeView TreeView { get; set; }
+        private Rect SearchBarRect => new Rect(20f + 32f, 10f, position.width - 40f, 20f);
+        private Rect RefreshButtonRect => new Rect(20f, 10f, 32, 20f);
+        private Rect MultiColumnTreeViewRect => new Rect(20, 30, position.width - 40, position.height - 50);
 
         [MenuItem("Reflex/Debugger %e")]
         public static void GetWindow()
@@ -76,7 +79,7 @@ namespace Reflex.Editor.DebuggingWindow
             {
                 return;
             }
-            
+
             var child = new MyTreeElement(container.Name, parent.Depth + 1, ++_id, ContainerIcon, () => string.Empty);
             parent.Children.Add(child);
             child.Parent = parent;
@@ -84,7 +87,8 @@ namespace Reflex.Editor.DebuggingWindow
             foreach (var pair in container._resolvers)
             {
                 var t = pair.Value.Concrete != null ? pair.Value.Concrete.Name : "-";
-                var r = new MyTreeElement($"{pair.Value.GetType().Name}<{pair.Key}> → {t}", child.Depth + 1, ++_id, ResolverIcon, () => pair.Value.Resolutions.ToString());
+                var r = new MyTreeElement($"{pair.Value.GetType().Name}<{pair.Key}> → {t}", child.Depth + 1, ++_id,
+                    ResolverIcon, () => pair.Value.Resolutions.ToString());
                 child.Children.Add(r);
                 r.Parent = child;
             }
@@ -104,13 +108,19 @@ namespace Reflex.Editor.DebuggingWindow
             TreeElementUtility.TreeToList(root, list);
             return list;
         }
-        
+
         private void OnGUI()
         {
             Repaint();
             InitIfNeeded();
             SearchBar(SearchBarRect);
             DoTreeView(MultiColumnTreeViewRect);
+
+            if (GUI.Button(RefreshButtonRect, EditorGUIUtility.IconContent("Refresh")))
+            {
+                _isInitialized = false;
+                InitIfNeeded();
+            }
         }
 
         private void SearchBar(Rect rect)
