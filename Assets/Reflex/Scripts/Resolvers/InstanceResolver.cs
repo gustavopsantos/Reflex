@@ -20,5 +20,10 @@ namespace Reflex
             Resolutions++;
             return _instance;
         }
+
+        public void Dispose()
+        {
+            // Objects created by user, should be disposed by users
+        }
     }
 }

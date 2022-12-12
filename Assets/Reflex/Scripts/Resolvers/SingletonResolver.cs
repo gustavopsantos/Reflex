@@ -13,10 +13,18 @@ namespace Reflex
             Concrete = concrete;
         }
 
+        public void Dispose()
+        {
+            if (_instance is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+        }
+
         public object Resolve(Container container)
         {
             Resolutions++;
-            
+
             if (_instance == null)
             {
                 _instance = container.Construct(Concrete);

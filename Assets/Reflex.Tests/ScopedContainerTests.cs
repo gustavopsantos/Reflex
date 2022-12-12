@@ -109,7 +109,7 @@ namespace Reflex.Tests
                     inner.Resolve<DependsOnFoo>().Foo.IsDisposed.Should().BeFalse();
                 }
 
-                outer.Resolve<Foo>().IsDisposed.Should().BeTrue();
+                outer.Resolve<Foo>().IsDisposed.Should().BeFalse();
             }
         }
 
@@ -158,12 +158,11 @@ namespace Reflex.Tests
         public void InnerScopedContainerShouldNotDisposeOuterBindings()
         {
             var outer = new Container("Outer");
-            outer.BindSingleton<IManager, Manager>();
-            // outer.Resolve<IManager>(); // Workaround: resolving it in here avoids it being disposed at inner 
+            outer.BindSingleton<Foo, Foo>();
             var inner = outer.Scope("Inner");
-            inner.Resolve<IManager>();
+            inner.Resolve<Foo>();
             inner.Dispose();
-            outer.Resolve<IManager>().Disposed.Should().BeFalse();
+            outer.Resolve<Foo>().IsDisposed.Should().BeFalse();
         }
     }
 }

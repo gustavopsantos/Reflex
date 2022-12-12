@@ -18,5 +18,10 @@ namespace Reflex
             Resolutions++;
             return _function.Invoke();
         }
+
+        public void Dispose()
+        {
+            // Objects created by user functions, should be disposed by users
+        }
     }
 }

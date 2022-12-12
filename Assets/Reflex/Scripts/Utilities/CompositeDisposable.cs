@@ -7,11 +7,16 @@ namespace Reflex.Scripts.Utilities
     {
         private readonly List<IDisposable> _registry = new List<IDisposable>();
 
+        public void Add(IDisposable disposable)
+        {
+            _registry.Add(disposable);
+        }
+        
         public void TryAdd(object obj)
         {
             if (obj is IDisposable disposable)
             {
-                _registry.Add(disposable);
+                Add(disposable);
             }
         }
 

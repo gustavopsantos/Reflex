@@ -19,10 +19,6 @@ namespace Reflex.Injectors
 			try
 			{
 				var instance = info.Activator(objects);
-				if (instance is IDisposable disposable)
-				{
-					container.AddDisposable(disposable);
-				}
 				ArrayPool<object>.Shared.Return(objects);
 				return instance;
 			}

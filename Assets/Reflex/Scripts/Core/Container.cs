@@ -3,7 +3,6 @@ using UnityEngine;
 using Reflex.Injectors;
 using Reflex.Scripts.Utilities;
 using System.Collections.Generic;
-using System.Linq;
 using Reflex.Scripts.Enums;
 using Reflex.Scripts.Extensions;
 
@@ -74,7 +73,9 @@ namespace Reflex
 
         public void BindFunction<TContract>(Func<TContract> function)
         {
-            _resolvers.Add(typeof(TContract), new FunctionResolver(function as Func<object>));
+            var resolver = new FunctionResolver(function as Func<object>);
+            _disposables.Add(resolver);
+            _resolvers.Add(typeof(TContract), resolver);
         }
 
         public void BindInstance(object instance)
@@ -89,17 +90,23 @@ namespace Reflex
 
         public void BindInstanceAs(object instance, Type asType)
         {
-            _resolvers[asType] = new InstanceResolver(instance);
+            var resolver = new InstanceResolver(instance);
+            _disposables.Add(resolver);
+            _resolvers[asType] = resolver;
         }
 
         public void BindTransient<TContract, TConcrete>() where TConcrete : TContract
         {
-            _resolvers[typeof(TContract)] = new TransientResolver(typeof(TConcrete));
+            var resolver = new TransientResolver(typeof(TConcrete));
+            _disposables.Add(resolver);
+            _resolvers[typeof(TContract)] = resolver;
         }
 
         public void BindSingleton<TContract, TConcrete>() where TConcrete : TContract
         {
-            _resolvers[typeof(TContract)] = new SingletonResolver(typeof(TConcrete));
+            var resolver = new SingletonResolver(typeof(TConcrete));
+            _disposables.Add(resolver);
+            _resolvers[typeof(TContract)] = resolver;
         }
 
         public T Construct<T>()
