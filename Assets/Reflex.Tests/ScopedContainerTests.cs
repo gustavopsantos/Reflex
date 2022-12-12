@@ -106,7 +106,7 @@ namespace Reflex.Tests
                 {
                     inner.BindSingleton<DependsOnFoo, DependsOnFoo>();
                     inner.Resolve<Foo>();
-                    inner.Resolve<DependsOnFoo>().Foo.IsDisposed.Should().BeFalse(); 
+                    inner.Resolve<DependsOnFoo>().Foo.IsDisposed.Should().BeFalse();
                 }
 
                 outer.Resolve<Foo>().IsDisposed.Should().BeTrue();
@@ -124,7 +124,7 @@ namespace Reflex.Tests
                 }
             }
         }
-        
+
         [Test]
         public void ResolvingContainerFromOuterScopeShouldResolveOuter()
         {
@@ -134,9 +134,36 @@ namespace Reflex.Tests
                 {
                     inner.Resolve<Container>();
                 }
-                
+
                 outer.Resolve<Container>().Should().Be(outer);
             }
+        }
+
+        private interface IManager : IDisposable
+        {
+            bool Disposed { get; }
+        }
+
+        public class Manager : IManager
+        {
+            public bool Disposed { get; private set; }
+
+            public void Dispose()
+            {
+                Disposed = true;
+            }
+        }
+
+        [Test]
+        public void InnerScopedContainerShouldNotDisposeOuterBindings()
+        {
+            var outer = new Container("Outer");
+            outer.BindSingleton<IManager, Manager>();
+            // outer.Resolve<IManager>(); // Workaround: resolving it in here avoids it being disposed at inner 
+            var inner = outer.Scope("Inner");
+            inner.Resolve<IManager>();
+            inner.Dispose();
+            outer.Resolve<IManager>().Disposed.Should().BeFalse();
         }
     }
 }

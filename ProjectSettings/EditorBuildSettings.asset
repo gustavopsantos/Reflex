@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Reflex.GettingStarted/Scenes/GettingStarted.unity
-    guid: 06da7cc3c617a7b4ebad5ed13c42e007
+    path: Assets/Reflex.Sample/Reflex.Sample.unity
+    guid: f80437131882cdd4e9340aa7044d8c91
   m_configObjects: {}
