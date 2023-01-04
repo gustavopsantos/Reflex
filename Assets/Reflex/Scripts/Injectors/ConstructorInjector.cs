@@ -1,5 +1,4 @@
 using System;
-using Reflex.Scripts;
 
 namespace Reflex.Injectors
 {
@@ -18,13 +17,16 @@ namespace Reflex.Injectors
 
 			try
 			{
-				var instance = info.Activator(objects);
-				ArrayPool<object>.Shared.Return(objects);
-				return instance;
+				return info.Activator(objects);
 			}
 			catch (Exception e)
 			{
-				throw new Exception($"Error occurred while instantiating object with type '{concrete.GetFormattedName()}'\n\n{e.Message}");
+				throw new Exception(
+					$"Error occurred while instantiating object with type '{concrete.GetFormattedName()}'\n\n{e.Message}");
+			}
+			finally
+			{
+				ArrayPool<object>.Shared.Return(objects);
 			}
 		}
 
