@@ -14,7 +14,7 @@ namespace Reflex.Scripts.Extensions
             {
                 case MonoInjectionMode.Single: return component.GetComponent<MonoBehaviour>().Yield();
                 case MonoInjectionMode.Object: return component.GetComponents<MonoBehaviour>();
-                case MonoInjectionMode.Recursive: return component.GetComponentsInChildren<MonoBehaviour>();
+                case MonoInjectionMode.Recursive: return component.GetComponentsInChildren<MonoBehaviour>(true);
                 default: throw new ArgumentOutOfRangeException(nameof(injectionMode), injectionMode, null);
             }
         }
