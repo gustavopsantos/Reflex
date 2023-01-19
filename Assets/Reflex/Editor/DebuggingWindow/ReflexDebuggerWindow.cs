@@ -24,8 +24,8 @@ namespace Reflex.Editor.DebuggingWindow
         private SearchField _searchField;
 
         private MultiColumnTreeView TreeView { get; set; }
-        private Rect SearchBarRect => new Rect(20f + 32f, 10f, position.width - 40f, 20f);
-        private Rect RefreshButtonRect => new Rect(20f, 10f, 32, 20f);
+        private Rect SearchBarRect => new Rect(20f + 34f, 10f, position.width - 40f - 34f, 20f);
+        private Rect RefreshButtonRect => new Rect(20f, 8f, 32, 20f);
         private Rect MultiColumnTreeViewRect => new Rect(20, 30, position.width - 40, position.height - 50);
 
         [MenuItem("Reflex/Debugger %e")]
