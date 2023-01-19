@@ -28,7 +28,7 @@ namespace Reflex.Editor.DebuggingWindow
         private Rect RefreshButtonRect => new Rect(20f, 8f, 32, 20f);
         private Rect MultiColumnTreeViewRect => new Rect(20, 30, position.width - 40, position.height - 50);
 
-        [MenuItem("Reflex/Debugger %e")]
+        [MenuItem("Reflex/Debugger")]
         public static void GetWindow()
         {
             var window = GetWindow<ReflexDebuggerWindow>();
