@@ -20,6 +20,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - Minimal code base
 - Contructor injection
 - `[Inject]` Property, field and method injection attribute
+- Debugging Window 
 
 ## Performance
 > Resolving ten thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Assets/Reflex.Benchmark/NestedBenchmarkReflex.cs).
@@ -77,8 +78,8 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 *Requires Unity 2019+*
 
 ### Install via UPM (using Git URL)
-```json
-"com.gustavopsantos.reflex": "https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#3.5.3"
+```
+https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#3.5.3
 ```
 
 ### Install manually (using .unitypackage)
@@ -191,6 +192,14 @@ Binds a factory. Every time the resolve is called, a new instance will be provid
 ### Bind Singleton
 Binds a factory. Every time the resolve is called, the same instance will be provided.
 > The instance will be disposed once the container that provided the instance are disposed.
+
+## Debugging Window
+![Preview](Graphics/reflex-debugging-window.png)  
+To access the debugging window on unity menu bar click `Reflex` → `Debugger`  
+Through the debugging window you can visualize:
+- Container hierarchy
+- Bindings
+- Resolution count
 
 ## Author
 [![Twitter](https://img.shields.io/twitter/follow/codinggustavo.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=codinggustavo)  
