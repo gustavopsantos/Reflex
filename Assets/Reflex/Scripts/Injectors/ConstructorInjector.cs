@@ -13,7 +13,7 @@ namespace Reflex.Injectors
 		internal static object ConstructAndInject(Type concrete, Container container)
 		{
 			var info = TypeConstructionInfoCache.Get(concrete);
-			var objects = ArrayPool<object>.Shared.Rent(info.ConstructorParameters.Length);
+			var objects = ExactArrayPool<object>.Shared.Rent(info.ConstructorParameters.Length);
 			GetConstructionObjects(info.ConstructorParameters, container, ref objects);
 
 			try
@@ -27,7 +27,7 @@ namespace Reflex.Injectors
 			}
 			finally
 			{
-				ArrayPool<object>.Shared.Return(objects);
+				ExactArrayPool<object>.Shared.Return(objects);
 			}
 		}
 
