@@ -20,13 +20,13 @@ namespace Reflex.Injectors
 
 		private static Container CreateProjectContainer()
 		{
-			var container = new Container("Project");
+			var container = ContainerTree.Root = new Container("ProjectContainer");
+			
 			Application.quitting += () =>
 			{
 				ContainerTree.Root = null;
 				container.Dispose();
 			};
-			ContainerTree.Root = container;
 
 			if (ResourcesUtilities.TryLoad<ProjectContext>("ProjectContext", out var projectContext))
 			{
