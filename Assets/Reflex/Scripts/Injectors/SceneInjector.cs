@@ -15,7 +15,7 @@ namespace Reflex.Injectors
 			
 			foreach (var monoBehaviour in GetEveryMonoBehaviourAtScene(scene))
 			{
-				MonoInjector.Inject(monoBehaviour, sceneContainer);
+				AttributeInjector.Inject(monoBehaviour, sceneContainer);
 			}
 		}
 		

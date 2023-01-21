@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecd6a04ae29a6ba49b807bfae2a7202d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _iterations: 1000
   _identifier: DIFramework Reflex
+  _iterations: 10000
 --- !u!4 &47593000
 Transform:
   m_ObjectHideFlags: 0
@@ -175,13 +175,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 47592998}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2148a9e40c5d06b4e9fa6c652f8afb37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _iterations: 1000
   _identifier: DIFramework VContainer
+  _iterations: 1000
 --- !u!114 &47593002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,13 +189,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 47592998}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 628f8370ee633b145b7aa89a755ebc6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _iterations: 1000
   _identifier: DIFramework Zenject
+  _iterations: 1000
 --- !u!1 &262441148
 GameObject:
   m_ObjectHideFlags: 0

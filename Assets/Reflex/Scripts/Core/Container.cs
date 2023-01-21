@@ -136,7 +136,7 @@ namespace Reflex
 
         public void InjectMono(Component instance, MonoInjectionMode injectionMode = MonoInjectionMode.Single)
         {
-            instance.GetInjectables(injectionMode).ForEach(mb => MonoInjector.Inject(mb, this));
+            instance.GetInjectables(injectionMode).ForEach(mb => AttributeInjector.Inject(mb, this));
         }
 
         public T Instantiate<T>(T original, Transform container = null,

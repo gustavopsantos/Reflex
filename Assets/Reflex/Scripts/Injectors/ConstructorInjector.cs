@@ -1,4 +1,5 @@
 using System;
+using Reflex.Scripts.Caching;
 
 namespace Reflex.Injectors
 {
@@ -11,13 +12,13 @@ namespace Reflex.Injectors
 		
 		internal static object ConstructAndInject(Type concrete, Container container)
 		{
-			var info = TypeInfoCache.Cache[concrete];
+			var info = TypeConstructionInfoCache.Get(concrete);
 			var objects = ArrayPool<object>.Shared.Rent(info.ConstructorParameters.Length);
 			GetConstructionObjects(info.ConstructorParameters, container, ref objects);
 
 			try
 			{
-				return info.Activator(objects);
+				return info.ObjectActivator.Invoke(objects);
 			}
 			catch (Exception e)
 			{

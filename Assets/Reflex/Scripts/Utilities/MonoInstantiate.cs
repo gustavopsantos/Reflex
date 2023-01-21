@@ -41,7 +41,7 @@ namespace Reflex.Scripts.Utilities
             if (instance.transform.parent != parent)
                 instance.transform.SetParent(parent, false);
 
-            instance.GetInjectables(injectionMode).ForEach(mb => MonoInjector.Inject(mb, container));
+            instance.GetInjectables(injectionMode).ForEach(mb => AttributeInjector.Inject(mb, container));
 
             instance.gameObject.RestoreRectTransform(original);
             instance.gameObject.SetActive(prefabWasActive);
