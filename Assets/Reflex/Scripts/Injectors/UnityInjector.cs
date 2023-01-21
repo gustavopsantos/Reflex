@@ -2,6 +2,7 @@
 using Reflex.Scripts.Core;
 using Reflex.Scripts.Events;
 using Reflex.Scripts.Utilities;
+using UnityEngine.SceneManagement;
 using UnityEngine.Scripting;
 
 [assembly: AlwaysLinkAssembly] // https://docs.unity3d.com/ScriptReference/Scripting.AlwaysLinkAssemblyAttribute.html
@@ -14,8 +15,11 @@ namespace Reflex.Injectors
 		private static void BeforeAwakeOfFirstSceneOnly()
 		{
 			var projectContainer = CreateProjectContainer();
-			//SceneManager.sceneLoaded += (scene, mode) => SceneInjector.Inject(scene, projectContainer);
-			UnityStaticEvents.OnSceneEarlyAwake += scene => SceneInjector.Inject(scene, projectContainer);
+			UnityStaticEvents.OnSceneEarlyAwake += scene =>
+			{
+				var sceneContainer = CreateSceneContainer(scene, projectContainer);
+				SceneInjector.Inject(scene, sceneContainer);
+			};
 		}
 
 		private static Container CreateProjectContainer()
@@ -31,6 +35,29 @@ namespace Reflex.Injectors
 			if (ResourcesUtilities.TryLoad<ProjectContext>("ProjectContext", out var projectContext))
 			{
 				projectContext.InstallBindings(container);
+			}
+
+			return container;
+		}
+		
+		private static Container CreateSceneContainer(Scene scene, Container projectContainer)
+		{
+			var container = projectContainer.Scope(scene.name);
+			
+			var subscription = scene.OnUnload(() =>
+			{
+				container.Dispose();
+			}); 
+			
+			// If app is being closed, all containers will be disposed by depth first search starting from project container root, see UnityInjector.cs
+			Application.quitting += () =>
+			{
+				subscription.Dispose();
+			};
+			
+			if (scene.TryFindAtRootObjects<SceneContext>(out var sceneContext))
+			{
+				sceneContext.InstallBindings(container);
 			}
 
 			return container;
