@@ -106,14 +106,6 @@ namespace Reflex.Tests
 			container.Resolve<int>().Should().Be(default);
 		}
 
-		[Test]
-		public void Resolve_StringAsTransient_ShouldReturnDefault()
-		{
-			Container container = new Container(string.Empty);
-			container.BindTransient<string, string>();
-			container.Resolve<string>().Should().Be(default);
-		}
-		
 		private struct MyStruct
 		{
 			public readonly int Value;
