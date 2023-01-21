@@ -1,8 +1,5 @@
-using System.Linq;
 using UnityEngine;
-using System.Collections.Generic;
 using Reflex.Scripts.Core;
-using Reflex.Scripts.Utilities;
 using UnityEngine.SceneManagement;
 
 namespace Reflex.Injectors
@@ -13,7 +10,7 @@ namespace Reflex.Injectors
 		{
 			var sceneContainer = CreateSceneContainer(scene, projectContainer);
 			
-			foreach (var monoBehaviour in GetEveryMonoBehaviourAtScene(scene))
+			foreach (var monoBehaviour in scene.All<MonoBehaviour>())
 			{
 				AttributeInjector.Inject(monoBehaviour, sceneContainer);
 			}
@@ -40,14 +37,6 @@ namespace Reflex.Injectors
 			}
 
 			return container;
-		}
-
-		private static IEnumerable<MonoBehaviour> GetEveryMonoBehaviourAtScene(Scene scene)
-		{
-			return scene
-				.GetRootGameObjects()
-				.SelectMany(gameObject => gameObject.GetComponentsInChildren<MonoBehaviour>(true))
-				.Where(m => m != null); // Skips missing scripts
 		}
 	}
 }
