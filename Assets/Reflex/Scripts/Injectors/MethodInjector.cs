@@ -1,11 +1,11 @@
 using System;
-using System.Reflection;
+using Reflex.Scripts.Caching;
 
 namespace Reflex.Injectors
 {
 	internal static class MethodInjector
 	{
-		public static void InjectMany(MethodInfo[] methods, object instance, Container container)
+		public static void InjectMany(InjectedMethodInfo[] methods, object instance, Container container)
 		{
 			for (var i = 0; i < methods.Length; i++)
 			{
@@ -13,14 +13,13 @@ namespace Reflex.Injectors
 			}
 		}
         
-		private static void Inject(MethodInfo method, object instance, Container container)
+		private static void Inject(InjectedMethodInfo method, object instance, Container container)
 		{
-			var parameters = method.GetParameters();
-			var arguments = ExactArrayPool<object>.Shared.Rent(parameters.Length);
+			var arguments = ExactArrayPool<object>.Shared.Rent(method.Parameters.Length);
 
-			for (int i = 0; i < parameters.Length; i++)
+			for (int i = 0; i < method.Parameters.Length; i++)
 			{
-				arguments[i] = container.Resolve(parameters[i].ParameterType);
+				arguments[i] = container.Resolve(method.Parameters[i]);
 			}
 
 			try

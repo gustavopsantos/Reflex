@@ -3,7 +3,7 @@ using Reflex.Scripts.Delegates;
 
 namespace Reflex.Scripts.Caching
 {
-    internal readonly struct TypeConstructionInfo
+    internal class TypeConstructionInfo
     {
         public readonly ObjectActivator ObjectActivator;
         public readonly Type[] ConstructorParameters;
