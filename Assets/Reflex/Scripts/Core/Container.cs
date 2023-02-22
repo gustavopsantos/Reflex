@@ -111,12 +111,14 @@ namespace Reflex
 
         public T Construct<T>()
         {
-            return ConstructorInjector.ConstructAndInject<T>(this);
+            return (T) Construct(typeof(T));
         }
 
         public object Construct(Type concrete)
         {
-            return ConstructorInjector.ConstructAndInject(concrete, this);
+            var instance = ConstructorInjector.ConstructAndInject(concrete, this);
+            AttributeInjector.Inject(instance, this);
+            return instance;
         }
 
         public TContract Resolve<TContract>()
