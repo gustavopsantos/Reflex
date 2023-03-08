@@ -1,10 +1,11 @@
+using Assets.Reflex.Scripts.Configuration;
 using UnityEngine;
 
 namespace Reflex.Scripts.Logging
 {
     internal static class Logger
     {
-        public static LoggingLevel LoggingLevel { get; set; } = LoggingLevel.Default;
+        public static LoggingLevel LoggingLevel { get; set; } = ReflexConfiguration.LogginLevel;
 
         public static void Log(object message)
         {

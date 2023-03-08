@@ -1,6 +1,6 @@
 namespace Reflex.Scripts.Logging
 {
-    internal enum LoggingLevel
+    public enum LoggingLevel
     {
         Default,
         Warning,
