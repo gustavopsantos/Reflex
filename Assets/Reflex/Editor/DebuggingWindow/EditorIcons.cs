@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Reflex.Scripts.Logging;
 using UnityEditor;
 using UnityEngine;
 
@@ -92,13 +93,13 @@ namespace Reflex.Editor.DebuggingWindow
                     }
                     catch (System.Exception e)
                     {
-                        Debug.LogError("Cannot save the icon : " + e.Message);
+                        DebugLogger.LogError("Cannot save the icon : " + e.Message);
                     }
                 }
             }
             else
             {
-                Debug.LogError("Cannot save the icon : null texture error!");
+                DebugLogger.LogError("Cannot save the icon : null texture error!");
             }
         }
 

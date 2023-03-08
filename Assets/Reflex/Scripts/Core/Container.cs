@@ -5,6 +5,7 @@ using Reflex.Scripts.Utilities;
 using System.Collections.Generic;
 using Reflex.Scripts.Enums;
 using Reflex.Scripts.Extensions;
+using Reflex.Scripts.Logging;
 
 namespace Reflex
 {
@@ -31,7 +32,7 @@ namespace Reflex
                 child.Dispose();
             }
 
-            Debug.Log($"Disposing container: {Name}");
+            DebugLogger.Log($"Disposing container: {Name}");
             _disposables.Dispose();
 
             if (Parent != null)

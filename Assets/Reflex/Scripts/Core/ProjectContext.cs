@@ -1,4 +1,4 @@
-using UnityEngine;
+using Reflex.Scripts.Logging;
 
 namespace Reflex.Scripts.Core
 {
@@ -7,7 +7,7 @@ namespace Reflex.Scripts.Core
         public override void InstallBindings(Container container)
         {
             base.InstallBindings(container);
-            Debug.Log($"{GetType().Name} Bindings Installed");
+            DebugLogger.Log($"{GetType().Name} Bindings Installed");
         }
     }
 }
