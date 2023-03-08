@@ -5,13 +5,13 @@ namespace Assets.Reflex.Scripts.Configuration
 {
     public class ReflexConfiguration : ScriptableObject
     {
-        public static LoggingLevel LogginLevel { get; private set; }
+        public static LogLevel LogLevel { get; private set; }
 
-        [SerializeField] private LoggingLevel _loggingLevel;
+        [SerializeField] private LogLevel _logLevel;
 
         private void OnValidate()
         {
-            LogginLevel = _loggingLevel;
+            LogLevel = _logLevel;
         }
     }
 }

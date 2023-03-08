@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50cbccfd1d961f34f9e1deae2a2c42b0, type: 3}
   m_Name: ReflexConfiguration
   m_EditorClassIdentifier: 
-  _loggingLevel: 0
+  _logLevel: 0
