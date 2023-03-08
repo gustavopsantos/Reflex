@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Reflex.Scripts.Logging
 {
-    internal static class Logger
+    internal static class DebugLogger
     {
         public static LoggingLevel LoggingLevel { get; set; } = ReflexConfiguration.LogginLevel;
 
