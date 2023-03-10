@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Reflex.Scripts.Logging;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
-using UnityEngine;
 
 namespace Reflex.Editor.DebuggingWindow
 {
@@ -32,7 +32,7 @@ namespace Reflex.Editor.DebuggingWindow
         {
             if (_treeModel.Root == null)
             {
-                Debug.LogError("tree model root is null. did you call SetData()?");
+                DebugLogger.LogError("tree model root is null. did you call SetData()?");
             }
 
             _rows.Clear();
