@@ -176,6 +176,17 @@ A single prefab named `ProjectContext` that should live inside a `Resources` fol
 A single root gameobject per scene that should contain a `SceneContext` component attached
 > Non-Obligatory to have, but scenes without it wont be injected
 
+## Configuration Asset
+Its a `ReflexConfiguration` scriptable object instance, named `ReflexConfiguration` that should live inside a `Resources` folder.  
+It can be created by menu item Reflex → Configuration → Create Configuration.  
+> Non-Obligatory to have but projects without it will fallback using following default configuration
+### Default Configuration
+- LogLevel: Default (Info, everything gets logged by default)
+
+### Properties
+#### LogLevel
+Used by our internal logger so developers can define desired logging verbosity level.
+
 ## Bindings
 
 ### Bind Function
