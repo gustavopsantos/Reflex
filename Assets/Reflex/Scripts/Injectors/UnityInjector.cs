@@ -16,8 +16,8 @@ namespace Reflex.Injectors
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 		private static void BeforeAwakeOfFirstSceneOnly()
 		{
-			var projectContainer = CreateProjectContainer();
 			LoadConfiguration();
+			var projectContainer = CreateProjectContainer();
 			UnityStaticEvents.OnSceneEarlyAwake += scene =>
 			{
 				var sceneContainer = CreateSceneContainer(scene, projectContainer);
