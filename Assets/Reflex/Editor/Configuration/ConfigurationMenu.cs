@@ -19,29 +19,32 @@ namespace Assets.Reflex.Editor.Configuration
         private static void CreateConfigurationAsset()
         {
             ReflexConfiguration asset = ScriptableObject.CreateInstance<ReflexConfiguration>();
-            string path = $"Assets/{nameof(ReflexConfiguration)}.asset";
+            string path = $"Assets/Resources/{ReflexConfiguration.AssetName}.asset";
+
+            if (!AssetDatabase.IsValidFolder($"Assets/Resources"))
+                AssetDatabase.CreateFolder("Assets", "Resources");
 
             AssetDatabase.CreateAsset(asset, path);
-            Debug.Log($"Created configuration at '{path}'");
+            Debug.Log($"Created configuration at {path}");
         }
 
         private static bool ConfigurationAlreadyExists()
         {
-            string[] guids = AssetDatabase.FindAssets($"t:{nameof(ReflexConfiguration)}");
+            var assets = Resources.LoadAll<ReflexConfiguration>(ReflexConfiguration.AssetName);
 
-            if (guids.Length == 0)
+            if (assets.Length == 0)
                 return false;
 
-            var paths = guids.Select(guid => AssetDatabase.GUIDToAssetPath(guid));
+            var paths = assets.Select(asset => AssetDatabase.GetAssetPath(asset));
 
-            if (paths.Count() > 1)
+            if (assets.Length == 1)
             {
-                Debug.LogWarning($"Multiple configuration files found ({string.Join(", ", paths)}), "
-                    + "it can lead to an unexpected behaviour. Consider removing one of them.");
+                Debug.Log($"Configuration file already exists at {paths.First()}");
             }
             else
             {
-                Debug.Log($"Configuration file already exists at {paths.First()}");
+                Debug.LogWarning($"Multiple Reflex configuration files found ({string.Join(", ", paths)}), "
+                    + "it can lead to an unexpected behaviour. Consider removing one of them.");
             }
 
             return true;
