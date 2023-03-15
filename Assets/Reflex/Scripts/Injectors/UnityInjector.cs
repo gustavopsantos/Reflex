@@ -18,7 +18,7 @@ namespace Reflex.Injectors
 		{
 			LoadConfiguration();
 			var projectContainer = CreateProjectContainer();
-			UnityStaticEvents.OnSceneEarlyAwake += scene =>
+			UnityStaticEvents.OnSceneEarlyAwake = scene =>
 			{
 				var sceneContainer = CreateSceneContainer(scene, projectContainer);
 				SceneInjector.Inject(scene, sceneContainer);
@@ -37,11 +37,14 @@ namespace Reflex.Injectors
 		{
 			var container = ContainerTree.Root = new Container("ProjectContainer");
 
-			Application.quitting += () =>
+			void DisposeContainer()
 			{
 				ContainerTree.Root = null;
 				container.Dispose();
-			};
+				Application.quitting -= DisposeContainer;
+			}
+
+			Application.quitting += DisposeContainer;
 
 			if (ResourcesUtilities.TryLoad<ProjectContext>("ProjectContext", out var projectContext))
 			{
