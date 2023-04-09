@@ -65,6 +65,15 @@ namespace Reflex.Tests
 		}
 
 		[Test]
+		public void Resolve_AsSingletonConcrete_ShouldReturnAlwaysSameInstance()
+		{
+			Container container = new Container(string.Empty);
+			container.BindSingleton(typeof(Valuable));
+			container.Resolve<Valuable>().Value = 456;
+			container.Resolve<Valuable>().Value.Should().Be(456);
+		}
+
+		[Test]
 		public void Resolve_UnknownDependency_ShouldThrowUnknownContractException()
 		{
 			Container container = new Container(string.Empty);

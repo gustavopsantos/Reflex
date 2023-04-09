@@ -103,6 +103,13 @@ namespace Reflex
             _resolvers[typeof(TContract)] = resolver;
         }
 
+        public void BindSingleton(Type concrete)
+        {
+            var resolver = new SingletonResolver(concrete);
+            _disposables.Add(resolver);
+            _resolvers[concrete] = resolver;
+        }
+
         public void BindSingleton<TContract, TConcrete>() where TConcrete : TContract
         {
             var resolver = new SingletonResolver(typeof(TConcrete));
