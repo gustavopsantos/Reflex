@@ -144,6 +144,11 @@ namespace Reflex
             throw new UnknownContractException(contract);
         }
 
+        public void Inject(object instance)
+        {
+            AttributeInjector.Inject(instance, this);
+        }
+
         public void InjectMono(Component instance, MonoInjectionMode injectionMode = MonoInjectionMode.Single)
         {
             instance.GetInjectables(injectionMode).ForEach(mb => AttributeInjector.Inject(mb, this));
