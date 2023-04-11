@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Reflection;
 using NUnit.Framework;
 using FluentAssertions;
+using FluentAssertions.Types;
+using Reflex.Scripts.Attributes;
 
 namespace Reflex.Tests
 {
@@ -27,6 +30,19 @@ namespace Reflex.Tests
 			public ClassWithDependency(IValuable valuable)
 			{
 				_valuable = valuable;
+			}
+		}
+
+		public class ObjectWithAttributeDependency
+		{
+			[Inject] public int NumberFromProperty { get; private set; }
+			[Inject] public readonly int NumberFromField;
+			public int NumberFromMethod;
+
+			[Inject]
+			private void Inject(int number)
+			{
+				NumberFromMethod = number;
 			}
 		}
 
@@ -71,6 +87,36 @@ namespace Reflex.Tests
 			container.BindSingleton(typeof(Valuable));
 			container.Resolve<Valuable>().Value = 456;
 			container.Resolve<Valuable>().Value.Should().Be(456);
+		}
+		
+		[Test]
+		public void NonGenericInject_ShouldInjectFieldsMarkedWithInjectAttribute()
+		{
+			var container = new Container(string.Empty);
+			container.BindInstance(456);
+			var obj = new ObjectWithAttributeDependency();
+			container.Inject(obj);
+			obj.NumberFromField.Should().Be(456);
+		}
+		
+		[Test]
+		public void NonGenericInject_ShouldInjectWriteablePropertiesMarkedWithInjectAttribute()
+		{
+			var container = new Container(string.Empty);
+			container.BindInstance(456);
+			var obj = new ObjectWithAttributeDependency();
+			container.Inject(obj);
+			obj.NumberFromProperty.Should().Be(456);
+		}
+		
+		[Test]
+		public void NonGenericInject_ShouldInjectMethodsMarkedWithInjectAttribute()
+		{
+			var container = new Container(string.Empty);
+			container.BindInstance(456);
+			var obj = new ObjectWithAttributeDependency();
+			container.Inject(obj);
+			obj.NumberFromMethod.Should().Be(456);
 		}
 
 		[Test]
