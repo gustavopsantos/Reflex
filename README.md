@@ -207,6 +207,27 @@ Through the debugging window you can visualize:
 - Bindings
 - Resolution count
 
+## Scripting Restrictions/IL2CPP Support
+```csharp
+public sealed class NumberManager
+{
+    public IEnumerable<int> Numbers { get; }
+
+    public NumberManager(IEnumerable<int> numbers)
+    {
+        Numbers = numbers;
+    }
+        
+    // In some extreme cases, you'll need to hint compiler so your code doesn't get stripped
+    // https://docs.unity3d.com/Manual/ScriptingRestrictions.html
+    [Preserve] private static void UsedOnlyForAOTCodeGeneration()
+    {
+        Array.Empty<object>().Cast<int>();
+        throw new Exception("This method is used for AOT code generation only. Do not call it at runtime.");
+    }
+}
+```
+
 ## Author
 [![Twitter](https://img.shields.io/twitter/follow/codinggustavo.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=codinggustavo)  
 
