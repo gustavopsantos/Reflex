@@ -19,6 +19,48 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - **GC Friendly:** ~2x less allocations than VContainer, ~12x less allocations than Zenject.
 - **AOT Support:** Basically theres no runtime no Emit, so it works fine on IL2CPP builds.
 
+## Contract Table
+Contract table allows you to define multiple contracts for a single binding, allowing you to then retrieve multiple bindings that implements a given contract.
+
+|                    | PrefabManager | BundleManager |
+|--------------------|---------------|---------------|
+| **IManager**       | ✅           | ✅      	    |
+| **IDisposable**    | ✅     		   | ✅      	    |
+| **IPrefabManager** | ✅        	 | ❌          	|
+| **IBundleManager** | ❌	         | ✅	          |
+
+### Installing
+
+```csharp
+public class ProjectInstaller : MonoBehaviour, IInstaller
+{
+    public void InstallBindings(ContainerDescriptor descriptor)
+    {
+        descriptor.AddSingleton(concrete: typeof(BundleManager), contracts: new[]
+        {
+            typeof(IBundleManager), typeof(IManager), typeof(IDisposable)
+        });
+        
+        descriptor.AddSingleton(concrete: typeof(PrefabManager), contracts: new[]
+        {
+            typeof(IPrefabManager), typeof(IManager), typeof(IDisposable)
+        });
+    }
+}
+```
+### Retrieving
+```csharp
+    public void InitializeManagers(Container container)
+    {
+        foreach (var manager in container.All<IManager>())
+        {
+            manager.Initialize();
+        }
+    }
+```
+
+
+
 ## Performance
 > Resolving ten thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Assets/Reflex.Benchmark/NestedBenchmarkReflex.cs).
 
@@ -76,7 +118,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ### Install via UPM (using Git URL)
 ```
-https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#3.9.0
+https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#4.0.0
 ```
 
 ### Install manually (using .unitypackage)
