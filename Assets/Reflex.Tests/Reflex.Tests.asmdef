@@ -3,8 +3,9 @@
     "rootNamespace": "",
     "references": [
         "Reflex",
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "Reflex.Editor",
+        "UnityEditor.TestRunner",
+        "UnityEngine.TestRunner"
     ],
     "includePlatforms": [
         "Editor"

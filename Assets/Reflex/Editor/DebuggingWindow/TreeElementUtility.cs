@@ -1,15 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
-using UnityEditor;
 
 namespace Reflex.Editor.DebuggingWindow
 {
-
-	// TreeElementUtility and TreeElement are useful helper classes for backend tree data structures.
-	// See tests at the bottom for examples of how to use.
-
 	public static class TreeElementUtility
 	{
 		public static void TreeToList<T>(T root, IList<T> result) where T : TreeElement
@@ -121,99 +114,5 @@ namespace Reflex.Editor.DebuggingWindow
 			if (list.Count > 1 && list[1].Depth != 0)
 				throw new ArgumentException("Input list item at index 1 is assumed to have a depth of 0", "list");
 		}
-	}
-
-	class TreeElementUtilityTests
-	{
-		class TestElement : TreeElement
-		{
-			public TestElement (string name, int depth)
-			{
-				this.Name = name;
-				this.Depth = depth;
-			}
-		}
-
-		#region Tests
-		[Test]
-		public static void TestTreeToListWorks()
-		{
-			// Arrange
-			TestElement root = new TestElement("root", -1);
-			root.Children = new List<TreeElement>();
-			root.Children.Add(new TestElement("A", 0));
-			root.Children.Add(new TestElement("B", 0));
-			root.Children.Add(new TestElement("C", 0));
-
-			root.Children[1].Children = new List<TreeElement>();
-			root.Children[1].Children.Add(new TestElement("Bchild", 1));
-
-			root.Children[1].Children[0].Children = new List<TreeElement>();
-			root.Children[1].Children[0].Children.Add(new TestElement("Bchildchild", 2));
-
-			// Test
-			List<TestElement> result = new List<TestElement>();
-			TreeElementUtility.TreeToList(root, result);
-
-			// Assert
-			string[] namesInCorrectOrder = { "root", "A", "B", "Bchild", "Bchildchild", "C" };
-			Assert.AreEqual(namesInCorrectOrder.Length, result.Count, "Result count is not match");
-			for (int i = 0; i < namesInCorrectOrder.Length; ++i)
-			{
-				Assert.AreEqual(namesInCorrectOrder[i], result[i].Name);
-			}
-			TreeElementUtility.ValidateDepthValues(result);
-		}
-
-
-		[Test]
-		public static void TestListToTreeWorks()
-		{
-			// Arrange
-			var list = new List<TestElement>();
-			list.Add(new TestElement("root", -1));
-			list.Add(new TestElement("A", 0));
-			list.Add(new TestElement("B", 0));
-			list.Add(new TestElement("Bchild", 1));
-			list.Add(new TestElement("Bchildchild", 2));
-			list.Add(new TestElement("C", 0));
-
-			// Test
-			TestElement root = TreeElementUtility.ListToTree(list);
-
-			// Assert
-			Assert.AreEqual("root", root.Name);
-			Assert.AreEqual(3, root.Children.Count);
-			Assert.AreEqual("C", root.Children[2].Name);
-			Assert.AreEqual("Bchildchild", root.Children[1].Children[0].Children[0].Name);
-		}
-
-		[Test]
-		public static void TestListToTreeThrowsExceptionIfRootIsInvalidDepth()
-		{
-			// Arrange
-			var list = new List<TestElement>();
-			list.Add(new TestElement("root", 0));
-			list.Add(new TestElement("A", 1));
-			list.Add(new TestElement("B", 1));
-			list.Add(new TestElement("Bchild", 2));
-
-			// Test
-			bool catchedException = false;
-			try
-			{
-				TreeElementUtility.ListToTree(list);
-			}
-			catch (Exception)
-			{
-				catchedException = true;
-			}
-
-			// Assert
-			Assert.IsTrue(catchedException, "We require the root.depth to be -1, here it is: " + list[0].Depth);
-		
-		}
-
-		#endregion	
 	}
 }
