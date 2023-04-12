@@ -93,13 +93,13 @@ https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#3.9.0
 Create a Installer to install your bindings in the project context, and remember to add this component in the ProjectContext prefab, and reference it in the Installers list of the ProjectContext. See [ProjectContext.prefab](Assets/Reflex.GettingStarted/Resources/ProjectContext.prefab).
 
 ```csharp
-public class ProjectInstaller : Installer
+public class ProjectInstaller : MonoBehaviour, IInstaller
 {
-    public override void InstallBindings(Container container)
+    public void InstallBindings(ContainerDescriptor descriptor)
     {
-        container.BindInstance<int>(42);
-        container.BindTransient<IDependencyOne, DependencyOne>();
-        container.BindSingleton<IDependencyTwo, DependencyTwo>();
+        descriptor.AddInstance(42);
+        descriptor.AddTransient(typeof(BundleManager), typeof(IBundleManager));
+        descriptor.AddTransient(typeof(PrefabManager), typeof(IPrefabManager));
     }
 }
 ```
