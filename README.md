@@ -75,7 +75,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ## Installation
 
-*Requires Unity 2019+*
+*Requires Unity 2021+*
 
 ### Install via UPM (using Git URL)
 ```
