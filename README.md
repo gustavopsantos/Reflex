@@ -14,14 +14,10 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 [![Releases](https://img.shields.io/github/release/gustavopsantos/reflex.svg)](https://github.com/gustavopsantos/reflex/releases)
 [![openupm](https://img.shields.io/npm/v/com.gustavopsantos.reflex?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.gustavopsantos.reflex/)
 
-
 ## Features 
-- Blazing fast
-- IL2CPP Friendly
-- Minimal code base
-- Contructor injection
-- `[Inject]` Property, field and method injection attribute
-- Debugging Window 
+- **Fast:** ~3x faster than VContainer, ~10x faster than Zenject.
+- **GC Friendly:** ~2x less allocations than VContainer, ~12x less allocations than Zenject.
+- **AOT Support:** Basically theres no runtime no Emit, so it works fine on IL2CPP builds.
 
 ## Performance
 > Resolving ten thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Assets/Reflex.Benchmark/NestedBenchmarkReflex.cs).
