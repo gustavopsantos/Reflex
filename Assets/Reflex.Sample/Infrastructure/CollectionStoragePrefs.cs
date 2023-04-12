@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 using Reflex.Sample.Application;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Reflex.Sample.Infrastructure
 {
-    public class CollectionStoragePrefs : ICollectionStorage
+    internal class CollectionStoragePrefs : ICollectionStorage
     {
         private readonly HashSet<string> _storage;
 
         public CollectionStoragePrefs()
         {
             var json = PlayerPrefs.GetString("collection-storage", "[]");
-            _storage = JsonConvert.DeserializeObject<HashSet<string>>(json); // TODO upgrade unity version and  then, rely on newtonsoft json from unity package manager
+            _storage = JsonConvert.DeserializeObject<HashSet<string>>(json);
         }
 
         public void Clear()

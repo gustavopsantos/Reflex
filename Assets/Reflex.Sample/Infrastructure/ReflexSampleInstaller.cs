@@ -1,21 +1,26 @@
-﻿using Reflex.Sample.Application;
-using Reflex.Scripts;
+﻿using Reflex.Core;
+using Reflex.Sample.Application;
 using UnityEngine;
 
 namespace Reflex.Sample.Infrastructure
 {
-    public class ReflexSampleInstaller : Installer
+    internal class ReflexSampleInstaller : MonoBehaviour, IInstaller
     {
         [SerializeField] private PickupSoundEffect _pickupSoundEffectPrefab;
         [SerializeField] private CollectorConfigurationModel _collectorConfigurationModel;
 
-        public override void InstallBindings(Container container)
+        public void InstallBindings(ContainerDescriptor descriptor)
         {
-            container.BindInstance(_pickupSoundEffectPrefab);
-            container.BindInstance(_collectorConfigurationModel);
-            //container.BindSingleton<ICollectorInput, CollectorInputMouse>();
-            container.BindSingleton<ICollectorInput, CollectorInputKeyboard>();
-            container.BindSingleton<ICollectionStorage, CollectionStoragePrefs>();
+            InstallInput(descriptor, useMouse: false);
+            descriptor.AddInstance(_pickupSoundEffectPrefab);
+            descriptor.AddInstance(_collectorConfigurationModel);
+            descriptor.AddSingleton(typeof(CollectionStoragePrefs), typeof(ICollectionStorage));
+        }
+
+        private static void InstallInput(ContainerDescriptor descriptor, bool useMouse)
+        {
+            var implementation = useMouse ? typeof(CollectorInputMouse) : typeof(CollectorInputKeyboard);
+            descriptor.AddSingleton(implementation, typeof(ICollectorInput));
         }
     }
 }

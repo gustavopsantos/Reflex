@@ -1,10 +1,10 @@
-using Benchmark.NestedModel;
-using Benchmark.Utilities;
+using Reflex.Benchmark.NestedModel;
+using Reflex.Benchmark.Utilities;
 using Zenject;
 
-namespace Benchmark
+namespace Reflex.Benchmark
 {
-    public class NestedBenchmarkZenject : MonoProfiler
+    internal class NestedBenchmarkZenject : MonoProfiler
     {
         private readonly DiContainer _container = new DiContainer();
 

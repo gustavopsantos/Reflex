@@ -1,10 +1,10 @@
-using Benchmark.NestedModel;
-using Benchmark.Utilities;
+using Reflex.Benchmark.NestedModel;
+using Reflex.Benchmark.Utilities;
 using VContainer;
 
-namespace Benchmark
+namespace Reflex.Benchmark
 {
-    public class NestedBenchmarkVContainer : MonoProfiler
+    internal class NestedBenchmarkVContainer : MonoProfiler
     {
         private readonly ContainerBuilder _containerBuilder = new ContainerBuilder();
         private IObjectResolver _objectResolver;

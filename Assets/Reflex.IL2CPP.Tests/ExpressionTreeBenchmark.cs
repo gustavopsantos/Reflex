@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
-public class ExpressionTreeBenchmark : MonoBehaviour
+internal class ExpressionTreeBenchmark : MonoBehaviour
 {
 	private const int Iterations = 10000;
 	private const int SampleCount = 64;

@@ -1,18 +1,20 @@
 using System;
-using Reflex;
-using UnityEngine;
 using IL2CPPTest.Models;
+using Reflex.Core;
+using UnityEngine;
 
-namespace IL2CPPTest
+namespace Reflex.IL2CPP.Tests
 {
-    public class PlatformRuntimeTest : MonoBehaviour
+    internal class PlatformRuntimeTest : MonoBehaviour
     {
-        private readonly Container _container = new Container(string.Empty);
+        private Container _container;
 
         private void Start()
         {
-            _container.BindInstance(42);
-            _container.BindTransient<ITestGenericStructure<int>, TestGenericStructure<int>>();
+            _container = new ContainerDescriptor("")
+                .AddInstance(42, typeof(int))
+                .AddTransient(typeof(TestGenericStructure<int>), typeof(ITestGenericStructure<int>))
+                .Build();
         }
 
         private void OnGUI()
@@ -42,7 +44,7 @@ namespace IL2CPPTest
             try
             {
                 error = null;
-                return _container.Resolve<ITestGenericStructure<int>>().Value == 42;
+                return _container.Single<ITestGenericStructure<int>>().Value == 42;
             }
             catch (Exception e)
             {

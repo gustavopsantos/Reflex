@@ -1,168 +1,166 @@
 using System;
+using System.Collections.Generic;
 using FluentAssertions;
+using Reflex.Core;
+using Reflex.Exceptions;
 using NUnit.Framework;
 
 namespace Reflex.Tests
 {
-    public class ScopedContainerTests
+    internal class ScopedContainerTests
     {
-        private class Foo : IDisposable
+        private class Disposable : IDisposable
         {
-            public bool IsDisposed { get; private set; }
+            public int Disposed { get; private set; }
 
-            public Foo()
+            public void Dispose()
             {
+                Disposed++;
+            }
+        }
+        
+        private class DisposeHook : IDisposable
+        {
+            private event Action OnDispose;
+
+            public DisposeHook(Action onDispose)
+            {
+                OnDispose += onDispose;
             }
 
             public void Dispose()
             {
-                IsDisposed = true;
-            }
-        }
-
-        private class DependsOnFoo : IDisposable
-        {
-            public Foo Foo { get; }
-
-            public DependsOnFoo(Foo foo)
-            {
-                Foo = foo;
-            }
-
-            public void Dispose()
-            {
+                OnDispose.Invoke();
             }
         }
 
         [Test]
-        public void InnerContainerCanResolveBindingFromOuterScope()
+        public void ScopedContainer_CanResolveDependency_FromParentContainer()
         {
-            using (var outer = new Container(string.Empty))
+            using (var outer = new ContainerDescriptor("").AddInstance(42, typeof(int)).Build())
             {
-                outer.BindInstance(42);
-
-                using (var inner = outer.Scope(string.Empty))
+                using (var inner = outer.Scope(""))
                 {
-                    inner.Resolve<int>().Should().Be(42);
+                    inner.Single<int>().Should().Be(42);
                 }
             }
         }
 
         [Test]
-        public void InnerContainerCanOverrideBindingFromOuterScope()
+        public void ParentWithScopedContainer_ParentShouldNotBeAbleToResolveDependencyFromChild()
         {
-            using (var outer = new Container(string.Empty))
-            {
-                outer.BindInstance("outer");
+            var outer = new ContainerDescriptor("").Build();
+            var inner = outer.Scope("", builder => builder.AddInstance(42, typeof(int)));
+            Action resolve = () => outer.Single<int>();
+            resolve.Should().ThrowExactly<UnknownContractException>();
+        }
 
-                using (var inner = outer.Scope(string.Empty))
+        [Test]
+        public void ScopedContainer_WhenDisposed_ShouldNotDisposeDependencyFromParentContainer()
+        {
+            using (var outer = new ContainerDescriptor("").AddSingleton(typeof(Disposable), typeof(Disposable)).Build())
+            {
+                using (var inner = outer.Scope(""))
                 {
-                    inner.BindInstance("inner");
-                    inner.Resolve<string>().Should().Be("inner");
+                    var disposable = inner.Single<Disposable>();
+                    disposable.Should().NotBeNull();
+                }
+
+                outer.Single<Disposable>().Disposed.Should().Be(0);
+            }
+        }
+
+        [Test]
+        public void ScopedContainer_Scoped_ShouldParentAsParent()
+        {
+            using (var outer = new ContainerDescriptor("").Build())
+            {
+                using (var inner = outer.Scope(""))
+                {
+                    inner.Parent.Should().Be(outer);
                 }
             }
         }
 
         [Test]
-        public void OuterContainerShouldNotBeAffectedByInnerContainerOverride()
+        public void ScopedContainer_Parent_ShouldHaveScopedAsChild()
         {
-            using (var outer = new Container(string.Empty))
+            using (var outer = new ContainerDescriptor("").Build())
             {
-                outer.BindInstance("outer");
-
-                using (var inner = outer.Scope(string.Empty))
+                using (var inner = outer.Scope(""))
                 {
-                    inner.BindInstance("inner");
-                }
-
-                outer.Resolve<string>().Should().Be("outer");
-            }
-        }
-
-        [Test]
-        public void InnerScopeBindingCanResolveOuterDependency()
-        {
-            using (var outer = new Container(string.Empty))
-            {
-                var foo = new Foo();
-                outer.BindInstance(foo);
-
-                using (var inner = outer.Scope(string.Empty))
-                {
-                    inner.BindSingleton<DependsOnFoo, DependsOnFoo>();
-                    inner.Resolve<DependsOnFoo>().Foo.Should().Be(foo);
+                    outer.Children.Contains(inner).Should().BeTrue();
                 }
             }
         }
 
         [Test]
-        public void DisposingInnerScopeShouldNotDisposeInstancesFromOuterScope()
+        public void ScopedContainer_AfterParentDisposal_ShouldBeUnParented()
         {
-            using (var outer = new Container(string.Empty))
+            var outer = new ContainerDescriptor("").Build();
+            var inner = outer.Scope("");
+
+            inner.Parent.Should().Be(outer);
+            outer.Children.Contains(inner).Should().BeTrue();
+            outer.Dispose();
+            inner.Parent.Should().BeNull();
+            outer.Children.Contains(inner).Should().BeFalse();
+        }
+
+        [Test]
+        public void ContainerWithDisposables_ShouldDisposeInStackOrder1()
+        {
+            var disposalOrder = new List<string>();
+
+            var a = new ContainerDescriptor("")
+                .AddInstance(new DisposeHook(() => { disposalOrder.Add("a"); }))
+                .Build();
+
+            var b = a.Scope("", builder => builder.AddInstance(new DisposeHook(() => { disposalOrder.Add("b"); })));
+            var c = b.Scope("", builder => builder.AddInstance(new DisposeHook(() => { disposalOrder.Add("c"); })));
+            var d = c.Scope("", builder => builder.AddInstance(new DisposeHook(() => { disposalOrder.Add("d"); })));
+            var e = d.Scope("", builder => builder.AddInstance(new DisposeHook(() => { disposalOrder.Add("e"); })));
+            
+            a.Dispose();
+            
+            string.Join(",", disposalOrder).Should().BeEquivalentTo("e,d,c,b,a");
+        }
+        
+        [Test]
+        public void ContainerWithDisposables_ShouldDisposeInStackOrder2()
+        {
+            var disposalOrder = new List<string>();
+
+            var a = new ContainerDescriptor("")
+                .AddInstance(new DisposeHook(() => { disposalOrder.Add("a"); }))
+                .Build();
+
+            var b = a.Scope("", builder => builder.AddInstance(new DisposeHook(() => { disposalOrder.Add("b"); })));
+            
+            a.Dispose();
+            
+            string.Join(",", disposalOrder).Should().BeEquivalentTo("b,a");
+        }
+        
+        [Test]
+        public void ScopedContainer_ResolvingContainerFromInnerScope_ShouldResolveInner()
+        {
+            using (var outer = new ContainerDescriptor("").Build())
             {
-                outer.BindSingleton<Foo, Foo>();
-
-                using (var inner = outer.Scope(string.Empty))
+                using (var inner = outer.Scope(""))
                 {
-                    inner.BindSingleton<DependsOnFoo, DependsOnFoo>();
-                    inner.Resolve<Foo>();
-                    inner.Resolve<DependsOnFoo>().Foo.IsDisposed.Should().BeFalse();
+                    inner.Single<Container>().Should().Be(inner);
                 }
-
-                outer.Resolve<Foo>().IsDisposed.Should().BeFalse();
             }
         }
 
         [Test]
-        public void ResolvingContainerFromInnerScopeShouldResolveInner()
+        public void ScopedContainer_ResolvingContainerFromOuterScope_ShouldResolveOuter()
         {
-            using (var outer = new Container(string.Empty))
-            {
-                using (var inner = outer.Scope(string.Empty))
-                {
-                    inner.Resolve<Container>().Should().Be(inner);
-                }
-            }
-        }
-
-        [Test]
-        public void ResolvingContainerFromOuterScopeShouldResolveOuter()
-        {
-            using (var outer = new Container(string.Empty))
-            {
-                using (var inner = outer.Scope(string.Empty))
-                {
-                    inner.Resolve<Container>();
-                }
-
-                outer.Resolve<Container>().Should().Be(outer);
-            }
-        }
-
-        private interface IManager : IDisposable
-        {
-            bool Disposed { get; }
-        }
-
-        public class Manager : IManager
-        {
-            public bool Disposed { get; private set; }
-
-            public void Dispose()
-            {
-                Disposed = true;
-            }
-        }
-
-        [Test]
-        public void InnerScopedContainerShouldNotDisposeOuterBindings()
-        {
-            var outer = new Container("Outer");
-            outer.BindSingleton<Foo, Foo>();
-            var inner = outer.Scope("Inner");
-            inner.Resolve<Foo>();
-            inner.Dispose();
-            outer.Resolve<Foo>().IsDisposed.Should().BeFalse();
+            using var outer = new ContainerDescriptor("").Build();
+            using var inner = outer.Scope(""); 
+            var temp = inner.Single<Container>();
+            outer.Single<Container>().Should().Be(outer);
         }
     }
 }

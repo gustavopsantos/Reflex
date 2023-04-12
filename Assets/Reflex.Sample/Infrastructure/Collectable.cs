@@ -1,10 +1,10 @@
-﻿using Reflex.Sample.Application;
-using Reflex.Scripts.Attributes;
+﻿using Reflex.Attributes;
+using Reflex.Sample.Application;
 using UnityEngine;
 
 namespace Reflex.Sample.Infrastructure
 {
-    public class Collectable : MonoBehaviour
+    internal class Collectable : MonoBehaviour
     {
         [SerializeField] private string _id;
         [Inject] private ICollectionStorage _collectionStorage;

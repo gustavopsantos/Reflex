@@ -1,11 +1,11 @@
 {
   "dependencies": {
     "com.madsbangh.easybuttons": "https://github.com/madsbangh/EasyButtons.git#upm",
-    "com.unity.nuget.newtonsoft-json":"3.0.2",
     "com.svermeulen.extenject": "https://github.com/modesttree/Zenject.git?path=/UnityProject/Assets/Plugins/Zenject/#9.2.0",
-    "com.unity.ide.rider": "3.0.15",
-    "com.unity.ide.visualstudio": "2.0.16",
-    "com.unity.ide.vscode": "1.2.5",
+    "com.unity.ide.rider": "3.0.18",
+    "com.unity.nuget.mono-cecil": "1.11.4",
+    "com.unity.nuget.newtonsoft-json": "3.0.2",
+    "com.unity.test-framework": "1.1.33",
     "com.unity.ugui": "1.0.0",
     "jp.hadashikick.vcontainer": "https://github.com/hadashiA/VContainer.git?path=/VContainer/Assets/VContainer/#1.8.6",
     "com.unity.modules.animation": "1.0.0",
@@ -13,19 +13,5 @@
     "com.unity.modules.particlesystem": "1.0.0",
     "com.unity.modules.physics": "1.0.0",
     "com.unity.modules.ui": "1.0.0"
-  },
-  "lock": {
-    "com.madsbangh.easybuttons": {
-      "revision": "upm",
-      "hash": "39da70419a2dc9ce0059b40dd64abcdfcef58ea1"
-    },
-    "com.svermeulen.extenject": {
-      "revision": "9.2.0",
-      "hash": "c2e33500a84f9408a809deca2af2c55494ab2482"
-    },
-    "jp.hadashikick.vcontainer": {
-      "revision": "1.8.6",
-      "hash": "7f64a086ff7debbdb174ac136f1d94871b4c4a6d"
-    }
   }
 }

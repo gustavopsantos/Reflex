@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Reflex.Sample.Infrastructure
 {
-    public class CollectorInputKeyboard : ICollectorInput
+    internal class CollectorInputKeyboard : ICollectorInput
     {
         public Vector2 Get()
         {

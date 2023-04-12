@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using Domain.Generics;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-namespace Benchmark.Utilities
+namespace Reflex.Benchmark.Utilities
 {
 	public abstract class MonoProfiler : MonoBehaviour
 	{

@@ -1,6 +1,6 @@
-﻿namespace Benchmark.NestedModel
+﻿namespace Reflex.Benchmark.NestedModel
 {
-    public class A : IA
+    internal class A : IA
     {
         private readonly IB _b;
 

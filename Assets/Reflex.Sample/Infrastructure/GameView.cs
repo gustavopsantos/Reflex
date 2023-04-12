@@ -1,12 +1,12 @@
-﻿using Reflex.Sample.Application;
-using Reflex.Scripts.Attributes;
+﻿using Reflex.Attributes;
+using Reflex.Sample.Application;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Reflex.Sample.Infrastructure
 {
-    public class GameView : MonoBehaviour
+    internal class GameView : MonoBehaviour
     {
         [SerializeField] private Text _progressText;
         [SerializeField] private Button _resetButton;

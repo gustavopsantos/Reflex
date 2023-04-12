@@ -2,7 +2,7 @@
     "name": "Reflex.IL2CPP.Tests",
     "rootNamespace": "",
     "references": [
-        "GUID:b83fa2c9a1c9b78468588c16e6fad878"
+        "GUID:1530a967b84cfb44dbdd5e8a1989764f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,10 +1,10 @@
-﻿using Reflex.Sample.Application;
-using Reflex.Scripts.Attributes;
+﻿using Reflex.Attributes;
+using Reflex.Sample.Application;
 using UnityEngine;
 
 namespace Reflex.Sample.Infrastructure
 {
-    public class Collector : MonoBehaviour
+    internal class Collector : MonoBehaviour
     {
         [Inject] private readonly ICollectorInput _input;
         [Inject] private readonly CollectorConfigurationModel _model;

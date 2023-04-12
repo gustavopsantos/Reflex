@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Reflex.Scripts.Logging;
+using Reflex.Logging;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+using UnityEngine;
 
 namespace Reflex.Editor.DebuggingWindow
 {
@@ -19,7 +20,6 @@ namespace Reflex.Editor.DebuggingWindow
         private void Init(TreeModel<T> model)
         {
             _treeModel = model;
-            _treeModel.OnModelChanged += Reload;
         }
 
         protected override TreeViewItem BuildRoot()
@@ -32,7 +32,7 @@ namespace Reflex.Editor.DebuggingWindow
         {
             if (_treeModel.Root == null)
             {
-                DebugLogger.LogError("tree model root is null. did you call SetData()?");
+                ReflexLogger.Log("tree model root is null. did you call SetData()?", LogLevel.Error);
             }
 
             _rows.Clear();
@@ -83,6 +83,11 @@ namespace Reflex.Editor.DebuggingWindow
                 throw new ArgumentException("Invalid search: cannot be null or empty", nameof(search));
             }
 
+            if (searchFromThis == null || searchFromThis.Children == null)
+            {
+                return;
+            }
+            
             const int itemDepth = 0; // tree is flattened when searching
 
             Stack<T> stack = new Stack<T>();

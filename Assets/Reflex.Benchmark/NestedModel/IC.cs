@@ -1,4 +1,4 @@
-namespace Benchmark.NestedModel
+namespace Reflex.Benchmark.NestedModel
 {
     public interface IC
     {

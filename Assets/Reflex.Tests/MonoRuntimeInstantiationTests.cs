@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using FluentAssertions;
-using Reflex.Scripts.Attributes;
+using Reflex.Attributes;
+using Reflex.Core;
+using Reflex.Extensions;
 using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace Reflex.Tests
 {
-    public class MonoRuntimeInstantiationTests
+    internal class MonoRuntimeInstantiationTests
     {
         [ExecuteInEditMode]
         private class MonoEventHook : MonoBehaviour
@@ -32,14 +34,14 @@ namespace Reflex.Tests
         }
 
         [UnityTest]
-        public IEnumerator ExecutionOrderOfRuntimeInstantiatedMonoBehaviours_ShouldBe_InjectAwakeStart()
+        public IEnumerator ExecutionOrderOfRuntimeInstantiatedMonoBehaviours_ShouldBe_AwakeInjectStart()
         {
-            using (var container = new Container(string.Empty))
+            using (var container = new ContainerDescriptor("").Build())
             {
                 var prefab = new GameObject("Prefab").AddComponent<MonoEventHook>();
                 var instance = container.Instantiate(prefab);
                 yield return null;
-                string.Join(",", instance.ExecutionOrder).Should().Be("Inject,Awake,Start");
+                string.Join(",", instance.ExecutionOrder).Should().Be("Awake,Inject,Start");
             }
         }
     }

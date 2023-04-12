@@ -1,0 +1,1 @@
+*.{dll,exr,fbx,hdr,jpg,png,psd,terrainlayer,tga,wav,svg,bin,cubemap,bmp,flare,pdf,ogg,tif,mask,cube,gif,mp4,mp3,pdb} filter=lfs diff=lfs merge=lfs -text

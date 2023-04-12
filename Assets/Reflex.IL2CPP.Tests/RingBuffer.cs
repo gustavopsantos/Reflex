@@ -2,7 +2,7 @@ using System;
 
 namespace Domain.Generics
 {
-    public class RingBuffer<T>
+    internal class RingBuffer<T>
     {
         private int _offset;
         private readonly T[] _array;

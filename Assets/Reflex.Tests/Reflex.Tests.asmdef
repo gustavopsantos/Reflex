@@ -1,9 +1,10 @@
 {
     "name": "Reflex.Tests",
+    "rootNamespace": "",
     "references": [
+        "Reflex",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "Reflex"
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [
         "Editor"
@@ -12,8 +13,9 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll",
-        "FluentAssertions.dll"
+        "NSubstitute.dll",
+        "FluentAssertions.dll",
+        "nunit.framework.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

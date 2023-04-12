@@ -121,53 +121,6 @@ namespace Reflex.Editor.DebuggingWindow
 			if (list.Count > 1 && list[1].Depth != 0)
 				throw new ArgumentException("Input list item at index 1 is assumed to have a depth of 0", "list");
 		}
-
-		// For updating depth values below any given element e.g after reparenting elements
-		public static void UpdateDepthValues<T>(T root) where T : TreeElement
-		{
-			if (root == null)
-				throw new ArgumentNullException("root", "The root is null");
-
-			if (!root.HasChildren)
-				return;
-
-			Stack<TreeElement> stack = new Stack<TreeElement>();
-			stack.Push(root);
-			while (stack.Count > 0)
-			{
-				TreeElement current = stack.Pop();
-				if (current.Children != null)
-				{
-					foreach (var child in current.Children)
-					{
-						child.Depth = current.Depth + 1;
-						stack.Push(child);
-					}
-				}
-			}
-		}
-
-		// Returns true if there is an ancestor of child in the elements list
-		private static bool IsChildOf<T>(T child, IList<T> elements) where T : TreeElement
-		{
-			while (child != null)
-			{
-				child = (T)child.Parent;
-				if (elements.Contains(child))
-					return true;
-			}
-			return false;
-		}
-
-		public static IList<T> FindCommonAncestorsWithinList<T>(IList<T> elements) where T : TreeElement
-		{
-			if (elements.Count == 1)
-				return new List<T>(elements);
-
-			List<T> result = new List<T>(elements);
-			result.RemoveAll(g => IsChildOf(g, elements));
-			return result;
-		}
 	}
 
 	class TreeElementUtilityTests
@@ -259,53 +212,6 @@ namespace Reflex.Editor.DebuggingWindow
 			// Assert
 			Assert.IsTrue(catchedException, "We require the root.depth to be -1, here it is: " + list[0].Depth);
 		
-		}
-
-		[Test]
-		public static void FindCommonAncestorsWithinListWorks()
-		{
-			// Arrange
-			var list = new List<TestElement>();
-			list.Add(new TestElement("root", -1));
-			list.Add(new TestElement("A", 0));
-			var b0 = new TestElement("B", 0);
-			var b1 = new TestElement("Bchild", 1);
-			var b2 = new TestElement("Bchildchild", 2);
-			list.Add(b0);
-			list.Add(b1);
-			list.Add(b2);
-
-			var c0 = new TestElement ("C", 0);
-			list.Add(c0);
-		
-			var f0 = new TestElement("F", 0);
-			var f1 = new TestElement("Fchild", 1);
-			var f2 = new TestElement("Fchildchild", 2);
-			list.Add(f0);
-			list.Add(f1);
-			list.Add(f2);
-		
-			// Init tree structure: set children and parent properties
-			TreeElementUtility.ListToTree(list);
-
-	
-			// Single element
-			TestElement[] input = {b1};
-			TestElement[] expectedResult = {b1};
-			var result = TreeElementUtility.FindCommonAncestorsWithinList(input).ToArray();
-			Assert.IsTrue(ArrayUtility.ArrayEquals(expectedResult, result), "Single input should return single output");
-
-			// Single sub tree
-			input = new[] {b1, b2};
-			expectedResult = new[] {b1};
-			result = TreeElementUtility.FindCommonAncestorsWithinList (input).ToArray ();
-			Assert.IsTrue(ArrayUtility.ArrayEquals(expectedResult, result), "Common ancestor should only be b1 ");
-
-			// Multiple sub trees
-			input = new[] { b0, b2, f0, f2, c0 };
-			expectedResult = new[] { b0, f0, c0 };
-			result = TreeElementUtility.FindCommonAncestorsWithinList(input).ToArray();
-			Assert.IsTrue(ArrayUtility.ArrayEquals(expectedResult, result), "Common ancestor should only be b0, f0, c0");
 		}
 
 		#endregion	

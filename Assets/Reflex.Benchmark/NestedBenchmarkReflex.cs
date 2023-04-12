@@ -1,28 +1,29 @@
-using System;
-using Benchmark.NestedModel;
-using Benchmark.Utilities;
-using Reflex;
+using Reflex.Benchmark.NestedModel;
+using Reflex.Benchmark.Utilities;
+using Reflex.Core;
 
-namespace Benchmark
+namespace Reflex.Benchmark
 {
-    public class NestedBenchmarkReflex : MonoProfiler
+    internal class NestedBenchmarkReflex : MonoProfiler
     {
-        private readonly Container _container = new Container(string.Empty);
+        private Container _container;
 
         private void Start()
         {
-            _container.BindTransient<IA, A>();
-            _container.BindTransient<IB, B>();
-            _container.BindTransient<IC, C>();
-            _container.BindTransient<ID, D>();
-            _container.BindTransient<IE, E>();
+            _container = new ContainerDescriptor("")
+                .AddTransient(typeof(A), typeof(IA))
+                .AddTransient(typeof(B), typeof(IB))
+                .AddTransient(typeof(C), typeof(IC))
+                .AddTransient(typeof(D), typeof(ID))
+                .AddTransient(typeof(E), typeof(IE))
+                .Build();
         }
 
         protected override int Order => 0;
 
         protected override void Sample()
         {
-            _container.Resolve<IA>();
+            _container.Single<IA>();
         }
     }
 }

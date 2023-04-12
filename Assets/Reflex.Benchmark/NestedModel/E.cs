@@ -1,6 +1,6 @@
-namespace Benchmark.NestedModel
+namespace Reflex.Benchmark.NestedModel
 {
-    public class E : IE
+    internal class E : IE
     {
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Reflex.Sample.Infrastructure
 {
-    public class CollectorInputMouse : ICollectorInput
+    internal class CollectorInputMouse : ICollectorInput
     {
         public Vector2 Get()
         {
