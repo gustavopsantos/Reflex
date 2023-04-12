@@ -75,7 +75,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 ## Installation
 
-*Requires Unity 2019+*
+*Requires Unity 2021+*
 
 ### Install via UPM (using Git URL)
 ```
@@ -90,16 +90,16 @@ https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#3.9.0
 
 ### Installing Bindings
 
-Create a Installer to install your bindings in the project context, and remember to add this component in the ProjectContext prefab, and reference it in the Installers list of the ProjectContext. See [ProjectContext.prefab](Assets/Reflex.GettingStarted/Resources/ProjectContext.prefab).
+Create your IInstaller implementation to install your bindings in the desired context (eg. ProjectContext or SceneContext), and remember to attach this component directly or as a child of your context prefab. See [SceneContext](Assets/Reflex.Sample/Reflex.Sample.unity) gameobject for reference.
 
 ```csharp
-public class ProjectInstaller : Installer
+public class ProjectInstaller : MonoBehaviour, IInstaller
 {
-    public override void InstallBindings(Container container)
+    public void InstallBindings(ContainerDescriptor descriptor)
     {
-        container.BindInstance<int>(42);
-        container.BindTransient<IDependencyOne, DependencyOne>();
-        container.BindSingleton<IDependencyTwo, DependencyTwo>();
+        descriptor.AddInstance(42);
+        descriptor.AddTransient(typeof(BundleManager), typeof(IBundleManager));
+        descriptor.AddTransient(typeof(PrefabManager), typeof(IPrefabManager));
     }
 }
 ```
