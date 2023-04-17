@@ -8,9 +8,9 @@ namespace Reflex.Tests
     public class ProjectSetupTests
     {
         [Test]
-        public void ProjectCanHaveNoneOrSingleProjectContext()
+        public void ProjectCanHaveNoneOrSingleProjectScope()
         {
-            var assets = Resources.LoadAll<ProjectContext>(string.Empty);
+            var assets = Resources.LoadAll<ProjectScope>(string.Empty);
 
             if (assets.Length is 0 or 1)
             {
@@ -18,7 +18,7 @@ namespace Reflex.Tests
             }
             else
             {
-                Assert.Fail($"You can have none or a single ProjectContext, currently you have {assets.Length}");
+                Assert.Fail($"You can have none or a single {nameof(ProjectScope)}, currently you have {assets.Length}");
             }
         }
         

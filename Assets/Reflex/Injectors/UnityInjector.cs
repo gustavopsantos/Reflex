@@ -59,9 +59,9 @@ namespace Reflex.Injectors
         {
             var builder = new ContainerDescriptor("ProjectContainer");
             
-            if (ResourcesUtilities.TryLoad<ProjectContext>(nameof(ProjectContext), out var projectContext))
+            if (ResourcesUtilities.TryLoad<ProjectScope>(nameof(ProjectScope), out var projectScope))
             {
-                projectContext.InstallBindings(builder);
+                projectScope.InstallBindings(builder);
             }
             
             var container = Tree<Container>.Root = builder.Build();
@@ -79,9 +79,9 @@ namespace Reflex.Injectors
                     preBuilder.Invoke(builder);
                 }
                 
-                if (scene.TryFindAtRoot<SceneContext>(out var sceneContext))
+                if (scene.TryFindAtRoot<SceneScope>(out var sceneScope))
                 {
-                    sceneContext.InstallBindings(builder);
+                    sceneScope.InstallBindings(builder);
                 }
             });
         }

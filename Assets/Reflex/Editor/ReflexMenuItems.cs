@@ -23,15 +23,15 @@ namespace Reflex.Editor
             UnityEditorUtility.CreateScriptableObject<ReflexSettings>(desiredAssetPath);
         }
 
-        [MenuItem("Assets/Create/Reflex/ProjectContext", false, priority = 0)]
-        private static void CreateReflexProjectContext()
+        [MenuItem("Assets/Create/Reflex/ProjectScope", false, priority = 0)]
+        private static void CreateReflexProjectScope()
         {
             var directory = UnityEditorUtility.GetSelectedPathInProjectWindow();
-            var desiredAssetPath = Path.Combine(directory, "ProjectContext.prefab");
+            var desiredAssetPath = Path.Combine(directory, $"{nameof(ProjectScope)}.prefab");
 
             void Edit(GameObject prefab)
             {
-                prefab.AddComponent<ProjectContext>();
+                prefab.AddComponent<ProjectScope>();
             }
 
             UnityEditorUtility.CreatePrefab(desiredAssetPath, Edit);

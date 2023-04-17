@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Reflex.Core
 {
-    public sealed class SceneContext : MonoBehaviour
+    public sealed class ProjectScope : MonoBehaviour
     {
         public void InstallBindings(ContainerDescriptor descriptor)
         {
@@ -12,7 +12,7 @@ namespace Reflex.Core
                 nestedInstaller.InstallBindings(descriptor);
             }
 
-            ReflexLogger.Log($"SceneContext ({gameObject.scene.name}) Bindings Installed", LogLevel.Info, gameObject);
+            ReflexLogger.Log($"{nameof(ProjectScope)} Bindings Installed", LogLevel.Info, gameObject);
         }
     }
 }

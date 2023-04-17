@@ -1399,7 +1399,7 @@ GameObject:
   - component: {fileID: 1768555619}
   - component: {fileID: 1768555620}
   m_Layer: 0
-  m_Name: SceneContext
+  m_Name: SceneScope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

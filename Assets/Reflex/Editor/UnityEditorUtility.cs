@@ -26,9 +26,9 @@ namespace Reflex.Editor
         public static void CreatePrefab(string desiredPrefabPath, Action<GameObject> edit = null)
         {
             var prefabPath =  AssetDatabase.GenerateUniqueAssetPath(desiredPrefabPath);
-            var projectContextTemplate = new GameObject(Path.GetFileNameWithoutExtension(prefabPath));
-            var prefab = PrefabUtility.SaveAsPrefabAsset(projectContextTemplate, prefabPath);
-            Object.DestroyImmediate(projectContextTemplate);
+            var template = new GameObject(Path.GetFileNameWithoutExtension(prefabPath));
+            var prefab = PrefabUtility.SaveAsPrefabAsset(template, prefabPath);
+            Object.DestroyImmediate(template);
             
             using (var editingScope = new PrefabUtility.EditPrefabContentsScope(prefabPath))
             {
