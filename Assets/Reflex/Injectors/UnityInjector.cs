@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Reflex.Core;
 using Reflex.Extensions;
 using Reflex.Generics;
@@ -14,6 +15,8 @@ namespace Reflex.Injectors
 {
     internal static class UnityInjector
     {
+        internal static Dictionary<Scene, Action<ContainerDescriptor>> Extensions { get; } = new();
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeAwakeOfFirstSceneOnly()
         {
@@ -70,6 +73,12 @@ namespace Reflex.Injectors
         {
             return projectContainer.Scope($"{scene.name} ({scene.GetHashCode()})", builder =>
             {
+                if (Extensions.TryGetValue(scene, out var preBuilder))
+                {
+                    Extensions.Remove(scene);                    
+                    preBuilder.Invoke(builder);
+                }
+                
                 if (scene.TryFindAtRoot<SceneContext>(out var sceneContext))
                 {
                     sceneContext.InstallBindings(builder);
