@@ -249,9 +249,21 @@ Through the debugging window you can visualize:
 - Bindings
 - Resolution count
 
-## Scripting Restrictions/IL2CPP Support
+## Scripting Restrictions
+If you are taking advantage of reflex to inject `IEnumerable<T>` in your constructors **AND** your are building for **IL2CPP**, you will probably get some exceptions like following:
+
+```
+System.ExecutionEngineException: Attempting to call method 'System.Linq.Enumerable::Cast<ANY-TYPE>' for which no ahead of time (AOT) code was generated.
+```
+
+This happens because compiler does not know at compile time that a specific `System.Linq.Enumerable::Cast<T>` should be included. And currently Reflex does not implement any type of assembly weaving.
+> Reflex 4.0.0 had and assembly weaver that was relying on unity UnityEditor.Compilation.CompilationPipeline events and Mono.Cecil. But it was causing conflicts with projects using Burst. So its being removed temporarly until a definitive solution is found.
+> Most probably we are going to weave assemblies the same way unity is doing for Burst as well.
+
+Temporary workaround example:
+
 ```csharp
-public sealed class NumberManager
+class NumberManager
 {
     public IEnumerable<int> Numbers { get; }
 
@@ -259,12 +271,11 @@ public sealed class NumberManager
     {
         Numbers = numbers;
     }
-        
-    // In some extreme cases, you'll need to hint compiler so your code doesn't get stripped
+    
     // https://docs.unity3d.com/Manual/ScriptingRestrictions.html
     [Preserve] private static void UsedOnlyForAOTCodeGeneration()
     {
-        Array.Empty<object>().Cast<int>();
+        Array.Empty<object>().Cast<int>(); // This compiler hint will get rid of: System.ExecutionEngineException: Attempting to call method 'System.Linq.Enumerable::Cast<System.Int32>' for which no ahead of time (AOT) code was generated. 
         throw new Exception("This method is used for AOT code generation only. Do not call it at runtime.");
     }
 }
