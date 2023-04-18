@@ -118,7 +118,7 @@ public class ProjectInstaller : MonoBehaviour, IInstaller
 
 ### Install via UPM (using Git URL)
 ```
-https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#4.0.0
+https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#4.1.0
 ```
 
 ### Install manually (using .unitypackage)
