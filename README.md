@@ -14,6 +14,8 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 [![openupm](https://img.shields.io/npm/v/com.gustavopsantos.reflex?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.gustavopsantos.reflex/)
 [![Unity](https://img.shields.io/badge/Unity-2021+-black.svg)](https://unity3d.com/pt/get-unity/download/archive)
 
+> Improved readme with entensive documentation under progress
+
 ## Features 
 - **Fast:** ~3x faster than VContainer, ~10x faster than Zenject.
 - **GC Friendly:** ~2x less allocations than VContainer, ~12x less allocations than Zenject.
