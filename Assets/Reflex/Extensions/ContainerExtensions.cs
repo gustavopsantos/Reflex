@@ -12,6 +12,8 @@ namespace Reflex.Extensions
         {
             var instance = Object.Instantiate(original);
 
+            var prefabScope = instance.GetComponent<PrefabScope>();
+
             if (prefabScope != null)
             {
                 var prefabContainer = container.Scope($"{instance.name} ({instance.GetInstanceID()})", builder =>
