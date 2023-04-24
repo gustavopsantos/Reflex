@@ -12,9 +12,24 @@ namespace Reflex.Extensions
         {
             var instance = Object.Instantiate(original);
 
-            foreach (var injectable in instance.GetInjectables(injectionMode))
+            if (prefabScope != null)
             {
-                AttributeInjector.Inject(injectable, container);
+                var prefabContainer = container.Scope($"{instance.name} ({instance.GetInstanceID()})", builder =>
+                {
+                    prefabScope.InstallBindings(builder);
+                });
+
+                foreach (var injectable in instance.GetInjectables(MonoInjectionMode.Recursive))
+                {
+                    AttributeInjector.Inject(injectable, prefabContainer);
+                }
+            }
+            else
+            {
+                foreach (var injectable in instance.GetInjectables(injectionMode))
+                {
+                    AttributeInjector.Inject(injectable, container);
+                }
             }
 
             return instance;
