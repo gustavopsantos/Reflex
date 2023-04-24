@@ -1,9 +1,11 @@
+  
+<div align=center>   
+
 <p align="center">
-  <img src="Graphics\logo-crimson.png" width="250">
+  <img src="Graphics\logo.png" width="250">
 </p>
-<p align="center">
-  <img src="Graphics\text-crimson.png" width="300">
-</p>
+
+### Blazing fast, minimal but complete dependency injection library for <a href="https://unity.com/">Unity</a>
 
 Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) framework for [Unity](https://unity.com/). Making your classes independent of its dependencies, granting better separation of concerns. It achieves that by decoupling the usage of an object from its creation. This helps you to follow SOLID’s dependency inversion and single responsibility principles. Making your project more **readable, testable and scalable.**
 
@@ -14,244 +16,336 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 [![openupm](https://img.shields.io/npm/v/com.gustavopsantos.reflex?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.gustavopsantos.reflex/)
 [![Unity](https://img.shields.io/badge/Unity-2021+-black.svg)](https://unity3d.com/pt/get-unity/download/archive)
 
-> Improved readme with entensive documentation under progress
+</div>
 
-## Features 
-- **Fast:** ~3x faster than VContainer, ~10x faster than Zenject.
-- **GC Friendly:** ~2x less allocations than VContainer, ~12x less allocations than Zenject.
-- **AOT Support:** Basically theres no runtime no Emit, so it works fine on IL2CPP builds.
+---
 
-## Contract Table
-Contract table allows you to define multiple contracts for a single binding, allowing you to then retrieve multiple bindings that implements a given contract.
+<details>
+<summary>📌 Table Of Contents</summary>
 
-|                    | PrefabManager | BundleManager |
-|--------------------|---------------|---------------|
-| **IManager**       | ✅           | ✅      	    |
-| **IDisposable**    | ✅     		   | ✅      	    |
-| **IPrefabManager** | ✅        	 | ❌          	|
-| **IBundleManager** | ❌	         | ✅	          |
+- [Overview](#-overview)
+- [Installation](#-installation)
+  - [Unity Package Manager](#unity-package-manager)
+  - [Open Unity Package Manager](#open-unity-package-manager)
+  - [Unity Package](#unity-package)
+- [Getting Started](#-getting-started)
+- [Documentation](#-documentation)
+  - [Scopes](#scopes)
+  - [Bindings](#bindings)
+  - [Resolving](#resolving)
+- [Debugger](#-debugger)
+- [Settings](#-settings)
+- [Performance](#-performance)
+- [Scripting Restrictions](#-scripting-restrictions)
+- [Support](#-support)
+- [License](#-license)
 
-### Installing
+</details>
 
-```csharp
-public class ProjectInstaller : MonoBehaviour, IInstaller
-{
-    public void InstallBindings(ContainerDescriptor descriptor)
-    {
-        descriptor.AddSingleton(concrete: typeof(BundleManager), contracts: new[]
-        {
-            typeof(IBundleManager), typeof(IManager), typeof(IDisposable)
-        });
-        
-        descriptor.AddSingleton(concrete: typeof(PrefabManager), contracts: new[]
-        {
-            typeof(IPrefabManager), typeof(IManager), typeof(IDisposable)
-        });
-    }
-}
+---
+
+## 👀 Overview
+- **Fast:** ~3x faster than VContainer, ~7x faster than Zenject.
+- **GC Friendly:** ~2x less allocations than VContainer, ~9x less allocations than Zenject.
+- **AOT Support:** Basically theres no runtime Emit, so it works fine on IL2CPP builds. [<sup>[*]</sup>](#-scripting-restrictions)
+- **Contract Table:** Allows usages of APIs like `container.All<IDisposable>`
+- **Immutable Container**: Performant thread safety free of lock plus predictable behavior.
+
+---
+
+## 💾 Installation
+You can install Reflex using any of the following methods:
+
+### Unity Package Manager
 ```
-### Retrieving
-```csharp
-    public void InitializeManagers(Container container)
-    {
-        foreach (var manager in container.All<IManager>())
-        {
-            manager.Initialize();
-        }
-    }
+https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#4.0.0
 ```
 
+1. In Unity, open **Window** → **Package Manager**.
+2. Press the **+** button, choose "**Add package from git URL...**"
+3. Enter url above and press **Add**.
 
+### Open Unity Package Manager
 
-## Performance
-> Resolving ten thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Assets/Reflex.Benchmark/NestedBenchmarkReflex.cs).
-
-### Android
-
-<table>
-<tr><th>Mono</th><th>IL2CPP</th></tr>
-<tr><td>
-
-|           | GC    | Time |
-|-----------|------:|-----:|
-| Reflex    |  54KB | 10ms
-| Zenject   | 464KB | 73ms
-| VContainer| 128KB | 51ms
-
-</td><td>
-
-|           | GC    | Time |
-|-----------|------:|-----:|
-| Reflex    |  70KB | 15ms
-| Zenject   | 480KB | 77ms
-| VContainer| 128KB | 18ms
-
-</td></tr> </table>
-
-### Windows
-
-<table>
-<tr><th>Mono</th><th>IL2CPP</th></tr>
-<tr><td>
-
-|           | GC    | Time |
-|-----------|------:|-----:|
-| Reflex    | 109KB | 1ms
-| Zenject   | 900KB | 7ms
-| VContainer| 257KB | 3ms
-
-</td><td>
-
-|           | GC    | Time |
-|-----------|------:|-----:|
-| Reflex    | 140KB | 1ms
-| Zenject   | 900KB | 7ms
-| VContainer| 257KB | 2ms
-
-</td></tr> </table>
-
-> The performance on `IL2CPP (AOT)` backend is not so good because the expressions are actually interpreted, unlike `Mono (JIT)`, where they are actually compiled.
-
-> I'm investigating whether dealing with IL Reweaving is worth the complexity it brings.
-
-## Installation
-
-*Requires Unity 2021+*
-
-### Install via UPM (using Git URL)
-```
-https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#4.1.0
+```bash
+openupm install com.gustavopsantos.reflex
 ```
 
-### Install manually (using .unitypackage)
+### Unity Package
 1. Download the .unitypackage from [releases](https://github.com/gustavopsantos/reflex/releases) page.
 2. Import Reflex.X.X.X.unitypackage
 
-## Getting Started
+---
 
-### Installing Bindings
-
-Create your IInstaller implementation to install your bindings in the desired context (eg. ProjectContext or SceneContext), and remember to attach this component directly or as a child of your context prefab. See [SceneContext](Assets/Reflex.Sample/Reflex.Sample.unity) gameobject for reference.
-
+## 🚀 Getting Started
+1. [Install Reflex](#installation)
+2. Create `ProjectInstaller.cs` with 
 ```csharp
+using Reflex.Core;
+using UnityEngine;
+
 public class ProjectInstaller : MonoBehaviour, IInstaller
 {
     public void InstallBindings(ContainerDescriptor descriptor)
     {
-        descriptor.AddInstance(42);
-        descriptor.AddTransient(typeof(BundleManager), typeof(IBundleManager));
-        descriptor.AddTransient(typeof(PrefabManager), typeof(IPrefabManager));
+        descriptor.AddInstance("Hello");
     }
 }
 ```
-
-### MonoBehaviour Injection
-
-> Be aware that fields and properties with [Inject] are injected only into pre-existing MonoBehaviours within the scene after the SceneManager.sceneLoaded event, which happens after Awake and before Start. See [MonoInjector.cs](Assets/Reflex/Scripts/Injectors/MonoInjector.cs).  
-
-> If you want to instantiate a MonoBehaviour/Component at runtime and wants injection to happen, use the `Instantiate` method from Container.
-
+3. In unity project window
+5. Create directory `Assets/Resources`
+6. Select just created `Resources` dir
+7. Right click, Create → Reflex → ProjectScope
+8. With just created `ProjectScope` selected
+9. Add `ProjectInstaller.cs` created at step 2 as a component
+10. Create new scene `Greet`
+11. Add `Greet` to `Build Settings` → `Scenes In Build`
+12. Create `Greeter.cs` with
 ```csharp
-public class MonoBehaviourInjection : MonoBehaviour
-{
-    [Inject] private readonly Container _container;
-    [Inject] public IDependencyOne DependencyOne { get; private set; }
+using UnityEngine;
+using Reflex.Core;
+using System.Collections.Generic;
 
-    [Inject]
-    private void Inject(Container container, IDependencyOne dependencyOne)
+public class Greeter : IStartable // IStartable will force it to be constructed on container build
+{
+    public Greeter(IEnumerable<string> strings)
     {
-        var dependencyTwo = container
-            .Resolve(typeof(IDependencyTwo));
+        Debug.Log(string.Join(" ", strings));
     }
 
+    public void Start()
+    {
+    }
+}
+```
+12. Inside Greet scene, create a new empty gameobject named `SceneScope` and attach `SceneScope` component
+13. Create `GreetInstaller.cs` with
+```csharp
+using Reflex.Core;
+using UnityEngine;
+
+public class GreetInstaller : MonoBehaviour, IInstaller
+{
+    public void InstallBindings(ContainerDescriptor descriptor)
+    {
+        descriptor.AddInstance("World");
+        descriptor.AddSingleton(typeof(Greeter), typeof(IStartable)); // IStartable will force it to be constructed on container build
+    }
+}
+```
+14. Add `GreetInstaller.cs` to `Greet.unity` `SceneScope`
+15. Create new scene `Boot`
+16. Add `Boot` to `Build Settings` → `Scenes In Build`
+17. Create `Loader.cs` with
+```csharp
+using Reflex.Core;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class Loader : MonoBehaviour
+{
     private void Start()
     {
-        var dependencyTwo = _container
-            .Resolve(typeof(IDependencyTwo));
-
-        var answerForLifeTheUniverseAndEverything = _container
-            .Resolve<int>();
+        ReflexSceneManager.LoadScene("Greet", LoadSceneMode.Single, builder =>
+        {
+            // This deferred descriptor will run just before Greet.unity SceneScope installers
+            builder.AddInstance("beautiful");
+        });
     }
 }
 ```
+18. Assign it to any gameobject at `Boot` scene
+19. Thats it, hit play while on `Boot` scene
+20. When Greet scene is loaded, there should be 3 instances implementing string contract
+21. So when Geeter is constructed, you should see log: `Hello beautiful world`
 
-### Non MonoBehaviour Injection
+---
 
+## 📄 Documentation
+### Scopes
+Container scoping refers to the ability of being able to create a container inheriting the registrations of its parent container while also being able to extend it.
+
+#### Project Scope
+It is root scope.
+It is created just before first scene opens by relying on `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]`
+To register bindings to it, create a prefab, name it "ProjectScope", put it inside any Resources folder, and attach a "ProjectScope" component to it.
+Then, create your installer as MonoBehaviour and implement IInstaller interface.
+Remember to attach your installer to the ProjectScope prefab, as ProjectScope searches for every child implementing IInstaller when its time to create the ProjectScope container.
+Theres a menu item to ease the process: Assets > Create > Reflex > ProjectScope
+Remember to have a single ProjectScope to avoid undesired behaviour.
+Note that ProjectScope prefab is not required, in case Reflex do not found ProjectScope, an empty root will be created.
+ProjectScope instance will be disposed once app closes/app quits.
+> Note that unity does not call OnDestroy deterministically, so rule of thum is do not rely on injected dependencies on OnDestroy event functions.
+
+#### Scene Scope
+It is scoped from ProjectScope, so it contains everything that ProjectScope do.
+It is created and inject after Awake, and before Start. 
+To register bindings to it, create a gameobject on desired scene, name it "ProjectScope", put it as root game object, and attach a "SceneScope" component to it.
+Then, create your installer as MonoBehaviour and implement IInstaller interface.
+Remember to attach your installer to your SceneScope gameobject, as SceneScope searches for every child implementing IInstaller when its time to create the SceneScope container.
+Theres a menu item to ease the process: GameObject > Reflex > Scene Context
+Remember to have a single SceneScope to avoid undesired behaviour.
+Note that SceneScope gameobject is not required, in case Reflex do not found SceneScope, an empty one will be created.
+SceneScope instance will be disposed once scene is unloaded.
+> Note that unity does not call OnDestroy deterministically, so rule of thum is do not rely on injected dependencies on OnDestroy event functions. 
+
+#### Manual Scoping
 ```csharp
-public class NonMonoBehaviourInjection
-{
-    private readonly Container _container;
-    private readonly IDependencyOne _dependencyOne;
-    private readonly int _answerForLifeTheUniverseAndEverything;
+using var scopedContainer = parentContainer.Scope("Scoped", descriptor =>  
+{  
+  // Extend your scoped container by adding extra registrations here  
+});
+```
 
-    public NonMonoBehaviourInjection(Container container, IDependencyOne dependencyOne, int answerForLifeTheUniverseAndEverything)
-    {
-        _container = container;
-        _dependencyOne = dependencyOne;
-        _answerForLifeTheUniverseAndEverything = answerForLifeTheUniverseAndEverything;
-    }
+### Bindings
+
+#### AddInstance
+```csharp
+ContainerDescriptor::AddInstance(object instance, params Type[] contracts)
+```
+Adds an object already contructed by the user to the container as a singleton, everytime the contracts given is asked to be resolved, the same object will be returned.
+If object implements `IDisposable` it will be disposed when its parent Container are disposed.
+Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+
+#### AddSingleton
+```csharp
+ContainerDescriptor::AddSingleton(Type concrete, params Type[] contracts)
+```
+Adds a defered object creation based on the type to be constructed and its contracts.
+The object will be constructed lazyli, once first request to resolve any of its contracts is called.
+Then **same** object will always be returned.
+If you want your singleton to be constructed just after container build (non-lazyli), add `typeof(IStartable)` as one of your contracts.
+If object implements `IDisposable` it will be disposed when its parent Container are disposed.
+Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+
+#### AddTransient
+```csharp
+ContainerDescriptor::AddTransient(Type concrete, params Type[] contracts)
+```
+Adds a defered object creation based on the type to be constructed and its contracts.
+The object will be constructed lazyli, once first request to resolve any of its contracts is called.
+Then for any request of any contract, a new object will be created, use this carefully.
+If object implements `IDisposable` it will be disposed when its parent Container are disposed.
+Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+> Note that `IStartable` also works for **Transients** but pay attention that any resolve API will create a new instance
+
+### Resolving
+#### Constructor
+If your type is non-mono, and its gonna be created by the container, then the most recommended way to inject dependencies into it its by constructor injection.
+Its simply as just requesting the contracts you need as following example:
+```csharp
+private class Foo
+{  
+	...
+  
+	public NumberManager(IInputManager inputManager, IEnumerable<IManager> managers)  
+	{  
+		...
+	}  
 }
 ```
 
-## Order of Execution when a Scene is Loaded
+> Note that constructor injection relies on `Resolve<TContract>` API, so in case theres theres two objects with `IInputManager` contract, the last one will be injected. 
 
-| Events                                               |
-|:----------------------------------------------------:|
-| MonoBehaviour.Awake                                  |
-| ↓                                                    |
-| Reflex.Injectors.SceneInjector.Inject                |
-| ↓                                                    |
-| MonoBehaviour.Start                                  |
+#### Attribute
+Attribute injection is the way to go for **MonoBehaviours**.
+You can use it to inject fields, writeable properties and methods like following:
+```csharp
+class Foo : MonoBehaviour  
+{  
+	[Inject] private readonly IInputManager _inputManager;  
+	[Inject] public IEnumerable<IManager> Managers { get; private set; }  
+  
+	[Inject]  
+	private void Inject(IEnumerable<int> numbers) // Method name here does not matter  
+	{  
+	  ...
+	}  
+}
+```
+> Note that attribute injection also works on non-mono classes.
+#### Single
+`Container::Single<TContract>` actually validates that theres a single binding implementing given contract, and returns it.
+If theres more than one the following exception will be thrown.
+```
+InvalidOperationException: Sequence contains more than one element
+```
+Its recommended for every binding that you know that there should be a single binding implementing the contract.
+#### Resolve
+`Container::Single<TContract>` runs no validations, and return the last valid object implementing given contract.
 
-> `Reflex.Injectors.SceneInjector.Inject` injects fields, properties and methods decorated with [Inject] attribute.
+#### All
+`Container::All<TContract>` returns all objects implementing given contract.
+Example:
+```csharp
+private void Documentation_Bindings()  
+{  
+	var container = new ContainerDescriptor("")  
+		.AddInstance(1)  
+		.AddInstance(2)  
+		.AddInstance(3)  
+		.Build();  
+  
+	Debug.Log(string.Join(", ", container.All<int>())); // Prints: 1, 2, 3
+}
+```
 
-## Contexts
+---
 
-### Project Context
-A single prefab named `ProjectContext` that should live inside a `Resources` folder and should contain a `ProjectContext` component attached
-> Non-Obligatory to have
+## 🐛 Debugger
+![Preview](Graphics/reflex-debugger.png)  
+It can be accessed by menu item  Reflex → Debugger.  
+And from there you can check:
+- Container Hierarchy
+- Implementation
+- Contracts
+- Resolution Count
+- Binding Type
 
-### Scene Context
-A single root gameobject per scene that should contain a `SceneContext` component attached
-> Non-Obligatory to have
+---
 
-## Configuration Asset
-Its a `ReflexConfiguration` scriptable object instance, named `ReflexConfiguration` that should live inside a `Resources` folder.  
-It can be created by menu item Reflex → Configuration → Create Configuration.  
-> Non-Obligatory to have but projects without it will fallback using following default configuration
-### Default Configuration
-- LogLevel: Default (Info, everything gets logged by default)
+## 🪛 Settings
+Its a  `ReflexSettings` scriptable object instance, named `ReflexSettings` that should live inside a `Resources` folder.
+It can be created by asset menu item Assets → Create → Reflex → Settings.
 
-### Properties
-#### LogLevel
-Used by our internal logger so developers can define desired logging verbosity level.
+Currently, logging verbosity is configured in this file, and default value is set to `Info`
 
-## Bindings
+> Non-Obligatory to have but projects without it will fallback using default settings
 
-### Bind Function
-Binds a function to a type. Every time resolve is called to this binding, the function binded will be invoked.
+---
 
-### Bind Instance
-Binds a object instance to a type. Every time resolve is called, this instance will be returned.
-> Instances provided by the user, since not created by Reflex, will not be disposed automatically, we strongly recomend using BindSingleton.
+## 📊 Performance
+> Resolving ten thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Assets/Reflex.Benchmark/NestedBenchmarkReflex.cs).
 
-### Bind Transient
-Binds a factory. Every time the resolve is called, a new instance will be provided.
-> Instances will be disposed once the container that provided the instances are disposed.
+### Android + Mono
+|           | GC      | Time    | GC Ratio | Time Ratio |
+|-----------|--------:|--------:|---------:|-----------:|
+| Reflex    | 54.7KB  | 9.3ms   | 1x       | 1x         |
+| Zenject   | 512KB   | 63.2ms  | 9.36x    | 6.79x      |
+| VContainer| 128.9KB | 29.8ms  | 2.35x    | 3.20x      |
 
-### Bind Singleton
-Binds a factory. Every time the resolve is called, the same instance will be provided.
-> The instance will be disposed once the container that provided the instance are disposed.
+### Android + IL2CPP
+|           | GC      | Time   | GC Ratio | Time Ratio |
+|-----------|--------:|-------:|---------:|-----------:|
+| Reflex    | 140.6KB | 7.4ms  | 1x       | 1x         |
+| Zenject   | 1024KB  | 23.6ms | 7.28x    | 3.18x      |
+| VContainer| 257.8KB | 9.2ms  | 1.83x    | 1.24x      |
 
-## Debugging Window
-![Preview](Graphics/reflex-debugging-window.png)  
-To access the debugging window on unity menu bar click `Reflex` → `Debugger`  
-Through the debugging window you can visualize:
-- Container hierarchy
-- Bindings
-- Resolution count
+### Windows + Mono
+|           | GC      | Time   | GC Ratio | Time Ratio |
+|-----------|--------:|-------:|---------:|-----------:|
+| Reflex    | 109.4KB | 1.2ms  | 1x       | 1x         |
+| Zenject   | 1024KB  | 9.2ms  | 9.36x    | 7.66x      |
+| VContainer| 257.8KB | 3.3ms  | 2.35x    | 2.75x      |
 
-## Scripting Restrictions
+### Windows + IL2CPP
+|           | GC      | Time   | GC Ratio | Time Ratio |
+|-----------|--------:|-------:|---------:|-----------:|
+| Reflex    | 140.6KB | 2.9ms  | 1x       | 1x         |
+| Zenject   | 1024KB  | 9.3ms  | 7.28x    | 3.20x      |
+| VContainer| 257.8KB | 5.1ms  | 1.83x    | 1.75x      |
+
+## 🚫 Scripting Restrictions
 If you are taking advantage of reflex to inject `IEnumerable<T>` in your constructors **AND** your are building for **IL2CPP**, you will probably get some exceptions like following:
 
 ```
@@ -283,12 +377,16 @@ class NumberManager
 }
 ```
 
-## Author
-[![Twitter](https://img.shields.io/twitter/follow/codinggustavo.svg?label=Follow&style=social)](https://twitter.com/intent/follow?screen_name=codinggustavo)  
+## 🤝 Support
 
-[![LinkedIn](https://img.shields.io/badge/Linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/codinggustavo)  
+Ask your questions and participate in discussions regarding Reflex related and dependency injection topics at the Reflex Discord server. 
 
+<a href="https://discord.gg/kNYr7hR6"><img src="https://amplication.com/images/discord_banner_purple.svg" /></a>
 
-## License
+---
 
-Reflex is licensed under the MIT license, so you can comfortably use it in commercial applications (We still love contributions though).
+## 📜 License
+Reflex is distributed under the terms of the MIT License.
+A complete version of the license is available in the [LICENSE](LICENSE) file in
+this repository. Any contribution made to this project will be licensed under
+the MIT License.
