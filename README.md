@@ -381,7 +381,7 @@ class NumberManager
 
 Ask your questions and participate in discussions regarding Reflex related and dependency injection topics at the Reflex Discord server. 
 
-<a href="https://discord.gg/kNYr7hR6"><img src="https://amplication.com/images/discord_banner_purple.svg" /></a>
+<a href="https://discord.gg/XM47TsGScH"><img src="https://amplication.com/images/discord_banner_purple.svg" /></a>
 
 ---
 
