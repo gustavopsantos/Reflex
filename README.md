@@ -58,7 +58,7 @@ You can install Reflex using any of the following methods:
 
 ### Unity Package Manager
 ```
-https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#4.1.1
+https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#4.1.2
 ```
 
 1. In Unity, open **Window** → **Package Manager**.
