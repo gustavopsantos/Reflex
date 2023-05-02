@@ -179,8 +179,8 @@ ProjectScope instance will be disposed once app closes/app quits.
 
 #### Scene Scope
 It is scoped from ProjectScope, so it contains everything that ProjectScope do.
-It is created and inject after Awake, and before Start. 
-To register bindings to it, create a gameobject on desired scene, name it "ProjectScope", put it as root game object, and attach a "SceneScope" component to it.
+It is created and injected after Awake, and before Start. 
+To register bindings to it, create a gameobject on desired scene, name it "SceneScope", put it as root game object, and attach a "SceneScope" component to it.
 Then, create your installer as MonoBehaviour and implement IInstaller interface.
 Remember to attach your installer to your SceneScope gameobject, as SceneScope searches for every child implementing IInstaller when its time to create the SceneScope container.
 Theres a menu item to ease the process: GameObject > Reflex > Scene Context
