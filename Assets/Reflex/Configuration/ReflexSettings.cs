@@ -1,5 +1,4 @@
 ﻿using Reflex.Logging;
-using Reflex.Logging;
 using UnityEngine;
 
 namespace Reflex.Configuration
