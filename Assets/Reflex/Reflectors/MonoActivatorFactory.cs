@@ -12,7 +12,7 @@ namespace Reflex.Reflectors
             var param = Expression.Parameter(typeof(object[]));
             var argumentsExpressions = new Expression[parameters.Length];
 
-            for (int i = 0; i < parameters.Length; i++)
+            for (var i = 0; i < parameters.Length; i++)
             {
                 var index = Expression.Constant(i);
                 var parameterType = parameters[i];

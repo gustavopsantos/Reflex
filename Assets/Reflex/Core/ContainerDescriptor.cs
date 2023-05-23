@@ -71,8 +71,7 @@ namespace Reflex.Core
             return AddInstance(instance, instance.GetType());
         }
 
-        private void Build(out DisposableCollection disposables,
-            out Dictionary<Type, List<Resolver>> resolversByContract)
+        private void Build(out DisposableCollection disposables, out Dictionary<Type, List<Resolver>> resolversByContract)
         {
             disposables = new DisposableCollection();
             resolversByContract = new Dictionary<Type, List<Resolver>>();

@@ -8,7 +8,6 @@ using Reflex.Generics;
 using Reflex.Injectors;
 using Reflex.Logging;
 using Reflex.Resolvers;
-using Debug = UnityEngine.Debug;
 
 namespace Reflex.Core
 {

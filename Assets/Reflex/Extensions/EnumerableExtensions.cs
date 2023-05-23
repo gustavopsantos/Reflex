@@ -23,7 +23,7 @@ namespace Reflex.Extensions
         
         public static IEnumerable<T> Reversed<T>(this IList<T> items)
         {
-            for (int i = items.Count - 1; i >= 0; i--)
+            for (var i = items.Count - 1; i >= 0; i--)
             {
                 yield return items[i];
             }

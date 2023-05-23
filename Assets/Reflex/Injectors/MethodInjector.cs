@@ -20,7 +20,7 @@ namespace Reflex.Injectors
         {
             var arguments = ExactArrayPool<object>.Shared.Rent(method.Parameters.Length);
 
-            for (int i = 0; i < method.Parameters.Length; i++)
+            for (var i = 0; i < method.Parameters.Length; i++)
             {
                 arguments[i] = container.Resolve(method.Parameters[i].ParameterType);
             }

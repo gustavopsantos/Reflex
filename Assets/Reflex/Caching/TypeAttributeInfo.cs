@@ -9,10 +9,6 @@ namespace Reflex.Caching
         public readonly PropertyInfo[] InjectableProperties;
         public readonly InjectedMethodInfo[] InjectableMethods;
 
-        private TypeAttributeInfo()
-        {
-        }
-
         public TypeAttributeInfo(FieldInfo[] injectableFields, PropertyInfo[] injectableProperties, MethodInfo[] injectableMethods)
         {
             InjectableFields = injectableFields;

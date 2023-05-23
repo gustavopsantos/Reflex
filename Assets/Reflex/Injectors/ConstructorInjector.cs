@@ -13,7 +13,7 @@ namespace Reflex.Injectors
             var info = TypeConstructionInfoCache.Get(concrete);
             var arguments = ExactArrayPool<object>.Shared.Rent(info.ConstructorParameters.Length);
 
-            for (int i = 0; i < info.ConstructorParameters.Length; i++)
+            for (var i = 0; i < info.ConstructorParameters.Length; i++)
             {
                 arguments[i] = container.Resolve(info.ConstructorParameters[i]);
             }
