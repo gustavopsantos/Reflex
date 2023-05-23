@@ -8,10 +8,6 @@ namespace Reflex.Caching
         public readonly ObjectActivator ObjectActivator;
         public readonly Type[] ConstructorParameters;
 
-        private TypeConstructionInfo()
-        {
-        }
-
         public TypeConstructionInfo(ObjectActivator objectActivator, Type[] constructorParameters)
         {
             ObjectActivator = objectActivator;
