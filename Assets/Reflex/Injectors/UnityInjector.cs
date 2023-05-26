@@ -9,6 +9,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Scripting;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [assembly: AlwaysLinkAssembly] // https://docs.unity3d.com/ScriptReference/Scripting.AlwaysLinkAssemblyAttribute.html
 
 namespace Reflex.Injectors
@@ -49,6 +53,14 @@ namespace Reflex.Injectors
                 SceneManager.sceneUnloaded -= DisposeScene;
                 Application.quitting -= DisposeProject;
             }
+            
+#if UNITY_EDITOR
+            // if Enter Play Mode Option Checked
+            if (EditorSettings.enterPlayModeOptionsEnabled)
+            {
+                InjectScene(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+            }
+#endif
 
             SceneManager.sceneLoaded += InjectScene;
             SceneManager.sceneUnloaded += DisposeScene;
