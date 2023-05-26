@@ -9,10 +9,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Scripting;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 [assembly: AlwaysLinkAssembly] // https://docs.unity3d.com/ScriptReference/Scripting.AlwaysLinkAssemblyAttribute.html
 
 namespace Reflex.Injectors
@@ -27,7 +23,7 @@ namespace Reflex.Injectors
             var projectContainer = CreateProjectContainer();
             var containersByScene = new Dictionary<Scene, Container>();
 
-            void InjectScene(Scene scene, LoadSceneMode mode)
+            void InjectScene(Scene scene, LoadSceneMode mode = default)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
                 var sceneContainer = CreateSceneContainer(scene, projectContainer);
@@ -55,10 +51,10 @@ namespace Reflex.Injectors
             }
             
 #if UNITY_EDITOR
-            // if Enter Play Mode Option Checked
-            if (EditorSettings.enterPlayModeOptionsEnabled)
+            if (UnityEditor.EditorSettings.enterPlayModeOptionsEnabled &&
+                UnityEditor.EditorSettings.enterPlayModeOptions.HasFlag(UnityEditor.EnterPlayModeOptions.DisableSceneReload))
             {
-                InjectScene(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+                InjectScene(SceneManager.GetActiveScene());
             }
 #endif
 
