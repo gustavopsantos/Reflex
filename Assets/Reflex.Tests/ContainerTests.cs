@@ -278,5 +278,19 @@ namespace Reflex.Tests
             var scoped = container.Scope("", descriptor => { descriptor.AddInstance(2); });
             string.Join(",", container.All<int>()).Should().Be("1");
         }
+        
+        [Test]
+        public void HasBindingReturnFalseWhenBindingIsNotDefined()
+        {
+            var container = new ContainerDescriptor("").Build();
+            container.HasBinding<int>().Should().BeFalse();
+        }
+        
+        [Test]
+        public void HasBindingReturnTrueWhenBindingIsDefined()
+        {
+            var container = new ContainerDescriptor("").AddInstance(42).Build();
+            container.HasBinding<int>().Should().BeTrue();
+        }
     }
 }

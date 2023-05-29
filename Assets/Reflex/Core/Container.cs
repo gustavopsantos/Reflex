@@ -28,6 +28,16 @@ namespace Reflex.Core
             OverrideSelfInjection();
         }
 
+        public bool HasBinding<T>()
+        {
+            return HasBinding(typeof(T));
+        }
+
+        public bool HasBinding(Type type)
+        {
+            return ResolversByContract.ContainsKey(type);
+        }
+
         public void Dispose()
         {
             foreach (var child in Children.Reversed())
