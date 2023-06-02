@@ -37,7 +37,7 @@ namespace Reflex.Core
             {
                 startable.Start();
             }
-            
+            OnContainerBuilt?.Invoke(container);
             return container;
         }
 

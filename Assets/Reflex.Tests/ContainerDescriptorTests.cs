@@ -73,5 +73,20 @@ namespace Reflex.Tests
             var builder = new ContainerDescriptor("").AddInstance(Debug.unityLogger);
             builder.HasBinding(Debug.unityLogger.GetType()).Should().BeTrue();
         }
+        
+        [Test]
+        public void Build_CallBack_ShouldBeCalled()
+        {
+            Container container = null;
+            var builder = new ContainerDescriptor("");
+            builder.OnContainerBuilt += ContainerCallback;
+            Action addInstance = () => builder.AddInstance(new Valuable(), typeof(IDisposable)).Build();
+            void ContainerCallback(Container ctx)
+            {
+                container = ctx;
+            }
+            builder.Build();
+            container.Should().NotBeNull();
+        }
     }
 }
