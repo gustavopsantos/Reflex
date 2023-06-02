@@ -97,6 +97,11 @@ namespace Reflex.Core
             }
         }
 
+        public bool HasBinding(Type type)
+        {
+            return _descriptors.Any(descriptor => descriptor.Contracts.Contains(type));
+        }
+
         private ContainerDescriptor Add(Type concrete, Type[] contracts, Func<Resolver> resolverFactory)
         {
             ValidateContracts(concrete, contracts);
