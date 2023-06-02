@@ -22,5 +22,9 @@ namespace Reflex.Sample.Infrastructure
             var implementation = useMouse ? typeof(CollectorInputMouse) : typeof(CollectorInputKeyboard);
             descriptor.AddSingleton(implementation, typeof(ICollectorInput));
         }
+        public void OnContainerBuilt(Container container)
+        {
+        
+        }
     }
 }

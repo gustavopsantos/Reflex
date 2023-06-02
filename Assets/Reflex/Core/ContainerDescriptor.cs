@@ -14,7 +14,7 @@ namespace Reflex.Core
         private string _name;
         private Container _parent;
         private List<ResolverDescriptor> _descriptors = new();
-
+        public Action<Container> OnContainerBuilt;
         public ContainerDescriptor(string name, Container parent = null)
         {
             _name = name;
@@ -37,7 +37,7 @@ namespace Reflex.Core
             {
                 startable.Start();
             }
-            
+            OnContainerBuilt?.Invoke(container);
             return container;
         }
 
@@ -95,6 +95,11 @@ namespace Reflex.Core
                     resolversByContract.GetOrAdd(contract, _ => new List<Resolver>()).Add(descriptor.Resolver);
                 }
             }
+        }
+
+        public bool HasBinding(Type type)
+        {
+            return _descriptors.Any(descriptor => descriptor.Contracts.Contains(type));
         }
 
         private ContainerDescriptor Add(Type concrete, Type[] contracts, Func<Resolver> resolverFactory)
