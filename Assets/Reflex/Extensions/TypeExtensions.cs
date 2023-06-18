@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -9,7 +9,7 @@ namespace Reflex.Extensions
     {
         internal static bool IsEnumerable(this Type type, out Type elementType)
         {
-            if (type.IsGenericType && typeof(IEnumerable).IsAssignableFrom(type.GetGenericTypeDefinition()))
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
             {
                 elementType = type.GenericTypeArguments.Single();
                 return true;
