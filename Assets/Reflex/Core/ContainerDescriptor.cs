@@ -23,7 +23,7 @@ namespace Reflex.Core
 
         public Container Build()
         {
-            Build(out var disposables, out var resolversByContract);
+            Build(out var disposables, out var resolversByContract, out var toStart);
             var container = new Container(_name, resolversByContract, disposables);
             container.SetParent(_parent);
             
@@ -32,11 +32,12 @@ namespace Reflex.Core
             _parent = null;
             _descriptors = null;
             
-            // Call initializers
-            foreach (var startable in container.All<IStartable>())
+            // Call initialzers
+            foreach (var startable in toStart.Select(r => (IStartable) r.Resolve(container)))
             {
                 startable.Start();
             }
+            
             OnContainerBuilt?.Invoke(container);
             return container;
         }
@@ -71,7 +72,7 @@ namespace Reflex.Core
             return AddInstance(instance, instance.GetType());
         }
 
-        private void Build(out DisposableCollection disposables, out Dictionary<Type, List<Resolver>> resolversByContract)
+        private void Build(out DisposableCollection disposables, out Dictionary<Type, List<Resolver>> resolversByContract, out IEnumerable<Resolver> toStart)
         {
             disposables = new DisposableCollection();
             resolversByContract = new Dictionary<Type, List<Resolver>>();
@@ -95,6 +96,9 @@ namespace Reflex.Core
                     resolversByContract.GetOrAdd(contract, _ => new List<Resolver>()).Add(descriptor.Resolver);
                 }
             }
+
+            // Non-inherited/self startables
+            toStart = _descriptors.Where(d => d.Contracts.Contains(typeof(IStartable))).Select(d => d.Resolver);
         }
 
         public bool HasBinding(Type type)
