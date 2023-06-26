@@ -14,7 +14,7 @@ namespace Reflex.Core
         private string _name;
         private Container _parent;
         private List<ResolverDescriptor> _descriptors = new();
-        public Action<Container> OnContainerBuilt;
+        public event Action<Container> OnContainerBuilt;
         public ContainerDescriptor(string name, Container parent = null)
         {
             _name = name;
