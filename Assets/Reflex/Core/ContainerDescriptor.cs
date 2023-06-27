@@ -32,7 +32,7 @@ namespace Reflex.Core
             _parent = null;
             _descriptors = null;
             
-            // Call initialzers
+            // Call initializers
             foreach (var startable in toStart.Select(r => (IStartable) r.Resolve(container)))
             {
                 startable.Start();
