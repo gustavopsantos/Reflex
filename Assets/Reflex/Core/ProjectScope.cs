@@ -10,7 +10,6 @@ namespace Reflex.Core
             foreach (var nestedInstaller in GetComponentsInChildren<IInstaller>())
             {
                 nestedInstaller.InstallBindings(descriptor);
-                descriptor.OnContainerBuilt += nestedInstaller.OnContainerBuilt;
             }
 
             ReflexLogger.Log($"{nameof(ProjectScope)} Bindings Installed", LogLevel.Info, gameObject);

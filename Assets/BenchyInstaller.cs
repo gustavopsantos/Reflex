@@ -10,9 +10,4 @@ public class BenchyInstaller : MonoBehaviour, IInstaller
         descriptor.AddInstance("Gustavo", typeof(string));
         descriptor.AddInstance(DateTime.Now, typeof(DateTime));
     }
-
-    public void OnContainerBuilt(Container container)
-    {
-        
-    }
 }
