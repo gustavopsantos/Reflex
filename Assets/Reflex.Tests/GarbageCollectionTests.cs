@@ -85,14 +85,14 @@ namespace Reflex.Tests
                 Assert.Inconclusive();
             }
 
+            var finalized = false;
             var container = new ContainerDescriptor("").Build();
-            WeakReference<Service> objWeakRef = null;
 
             Action dispose = () =>
             {
                 // This will go out of scope after dispose() is invoked
-                objWeakRef = new WeakReference<Service>(container.Construct<Service>());
-                objWeakRef.TryGetTarget(out _).Should().BeTrue();
+                var service = container.Construct<Service>();
+                service.OnFinalized += () => finalized = true;
             };
 
             dispose.Invoke();
@@ -100,8 +100,8 @@ namespace Reflex.Tests
             Resources.UnloadUnusedAssets();
             GC.Collect();
             GC.WaitForPendingFinalizers();
-            
-            objWeakRef.TryGetTarget(out _).Should().BeFalse();
+
+            finalized.Should().BeTrue();
         }
     }
 }
