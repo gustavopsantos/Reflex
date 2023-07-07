@@ -11,10 +11,12 @@ namespace Reflex.Core
 {
     public class ContainerDescriptor
     {
-        private string _name;
-        private Container _parent;
-        private List<ResolverDescriptor> _descriptors = new();
+        private readonly string _name;
+        private readonly Container _parent;
+        private readonly List<ResolverDescriptor> _descriptors = new();
+        
         public event Action<Container> OnContainerBuilt;
+        
         public ContainerDescriptor(string name, Container parent = null)
         {
             _name = name;
@@ -26,11 +28,6 @@ namespace Reflex.Core
             Build(out var disposables, out var resolversByContract, out var toStart);
             var container = new Container(_name, resolversByContract, disposables);
             container.SetParent(_parent);
-            
-            // Clear references
-            _name = null;
-            _parent = null;
-            _descriptors = null;
             
             // Call initializers
             foreach (var startable in toStart.Select(r => (IStartable) r.Resolve(container)))
@@ -87,7 +84,10 @@ namespace Reflex.Core
             }
 
             // Owned Resolvers
-            foreach (var descriptor in _descriptors)
+
+            var tuples = _descriptors.Select(d => (Resolver: d.ResolverFactory.Invoke(), d.Contracts)).ToArray();
+            
+            foreach (var descriptor in tuples)
             {
                 disposables.Add(descriptor.Resolver);
 
@@ -98,7 +98,7 @@ namespace Reflex.Core
             }
 
             // Non-inherited/self startables
-            toStart = _descriptors.Where(d => d.Contracts.Contains(typeof(IStartable))).Select(d => d.Resolver);
+            toStart = tuples.Where(d => d.Contracts.Contains(typeof(IStartable))).Select(d => d.Resolver);
         }
 
         public bool HasBinding(Type type)
@@ -109,8 +109,7 @@ namespace Reflex.Core
         private ContainerDescriptor Add(Type concrete, Type[] contracts, Func<Resolver> resolverFactory)
         {
             ValidateContracts(concrete, contracts);
-            var resolver = resolverFactory.Invoke();
-            var resolverDescriptor = new ResolverDescriptor(resolver, contracts);
+            var resolverDescriptor = new ResolverDescriptor(resolverFactory, contracts);
             _descriptors.Add(resolverDescriptor);
             return this;
         }

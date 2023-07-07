@@ -5,12 +5,12 @@ namespace Reflex.Core
 {
     internal class ResolverDescriptor
     {
-        public Resolver Resolver { get; }
+        public Func<Resolver> ResolverFactory { get; }
         public Type[] Contracts { get; }
 
-        public ResolverDescriptor(Resolver resolver, Type[] contracts)
+        public ResolverDescriptor(Func<Resolver> resolverFactory, Type[] contracts)
         {
-            Resolver = resolver;
+            ResolverFactory = resolverFactory;
             Contracts = contracts;
         }
     }
