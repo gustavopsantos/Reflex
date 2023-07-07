@@ -1,3 +1,7 @@
+
+# 📦Scopes
+# ✏️ Bindings
+# 🔍 Resolving
   
 <div align=center>   
 
@@ -29,11 +33,10 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
   - [Open Unity Package Manager](#open-unity-package-manager)
   - [Unity Package](#unity-package)
 - [Getting Started](#-getting-started)
-- [Documentation](#-documentation)
-  - [Scopes](#scopes)
-  - [Bindings](#bindings)
-  - [Resolving](#resolving)
-- [Callbacks](#callbacks)
+- [Scopes](#-scopes)
+- [Bindings](#-bindings)
+- [Resolving](#-resolving)
+- [Callbacks](#-callbacks)
 - [Debugger](#-debugger)
 - [Settings](#-settings)
 - [Performance](#-performance)
@@ -162,11 +165,10 @@ public class Loader : MonoBehaviour
 
 ---
 
-## 📄 Documentation
-### Scopes
+## 📦 Scopes
 Container scoping refers to the ability of being able to create a container inheriting the registrations of its parent container while also being able to extend it.
 
-#### Project Scope
+### Project Scope
 It is root scope.
 It is created just before first scene opens by relying on `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]`
 To register bindings to it, create a prefab, name it "ProjectScope", put it inside any Resources folder, and attach a "ProjectScope" component to it.
@@ -178,7 +180,7 @@ Note that ProjectScope prefab is not required, in case Reflex do not found Proje
 ProjectScope instance will be disposed once app closes/app quits.
 > Note that unity does not call OnDestroy deterministically, so rule of thum is do not rely on injected dependencies on OnDestroy event functions.
 
-#### Scene Scope
+### Scene Scope
 It is scoped from ProjectScope, so it contains everything that ProjectScope do.
 It is created and injected after Awake, and before Start. 
 To register bindings to it, create a gameobject on desired scene, name it "SceneScope", put it as root game object, and attach a "SceneScope" component to it.
@@ -190,7 +192,7 @@ Note that SceneScope gameobject is not required, in case Reflex do not found Sce
 SceneScope instance will be disposed once scene is unloaded.
 > Note that unity does not call OnDestroy deterministically, so rule of thum is do not rely on injected dependencies on OnDestroy event functions. 
 
-#### Manual Scoping
+### Manual Scoping
 ```csharp
 using var scopedContainer = parentContainer.Scope("Scoped", descriptor =>  
 {  
@@ -198,9 +200,9 @@ using var scopedContainer = parentContainer.Scope("Scoped", descriptor =>
 });
 ```
 
-### Bindings
+## 🔩 Bindings
 
-#### AddInstance
+### AddInstance
 ```csharp
 ContainerDescriptor::AddInstance(object instance, params Type[] contracts)
 ```
@@ -208,7 +210,7 @@ Adds an object already contructed by the user to the container as a singleton, e
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
 Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
-#### AddSingleton
+### AddSingleton
 ```csharp
 ContainerDescriptor::AddSingleton(Type concrete, params Type[] contracts)
 ```
@@ -219,7 +221,7 @@ If you want your singleton to be constructed just after container build (non-laz
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
 Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
-#### AddTransient
+### AddTransient
 ```csharp
 ContainerDescriptor::AddTransient(Type concrete, params Type[] contracts)
 ```
@@ -230,8 +232,8 @@ If object implements `IDisposable` it will be disposed when its parent Container
 Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 > Note that `IStartable` also works for **Transients** but pay attention that any resolve API will create a new instance
 
-### Resolving
-#### Constructor
+## 🔍 Resolving
+### Constructor
 If your type is non-mono, and its gonna be created by the container, then the most recommended way to inject dependencies into it its by constructor injection.
 Its simply as just requesting the contracts you need as following example:
 ```csharp
@@ -248,7 +250,7 @@ private class Foo
 
 > Note that constructor injection relies on `Resolve<TContract>` API, so in case theres theres two objects with `IInputManager` contract, the last one will be injected. 
 
-#### Attribute
+### Attribute
 Attribute injection is the way to go for **MonoBehaviours**.
 You can use it to inject fields, writeable properties and methods like following:
 ```csharp
@@ -265,17 +267,17 @@ class Foo : MonoBehaviour
 }
 ```
 > Note that attribute injection also works on non-mono classes.
-#### Single
+### Single
 `Container::Single<TContract>` actually validates that theres a single binding implementing given contract, and returns it.
 If theres more than one the following exception will be thrown.
 ```
 InvalidOperationException: Sequence contains more than one element
 ```
 Its recommended for every binding that you know that there should be a single binding implementing the contract.
-#### Resolve
+### Resolve
 `Container::Single<TContract>` runs no validations, and return the last valid object implementing given contract.
 
-#### All
+### All
 `Container::All<TContract>` returns all objects implementing given contract.
 Example:
 ```csharp
@@ -293,7 +295,7 @@ private void Documentation_Bindings()
 
 ---
 
-## 🪝Callbacks
+## 🪝 Callbacks
 ### `ContainerDescriptor::OnContainerBuilt`
 OnContainerBuilt is a instance callback of ContainerDescriptor, its called once the container is fully built and initialized properly. 
 
