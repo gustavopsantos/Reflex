@@ -1,8 +1,3 @@
-
-# 📦Scopes
-# ✏️ Bindings
-# 🔍 Resolving
-  
 <div align=center>   
 
 <p align="center">
