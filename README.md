@@ -33,6 +33,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
   - [Scopes](#scopes)
   - [Bindings](#bindings)
   - [Resolving](#resolving)
+- [Callbacks](#callbacks)
 - [Debugger](#-debugger)
 - [Settings](#-settings)
 - [Performance](#-performance)
@@ -289,6 +290,12 @@ private void Documentation_Bindings()
 	Debug.Log(string.Join(", ", container.All<int>())); // Prints: 1, 2, 3
 }
 ```
+
+---
+
+## 🪝Callbacks
+### `ContainerDescriptor::OnContainerBuilt`
+OnContainerBuilt is a instance callback of ContainerDescriptor, its called once the container is fully built and initialized properly. 
 
 ---
 
