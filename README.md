@@ -50,6 +50,15 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - **Contract Table:** Allows usages of APIs like `container.All<IDisposable>`
 - **Immutable Container**: Performant thread safety free of lock plus predictable behavior.
 
+Compatible with the following platforms:
+
+- iOS
+- Android
+- Windows/Mac/Linux
+- PS4/PS5
+- Xbox One/S/X and Xbox Series X/S
+- WebGL
+
 ---
 
 ## 💾 Installation
