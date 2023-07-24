@@ -30,7 +30,7 @@ namespace Reflex.Core
             // Clear references
             _name = null;
             _parent = null;
-            _descriptors = null;
+           // _descriptors = null;
             
             // Call initializers
             foreach (var startable in toStart.Select(r => (IStartable) r.Resolve(container)))
