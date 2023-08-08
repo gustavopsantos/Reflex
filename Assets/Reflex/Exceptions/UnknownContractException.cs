@@ -3,7 +3,7 @@ using Reflex.Extensions;
 
 namespace Reflex.Exceptions
 {
-    internal sealed class UnknownContractException : Exception
+    public sealed class UnknownContractException : Exception
     {
         public UnknownContractException(Type contract) : base(GenerateMessage(contract))
         {
