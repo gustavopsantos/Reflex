@@ -21,13 +21,13 @@ namespace Reflex.Resolvers
         {
             Resolutions++;
             object instance;
-            if (_concreteConstructor != null)
+            if (_concreteConstructor is null)
             {
-                instance = _concreteConstructor();
+                instance = container.Construct(Concrete);
             }
             else
             {
-                instance = container.Construct(Concrete);
+                instance = _concreteConstructor();
             }
             Disposables.TryAdd(instance);
             return instance;
