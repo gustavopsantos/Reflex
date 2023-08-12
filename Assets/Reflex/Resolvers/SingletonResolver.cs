@@ -12,6 +12,11 @@ namespace Reflex.Resolvers
             Concrete = concrete;
         }
 
+        public SingletonResolver(object instance)
+        {
+            _instance = instance;
+        }
+
         public override object Resolve(Container container)
         {
             Resolutions++;

@@ -68,6 +68,30 @@ namespace Reflex.Tests
         }
 
         [Test]
+        public void AddSingleton_ValuableWithIValuableAsContract_ShouldNotThrow()
+        {
+            var builder = new ContainerDescriptor(string.Empty);
+            Action addInstance = () => builder.AddSingleton<Valuable, IValuable>();
+            addInstance.Should().NotThrow();
+        }
+
+        [Test]
+        public void AddTransient_ValuableWithIValuableAsContract_ShouldNotThrow()
+        {
+            var builder = new ContainerDescriptor(string.Empty);
+            Action addInstance = () => builder.AddTransient<Valuable, IValuable>();
+            addInstance.Should().NotThrow();
+        }
+
+        [Test]
+        public void AddInstance_ValuableWithIValuableAsContract_ShouldNotThrow()
+        {
+            var builder = new ContainerDescriptor(string.Empty);
+            Action addInstance = () => builder.AddInstance<Valuable, IValuable>(() => new Valuable());
+            addInstance.Should().NotThrow();
+        }
+
+        [Test]
         public void HasBinding_ShouldTrue()
         {
             var builder = new ContainerDescriptor("").AddInstance(Debug.unityLogger);

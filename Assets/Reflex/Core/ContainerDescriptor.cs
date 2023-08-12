@@ -42,6 +42,40 @@ namespace Reflex.Core
             return container;
         }
 
+        public ContainerDescriptor AddSingleton<TConcrete, TContract>()
+            where TConcrete : TContract
+        {
+            Type concrete = typeof(TConcrete);
+            return Add(concrete, new Type[] { typeof(TContract) }, () => new SingletonResolver(concrete));
+        }
+
+        public ContainerDescriptor AddTransient<TConcrete, TContract>()
+            where TConcrete : TContract
+        {
+            Type concrete = typeof(TConcrete);
+            return Add(concrete, new Type[] { typeof(TContract) }, () => new TransientResolver(concrete));
+        }
+
+        public ContainerDescriptor AddSingleton<TConcrete, TContract>(Func<TConcrete> instance)
+            where TConcrete : TContract
+        {
+            Type concrete = typeof(TConcrete);
+            return Add(concrete, new Type[] { typeof(TContract) }, () => new SingletonResolver(instance.Invoke()));
+        }
+
+        public ContainerDescriptor AddTransient<TConcrete, TContract>(Func<TConcrete> instance)
+            where TConcrete : TContract
+        {
+            Type concrete = typeof(TConcrete);
+            return Add(concrete, new Type[] { typeof(TContract) }, () => new TransientResolver(() => instance.Invoke()));
+        }
+
+        public ContainerDescriptor AddInstance<TConcrete, TContract>(Func<TConcrete> instance)
+            where TConcrete : TContract
+        {
+            return Add(instance.Invoke().GetType(), new Type[] { typeof(TContract) }, () => new InstanceResolver(instance.Invoke()));
+        }
+
         public ContainerDescriptor AddSingleton(Type concrete, params Type[] contracts)
         {
             return Add(concrete, contracts, () => new SingletonResolver(concrete));
