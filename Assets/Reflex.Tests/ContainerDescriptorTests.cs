@@ -84,7 +84,23 @@ namespace Reflex.Tests
         }
 
         [Test]
-        public void AddInstance_ValuableWithIValuableAsContract_ShouldNotThrow()
+        public void AddSingleton_SpecificValuableWithIValuableAsContract_ShouldNotThrow()
+        {
+            var builder = new ContainerDescriptor(string.Empty);
+            Action addInstance = () => builder.AddSingleton<Valuable, IValuable>(() => new Valuable());
+            addInstance.Should().NotThrow();
+        }
+
+        [Test]
+        public void AddTransient_SpecificValuableWithIValuableAsContract_ShouldNotThrow()
+        {
+            var builder = new ContainerDescriptor(string.Empty);
+            Action addInstance = () => builder.AddTransient<Valuable, IValuable>(() => new Valuable());
+            addInstance.Should().NotThrow();
+        }
+
+        [Test]
+        public void AddInstance_SpecificValuableWithIValuableAsContract_ShouldNotThrow()
         {
             var builder = new ContainerDescriptor(string.Empty);
             Action addInstance = () => builder.AddInstance<Valuable, IValuable>(() => new Valuable());
