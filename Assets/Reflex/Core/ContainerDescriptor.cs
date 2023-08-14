@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Runtime.Serialization;
 using Reflex.Exceptions;
 using Reflex.Extensions;
 using Reflex.Generics;
@@ -72,7 +74,37 @@ namespace Reflex.Core
             return AddInstance(instance, instance.GetType());
         }
 
-        private void Build(out DisposableCollection disposables, out Dictionary<Type, List<Resolver>> resolversByContract, out IEnumerable<Resolver> toStart)
+		public ContainerDescriptor RemoveSingleton(Type concrete, params Type[] contracts)
+		{
+			return Remove(concrete, contracts, () => new SingletonResolver(concrete));
+		}
+
+		public ContainerDescriptor RemoveSingleton(Type concrete)
+		{
+			return RemoveSingleton(concrete, concrete);
+		}
+
+		public ContainerDescriptor RemoveTransient(Type concrete, params Type[] contracts)
+		{
+			return Remove(concrete, contracts, () => new TransientResolver(concrete));
+		}
+
+		public ContainerDescriptor RemoveTransient(Type concrete)
+		{
+			return RemoveTransient(concrete, concrete);
+		}
+
+		public ContainerDescriptor RemoveInstance(object instance, params Type[] contracts)
+		{
+			return Remove(instance.GetType(), contracts, () => new InstanceResolver(instance));
+		}
+
+		public ContainerDescriptor RemoveInstance(object instance)
+		{
+			return RemoveInstance(instance, instance.GetType());
+		}
+
+		private void Build(out DisposableCollection disposables, out Dictionary<Type, List<Resolver>> resolversByContract, out IEnumerable<Resolver> toStart)
         {
             disposables = new DisposableCollection();
             resolversByContract = new Dictionary<Type, List<Resolver>>();
@@ -115,16 +147,33 @@ namespace Reflex.Core
             return this;
         }
 
-        [Conditional("UNITY_EDITOR")]
+		private ContainerDescriptor Remove(Type concrete, Type[] contracts, Func<Resolver> resolverFactory)
+		{
+			ValidateContracts(concrete, contracts);
+			var resolver = resolverFactory.Invoke();
+			var resolverDescriptor = new ResolverDescriptor(resolver, contracts);
+
+			var descriptorToRemove = _descriptors.SingleOrDefault(descriptor => descriptor.Equals(resolverDescriptor)) ??
+                throw new ContractNotRegisteredException(concrete, contracts);
+
+			_descriptors.Remove(descriptorToRemove);
+
+            return this;
+		}
+
+		[Conditional("UNITY_EDITOR")]
         private static void ValidateContracts(Type concrete, params Type[] contracts)
         {
             foreach (var contract in contracts)
-            {
-                if (!contract.IsAssignableFrom(concrete))
-                {
-                    throw new ContractDefinitionException(concrete, contract);
-                }
-            }
-        }
+			{
+				if (contract.IsAssignableFrom(concrete))
+				{
+					continue;
+				}
+
+				throw new ContractDefinitionException(concrete, contract);
+			}
+		}
     }
+
 }

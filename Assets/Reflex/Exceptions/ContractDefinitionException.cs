@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Reflex.Extensions;
 
 namespace Reflex.Exceptions
 {
-    internal sealed class ContractDefinitionException : Exception
+	internal sealed class ContractDefinitionException : Exception
     {
         public ContractDefinitionException(Type concrete, Type contract) : base(GenerateMessage(concrete, contract))
         {

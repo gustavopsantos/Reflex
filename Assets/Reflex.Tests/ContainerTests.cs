@@ -24,7 +24,7 @@ namespace Reflex.Tests
 
         private class ClassWithDependency : IClassWithDependency
         {
-            private readonly IValuable _valuable;
+			private readonly IValuable _valuable;
 
             public ClassWithDependency(IValuable valuable)
             {
@@ -42,7 +42,20 @@ namespace Reflex.Tests
             container.Single<int>().Should().Be(42);
         }
 
-        [Test]
+		[Test]
+		public void Resolve_ValueTypeSingleton_ShouldThrow()
+		{
+			var container = new ContainerDescriptor("")
+				.AddInstance(42, typeof(int))
+                .RemoveInstance(42, typeof(int))
+				.Build();
+
+			Action resolve = () => container.Single<int>();
+
+            resolve.Should().Throw<UnknownContractException>();
+		}
+
+		[Test]
         public void Resolve_UninstalledValueType_ShouldThrowUnknownContractException()
         {
             var container = new ContainerDescriptor("").Build();
