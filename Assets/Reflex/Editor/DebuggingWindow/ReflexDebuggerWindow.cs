@@ -26,7 +26,7 @@ namespace Reflex.Editor.DebuggingWindow
         private MultiColumnTreeView TreeView { get; set; }
         private Rect SearchBarRect => new Rect(20f + 32f + 2f, 10f, position.width - 40f - 32f - 2f, 20f);
         private Rect RefreshButtonRect => new Rect(20f, 8f, 32, 20f);
-        private Rect MultiColumnTreeViewRect => new Rect(20, 30, position.width - 40, position.height - 50);
+        private Rect MultiColumnTreeViewRect => new Rect(20, 30, position.width - 40, position.height - 72);
 
         private void OnFocus()
         {
@@ -145,13 +145,18 @@ namespace Reflex.Editor.DebuggingWindow
         {
             Repaint();
             InitIfNeeded();
-            SearchBar(SearchBarRect);
-            DoTreeView(MultiColumnTreeViewRect);
-
-            if (GUI.Button(RefreshButtonRect, EditorGUIUtility.IconContent("Refresh")))
+            
+            if (UnityScriptingDefineSymbols.IsDefined("REFLEX_DEBUG"))
             {
-                Refresh();
+                PresentDebuggerEnabled();
             }
+            else
+            {
+                PresentDebuggerDisabled();
+            }
+            
+            GUILayout.FlexibleSpace();
+            PresentStatusBar();
         }
 
         private void Refresh(PlayModeStateChange _ = default)
@@ -168,6 +173,45 @@ namespace Reflex.Editor.DebuggingWindow
         private void DoTreeView(Rect rect)
         {
             TreeView.OnGUI(rect);
+        }
+        
+        private static void PresentDebuggerDisabled()
+        {
+            GUILayout.FlexibleSpace();
+            GUILayout.Label("To start debugging, enable the Reflex Debug Mode in the status bar.", Styles.LabelHorizontallyCentered);
+            GUILayout.Label("Keep in mind that enabling Reflex Debug Mode will impact performance.", Styles.LabelHorizontallyCentered);
+        }
+
+        private void PresentDebuggerEnabled()
+        {
+            SearchBar(SearchBarRect);
+            DoTreeView(MultiColumnTreeViewRect);
+
+            if (GUI.Button(RefreshButtonRect, EditorGUIUtility.IconContent("Refresh")))
+            {
+                Refresh();
+            }
+        }
+        
+        private static void PresentStatusBar()
+        {
+            using (new EditorGUILayout.HorizontalScope(Styles.AppToolbar))
+            {
+                GUILayout.FlexibleSpace();
+
+                var icon = UnityScriptingDefineSymbols.IsDefined("REFLEX_DEBUG")
+                    ? EditorGUIUtility.IconContent("d_DebuggerEnabled")
+                    : EditorGUIUtility.IconContent("d_DebuggerDisabled");
+
+                icon.tooltip = UnityScriptingDefineSymbols.IsDefined("REFLEX_DEBUG")
+                    ? "Reflex Debugger Enabled"
+                    : "Reflex Debugger Disabled";
+
+                if (GUILayout.Button(icon, Styles.StatusBarIcon, GUILayout.Width(25)))
+                {
+                    UnityScriptingDefineSymbols.Toggle("REFLEX_DEBUG", EditorUserBuildSettings.selectedBuildTargetGroup);
+                }
+            }
         }
     }
 }
