@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Reflex.Core;
 using Reflex.Extensions;
 using Reflex.Generics;
@@ -20,6 +21,8 @@ namespace Reflex.Injectors
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeAwakeOfFirstSceneOnly()
         {
+            ReportReflexDebuggerStatus();
+            
             var projectContainer = CreateProjectContainer();
             var containersByScene = new Dictionary<Scene, Container>();
 
@@ -92,6 +95,12 @@ namespace Reflex.Injectors
                     sceneScope.InstallBindings(builder);
                 }
             });
+        }
+
+        [Conditional("REFLEX_DEBUG")]
+        private static void ReportReflexDebuggerStatus()
+        {
+            ReflexLogger.Log("Symbol REFLEX_DEBUG are defined, performance impacted!", LogLevel.Warning);
         }
     }
 }
