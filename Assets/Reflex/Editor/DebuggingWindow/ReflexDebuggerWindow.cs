@@ -24,8 +24,7 @@ namespace Reflex.Editor.DebuggingWindow
         private SearchField _searchField;
 
         private MultiColumnTreeView TreeView { get; set; }
-        private Rect SearchBarRect => new Rect(20f + 32f + 2f, 10f, position.width - 40f - 32f - 2f, 20f);
-        private Rect RefreshButtonRect => new Rect(20f, 8f, 32, 20f);
+        private Rect SearchBarRect => new Rect(20f, 10f, position.width - 40f, 20f);
         private Rect MultiColumnTreeViewRect => new Rect(20, 30, position.width - 40, position.height - 72);
 
         private void OnFocus()
@@ -186,28 +185,31 @@ namespace Reflex.Editor.DebuggingWindow
         {
             SearchBar(SearchBarRect);
             DoTreeView(MultiColumnTreeViewRect);
-
-            if (GUI.Button(RefreshButtonRect, EditorGUIUtility.IconContent("Refresh")))
-            {
-                Refresh();
-            }
         }
         
-        private static void PresentStatusBar()
+        private void PresentStatusBar()
         {
             using (new EditorGUILayout.HorizontalScope(Styles.AppToolbar))
             {
                 GUILayout.FlexibleSpace();
 
-                var icon = UnityScriptingDefineSymbols.IsDefined("REFLEX_DEBUG")
+                var refreshIcon = EditorGUIUtility.IconContent("d_TreeEditor.Refresh");
+                refreshIcon.tooltip = "Forces Tree View to Refresh";
+                
+                if (GUILayout.Button(refreshIcon, Styles.StatusBarIcon, GUILayout.Width(25)))
+                {
+                    Refresh();
+                }
+                
+                var debuggerIcon = UnityScriptingDefineSymbols.IsDefined("REFLEX_DEBUG")
                     ? EditorGUIUtility.IconContent("d_DebuggerEnabled")
                     : EditorGUIUtility.IconContent("d_DebuggerDisabled");
 
-                icon.tooltip = UnityScriptingDefineSymbols.IsDefined("REFLEX_DEBUG")
+                debuggerIcon.tooltip = UnityScriptingDefineSymbols.IsDefined("REFLEX_DEBUG")
                     ? "Reflex Debugger Enabled"
                     : "Reflex Debugger Disabled";
-
-                if (GUILayout.Button(icon, Styles.StatusBarIcon, GUILayout.Width(25)))
+                
+                if (GUILayout.Button(debuggerIcon, Styles.StatusBarIcon, GUILayout.Width(25)))
                 {
                     UnityScriptingDefineSymbols.Toggle("REFLEX_DEBUG", EditorUserBuildSettings.selectedBuildTargetGroup);
                 }
