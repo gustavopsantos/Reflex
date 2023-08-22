@@ -14,7 +14,7 @@ namespace Reflex.Resolvers
 
         public override object Resolve(Container container)
         {
-            Resolutions++;
+            IncrementResolutions();
 
             if (_instance == null)
             {

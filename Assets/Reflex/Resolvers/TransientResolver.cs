@@ -12,7 +12,7 @@ namespace Reflex.Resolvers
 
         public override object Resolve(Container container)
         {
-            Resolutions++;
+            IncrementResolutions();
             var instance = container.Construct(Concrete);
             Disposables.TryAdd(instance);
             return instance;

@@ -116,7 +116,7 @@ namespace Reflex.Editor.DebuggingWindow
                     child.Depth + 1,
                     ++_id,
                     ResolverIcon,
-                    () => pair.Item1.Resolutions.ToString(),
+                    () => pair.Item1.GetDebugProperties().Resolutions.ToString(),
                     pair.Item2.Select(x => x.GetFullName()).OrderBy(x => x).ToArray(),
                     pair.Item1.GetType().GetName());
                 
