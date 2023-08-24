@@ -25,7 +25,7 @@ namespace Reflex.Editor.DebuggingWindow
 
         private MultiColumnTreeView TreeView { get; set; }
         private Rect SearchBarRect => new Rect(20f, 10f, position.width - 40f, 20f);
-        private Rect MultiColumnTreeViewRect => new Rect(20, 30, position.width - 40, position.height - 72);
+        private Rect MultiColumnTreeViewRect => new Rect(20, 30, position.width - 40, position.height - 200);
 
         private void OnFocus()
         {
@@ -105,7 +105,7 @@ namespace Reflex.Editor.DebuggingWindow
                 return;
             }
 
-            var child = new MyTreeElement(container.Name, parent.Depth + 1, ++_id, ContainerIcon, () => string.Empty, Array.Empty<string>(), string.Empty);
+            var child = new MyTreeElement(container.Name, parent.Depth + 1, ++_id, ContainerIcon, () => string.Empty, Array.Empty<string>(), string.Empty, new ResolverDebugProperties());
             parent.Children.Add(child);
             child.Parent = parent;
             
@@ -118,7 +118,9 @@ namespace Reflex.Editor.DebuggingWindow
                     ResolverIcon,
                     () => pair.Item1.GetDebugProperties().Resolutions.ToString(),
                     pair.Item2.Select(x => x.GetFullName()).OrderBy(x => x).ToArray(),
-                    pair.Item1.GetType().GetName());
+                    pair.Item1.GetType().GetName(),
+                    pair.Item1.GetDebugProperties()
+                );
                 
                 child.Children.Add(r);
                 r.Parent = child;
@@ -132,7 +134,7 @@ namespace Reflex.Editor.DebuggingWindow
         
         private IList<MyTreeElement> GetData()
         {
-            var root = new MyTreeElement("Root", -1, ++_id, ContainerIcon, () => string.Empty, Array.Empty<string>(), string.Empty);
+            var root = new MyTreeElement("Root", -1, ++_id, ContainerIcon, () => string.Empty, Array.Empty<string>(), string.Empty, new ResolverDebugProperties());
             BuildDataRecursively(root, Tree<Container>.Root);
 
             var list = new List<MyTreeElement>();
@@ -167,11 +169,13 @@ namespace Reflex.Editor.DebuggingWindow
         private void SearchBar(Rect rect)
         {
             TreeView.searchString = _searchField.OnGUI(rect, TreeView.searchString);
+            GUILayoutUtility.GetRect(rect.width, rect.height);
         }
 
         private void DoTreeView(Rect rect)
         {
             TreeView.OnGUI(rect);
+            GUILayoutUtility.GetRect(rect.width, rect.height);
         }
         
         private static void PresentDebuggerDisabled()
@@ -185,7 +189,41 @@ namespace Reflex.Editor.DebuggingWindow
         {
             SearchBar(SearchBarRect);
             DoTreeView(MultiColumnTreeViewRect);
+
+
+            
+            GUILayout.Space(16);
+
+            using (new GUILayout.HorizontalScope())
+            {
+                GUILayout.Space(16);
+
+                using (new GUILayout.VerticalScope())
+                {
+                    _bindingStackTraceScrollPosition = GUILayout.BeginScrollView(_bindingStackTraceScrollPosition);
+                    // GUILayout.Label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCDDDD");
+                    // GUILayout.Label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCDDDD");
+                    // GUILayout.Label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCDDDD");
+                    // GUILayout.Label("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCDDDD");
+                    
+                    PresentCallSite();
+
+                    GUILayout.EndScrollView();
+                    GUILayout.Space(16);
+
+                }
+
+           
+                GUILayout.Space(16);
+                
+            }
+            
+            
+   
         }
+        
+        private Vector2 _bindingStackTraceScrollPosition;
+        
         
         private void PresentStatusBar()
         {
@@ -214,6 +252,52 @@ namespace Reflex.Editor.DebuggingWindow
                     UnityScriptingDefineSymbols.Toggle("REFLEX_DEBUG", EditorUserBuildSettings.selectedBuildTargetGroup);
                 }
             }
+        }
+
+        private void PresentCallSite()
+        {
+            var selection = TreeView.GetSelection();
+            
+            if (selection == null || selection.Count == 0)
+            {
+                return;
+            }
+            
+            var item = TreeView.Find(selection.Single());
+
+            if (item == null)
+            {
+                return;
+            }
+
+            foreach (var callSite in item.Properties.Callsite)
+            {
+                PresentStackFrame(callSite.ClassName, callSite.FunctionName, callSite.Path, callSite.Line);
+            }
+        }
+        
+        private static void PresentStackFrame(string className, string functionName, string path, int line)
+        {
+            using (new GUILayout.HorizontalScope())
+            {
+                GUILayout.Label($"{className}:{functionName}()  →", Styles.StackTrace);
+
+                if (PresentLinkButton($"{path}:{line}"))
+                {
+                    UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal(path, line);
+                }
+            }
+        }
+
+        private static bool PresentLinkButton(string label, params GUILayoutOption[] options)
+        {
+            var position = GUILayoutUtility.GetRect(new GUIContent(label), Styles.Hyperlink, options);
+            position.y -= 3;
+            Handles.color = Styles.Hyperlink.normal.textColor;
+            Handles.DrawLine(new Vector3(position.xMin + (float)EditorStyles.linkLabel.padding.left, position.yMax), new Vector3(position.xMax - (float)EditorStyles.linkLabel.padding.right, position.yMax));
+            Handles.color = Color.white;
+            EditorGUIUtility.AddCursorRect(position, MouseCursor.Link);
+            return GUI.Button(position, label, Styles.Hyperlink);
         }
     }
 }

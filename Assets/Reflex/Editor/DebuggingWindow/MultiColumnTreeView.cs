@@ -60,7 +60,7 @@ namespace Reflex.Editor.DebuggingWindow
 					break;
 			}
 		}
-
+		
 		private static void DrawContracts(Rect rect, string[] contracts)
 		{
 			if (contracts == null || contracts.Length == 0 || string.IsNullOrEmpty(contracts[0]))

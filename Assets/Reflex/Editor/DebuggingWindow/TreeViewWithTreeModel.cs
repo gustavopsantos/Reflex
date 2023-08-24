@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Reflex.Logging;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
-using UnityEngine;
 
 namespace Reflex.Editor.DebuggingWindow
 {
@@ -20,6 +19,11 @@ namespace Reflex.Editor.DebuggingWindow
         private void Init(TreeModel<T> model)
         {
             _treeModel = model;
+        }
+        
+        public T Find(int id)
+        {
+            return _treeModel.Find(id);
         }
 
         protected override TreeViewItem BuildRoot()

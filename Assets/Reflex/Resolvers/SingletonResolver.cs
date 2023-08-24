@@ -10,6 +10,7 @@ namespace Reflex.Resolvers
         public SingletonResolver(Type concrete)
         {
             Concrete = concrete;
+            RegisterCallSite();
         }
 
         public override object Resolve(Container container)

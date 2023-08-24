@@ -724,7 +724,8 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    WebGL: REFLEX_DEBUG
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

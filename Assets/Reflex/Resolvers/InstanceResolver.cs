@@ -11,6 +11,7 @@ namespace Reflex.Resolvers
             _value = value;
             Disposables.TryAdd(value);
             Concrete = _value.GetType();
+            RegisterCallSite();
         }
 
         public override object Resolve(Container container)
