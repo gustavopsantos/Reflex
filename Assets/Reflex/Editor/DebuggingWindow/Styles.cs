@@ -11,6 +11,7 @@ public static class Styles
             if (_stackTrace == null)
             {
                 _stackTrace = new GUIStyle("CN Message");
+                _stackTrace.wordWrap = false;
             }
 
             return _stackTrace;
@@ -68,7 +69,7 @@ public static class Styles
             if (_hyperlink == null)
             {
                 _hyperlink = new GUIStyle(EditorStyles.linkLabel);
-                _hyperlink.wordWrap = true;
+                _hyperlink.wordWrap = false;
             }
 
             return _hyperlink;
