@@ -125,10 +125,10 @@ namespace Reflex.Editor.DebuggingWindow
 				new MultiColumnHeaderState.Column 
 				{
 					canSort = false,
-					headerContent = new GUIContent("Resolutions", "In sed porta ante. Nunc et nulla mi."),
+					headerContent = new GUIContent("Resolutions"),
 					headerTextAlignment = TextAlignment.Left,
+					width = 74,
 					minWidth = 74,
-					maxWidth = 74,
 					autoResize = true
 				},
 				new MultiColumnHeaderState.Column 
