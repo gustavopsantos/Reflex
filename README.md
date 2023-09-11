@@ -308,12 +308,16 @@ OnContainerBuilt is a instance callback of ContainerDescriptor, its called once 
 ## 🐛 Debugger
 ![Preview](Graphics/reflex-debugger.png)  
 It can be accessed by menu item  Reflex → Debugger.  
+To enable reflex debug mode you must go to Edit → Project Settings → Player, then in the Other Settings panel, scroll down to Script Compilation → Scripting Define Symbols and add `REFLEX_DEBUG`. This can be easily achieved by clicking on the bug button at bottom right corner inside Reflex Debugger Window.
+> Note that debug mode reduces performance and increases memory pressure, so use it wisely.  
+
 And from there you can check:
 - Container Hierarchy
 - Implementation
 - Contracts
 - Resolution Count
 - Binding Type
+- Binding assignment call stack
 
 ---
 
