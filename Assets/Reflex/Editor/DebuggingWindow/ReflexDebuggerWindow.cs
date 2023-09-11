@@ -27,11 +27,6 @@ namespace Reflex.Editor.DebuggingWindow
         private Rect SearchBarRect => new Rect(20f, 10f, position.width - 40f, 20f);
         private Rect MultiColumnTreeViewRect => new Rect(20, 30, position.width - 40, position.height - 200);
 
-        private void OnFocus()
-        {
-            Refresh();
-        }
-
         private void OnEnable()
         {
             EditorApplication.playModeStateChanged += Refresh;
