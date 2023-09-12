@@ -10,7 +10,7 @@ jobs:
     name: Edit Mode Tests
     runs-on: ubuntu-latest
     container:
-      image: "unityci/editor:ubuntu-2021.3.8f1-base-1.0.1"
+      image: "unityci/editor:ubuntu-2021.3.10f1-base-2.0.0"
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
