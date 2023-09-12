@@ -8,13 +8,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Reflex.Sample/Reflex.Sample.unity
     guid: f80437131882cdd4e9340aa7044d8c91
-  - enabled: 1
-    path: Assets/Reflex.Sandbox/Content.unity
-    guid: 106e98e40d9b7ee43a306c23dfcdc6e1
-  - enabled: 1
-    path: Assets/Reflex.Sandbox/Boot.unity
-    guid: de2f877c3d8e495458fecf1163c787d9
-  - enabled: 1
-    path: Assets/Benchy.unity
-    guid: 34f5a005350534f48a25f3b67de6bcdf
   m_configObjects: {}
