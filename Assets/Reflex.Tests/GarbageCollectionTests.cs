@@ -98,7 +98,7 @@ namespace Reflex.Tests
             dispose.Invoke();
             
             Resources.UnloadUnusedAssets();
-            GC.Collect();
+            GC.Collect(0, GCCollectionMode.Forced);
             GC.WaitForPendingFinalizers();
 
             finalized.Should().BeTrue();
