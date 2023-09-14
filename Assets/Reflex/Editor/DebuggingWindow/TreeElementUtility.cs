@@ -8,7 +8,10 @@ namespace Reflex.Editor.DebuggingWindow
 		public static void TreeToList<T>(T root, IList<T> result) where T : TreeElement
 		{
 			if (result == null)
+			{
 				throw new NullReferenceException("The input 'IList<T> result' list is null");
+			}
+
 			result.Clear();
 
 			Stack<T> stack = new Stack<T>();
@@ -38,7 +41,7 @@ namespace Reflex.Editor.DebuggingWindow
 			ValidateDepthValues (list);
 
 			// Clear old states
-			foreach (var element in list)
+			foreach (T element in list)
 			{
 				element.Parent = null;
 				element.Children = null;
@@ -47,10 +50,12 @@ namespace Reflex.Editor.DebuggingWindow
 			// Set child and parent references using depth info
 			for (int parentIndex = 0; parentIndex < list.Count; parentIndex++)
 			{
-				var parent = list[parentIndex];
+				T parent = list[parentIndex];
 				bool alreadyHasValidChildren = parent.Children != null;
 				if (alreadyHasValidChildren)
+				{
 					continue;
+				}
 
 				int parentDepth = parent.Depth;
 				int childCount = 0;
@@ -59,9 +64,14 @@ namespace Reflex.Editor.DebuggingWindow
 				for (int i = parentIndex + 1; i < list.Count; i++)
 				{
 					if (list[i].Depth == parentDepth + 1)
+					{
 						childCount++;
+					}
+
 					if (list[i].Depth <= parentDepth)
+					{
 						break;
+					}
 				}
 
 				// Fill child array
@@ -80,7 +90,9 @@ namespace Reflex.Editor.DebuggingWindow
 						}
 
 						if (list[i].Depth <= parentDepth)
+						{
 							break;
+						}
 					}
 				}
 
@@ -94,25 +106,37 @@ namespace Reflex.Editor.DebuggingWindow
 		public static void ValidateDepthValues<T>(IList<T> list) where T : TreeElement
 		{
 			if (list.Count == 0)
+			{
 				throw new ArgumentException("list should have items, count is 0, check before calling ValidateDepthValues", "list");
+			}
 
 			if (list[0].Depth != -1)
+			{
 				throw new ArgumentException("list item at index 0 should have a depth of -1 (since this should be the hidden root of the tree). Depth is: " + list[0].Depth, "list");
+			}
 
 			for (int i = 0; i < list.Count - 1; i++)
 			{
 				int depth = list[i].Depth;
 				int nextDepth = list[i + 1].Depth;
 				if (nextDepth > depth && nextDepth - depth > 1)
+				{
 					throw new ArgumentException(string.Format("Invalid depth info in input list. Depth cannot increase more than 1 per row. Index {0} has depth {1} while index {2} has depth {3}", i, depth, i + 1, nextDepth));
+				}
 			}
 
 			for (int i = 1; i < list.Count; ++i)
+			{
 				if (list[i].Depth < 0)
+				{
 					throw new ArgumentException("Invalid depth value for item at index " + i + ". Only the first item (the root) should have depth below 0.");
+				}
+			}
 
 			if (list.Count > 1 && list[1].Depth != 0)
+			{
 				throw new ArgumentException("Input list item at index 1 is assumed to have a depth of 0", "list");
+			}
 		}
 	}
 }

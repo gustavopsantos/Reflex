@@ -14,7 +14,7 @@ namespace Reflex.Extensions
 
         public static object CastDynamic(this IEnumerable source, Type target)
         {
-            var castDelegate = _enumerableCastDelegates.GetOrAdd(target, t => _enumerableCastMethodInfo
+			Func<IEnumerable, object> castDelegate = _enumerableCastDelegates.GetOrAdd(target, t => _enumerableCastMethodInfo
                 .MakeGenericMethod(t)
                 .CreateDelegate<Func<IEnumerable, object>>());
 
@@ -23,7 +23,7 @@ namespace Reflex.Extensions
         
         public static IEnumerable<T> Reversed<T>(this IList<T> items)
         {
-            for (var i = items.Count - 1; i >= 0; i--)
+            for (int i = items.Count - 1; i >= 0; i--)
             {
                 yield return items[i];
             }

@@ -10,7 +10,7 @@ namespace Reflex.Tests
         [Test]
         public void ProjectCanHaveNoneOrSingleProjectScope()
         {
-            var assets = Resources.LoadAll<ProjectScope>(string.Empty);
+			ProjectScope[] assets = Resources.LoadAll<ProjectScope>(string.Empty);
 
             if (assets.Length is 0 or 1)
             {
@@ -25,7 +25,7 @@ namespace Reflex.Tests
         [Test]
         public void ProjectCanHaveNoneOrSingleReflexSettings()
         {
-            var assets = Resources.LoadAll<ReflexSettings>(string.Empty);
+			ReflexSettings[] assets = Resources.LoadAll<ReflexSettings>(string.Empty);
 
             if (assets.Length is 0 or 1)
             {

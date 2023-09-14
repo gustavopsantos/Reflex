@@ -10,7 +10,7 @@ namespace Reflex.Reflectors
         {
             return args =>
             {
-                var instance = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
+				object instance = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
                 constructor.Invoke(instance, args);
                 return instance;
             };

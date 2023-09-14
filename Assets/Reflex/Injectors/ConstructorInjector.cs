@@ -8,14 +8,14 @@ namespace Reflex.Injectors
 {
     public static class ConstructorInjector
     {
-        public static object Construct(Type concrete, Container container)
+        public static object Construct(Type concrete, IServiceProvider serviceProvider)
         {
-            var info = TypeConstructionInfoCache.Get(concrete);
-            var arguments = ExactArrayPool<object>.Shared.Rent(info.ConstructorParameters.Length);
+			TypeConstructionInfo info = TypeConstructionInfoCache.Get(concrete);
+			object[] arguments = ExactArrayPool<object>.Shared.Rent(info.ConstructorParameters.Length);
 
-            for (var i = 0; i < info.ConstructorParameters.Length; i++)
+            for (int i = 0; i < info.ConstructorParameters.Length; i++)
             {
-                arguments[i] = container.Resolve(info.ConstructorParameters[i]);
+                arguments[i] = serviceProvider.GetService(info.ConstructorParameters[i]);
             }
 
             try

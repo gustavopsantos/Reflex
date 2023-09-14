@@ -11,7 +11,7 @@ namespace Reflex.Logging
 
         static ReflexLogger()
         {
-            _logLevel = ResourcesUtilities.TryLoad<ReflexSettings>(nameof(ReflexSettings), out var reflexSettings)
+            _logLevel = ResourcesUtilities.TryLoad<ReflexSettings>(nameof(ReflexSettings), out ReflexSettings reflexSettings)
                 ? reflexSettings.LogLevel
                 : LogLevel.Info;
             

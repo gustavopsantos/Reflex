@@ -8,7 +8,7 @@ namespace Reflex.Extensions
     {
         internal static bool TryFindAtRoot<T>(this Scene scene, out T finding)
         {
-            foreach (var gameObject in scene.GetRootGameObjects())
+            foreach (UnityEngine.GameObject gameObject in scene.GetRootGameObjects())
             {
                 if (gameObject.TryGetComponent<T>(out finding))
                 {

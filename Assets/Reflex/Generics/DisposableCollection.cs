@@ -22,7 +22,7 @@ namespace Reflex.Generics
 
         public void Dispose()
         {
-            while (_stack.TryPop(out var disposable))
+            while (_stack.TryPop(out IDisposable disposable))
             {
                 disposable.Dispose();
             }

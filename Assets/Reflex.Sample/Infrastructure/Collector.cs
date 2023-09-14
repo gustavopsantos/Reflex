@@ -11,8 +11,8 @@ namespace Reflex.Sample.Infrastructure
 
         private void Update()
         {
-            var input = _input.Get();
-            var motion = Vector3.ClampMagnitude(new Vector3(input.x, 0, input.y), 1);
+			Vector2 input = _input.Get();
+			Vector3 motion = Vector3.ClampMagnitude(new Vector3(input.x, 0, input.y), 1);
             transform.Translate(motion * (Time.deltaTime * _model.MovementSpeed));
         }
         

@@ -32,7 +32,7 @@ internal class ExpressionTreeBenchmark : MonoBehaviour
 			fontSize = 64,
 			alignment = TextAnchor.MiddleCenter
 		};
-		var type = GetType();
+		Type type = GetType();
 		_fieldInfo = type.GetField("_number", BindingFlags.Instance | BindingFlags.NonPublic);
 		_fieldGetter = CompileFieldGetter(type, _fieldInfo);
 		_fieldSetter = CompileFieldSetter(type, _fieldInfo);
@@ -47,7 +47,7 @@ internal class ExpressionTreeBenchmark : MonoBehaviour
 		BenchmarkExpressionGetter();
 		BenchmarkExpressionSetter();
 
-		var cellHeight = (float) Screen.height / 6;
+		float cellHeight = (float) Screen.height / 6;
 		GUILabel(new Rect(default, 0 * cellHeight, Screen.width, cellHeight), $"Normal Getter: {Average(_normalGetterBuffer)}");
 		GUILabel(new Rect(default, 1 * cellHeight, Screen.width, cellHeight), $"Normal Setter: {Average(_normalSetterBuffer)}");
 		GUILabel(new Rect(default, 2 * cellHeight, Screen.width, cellHeight), $"Reflection Getter: {Average(_reflectionGetterBuffer)}");
@@ -135,19 +135,19 @@ internal class ExpressionTreeBenchmark : MonoBehaviour
 
 	private static Func<object, object> CompileFieldGetter(Type type, FieldInfo fieldInfo)
 	{
-		var ownerParameter = Expression.Parameter(typeof(object));
+		ParameterExpression ownerParameter = Expression.Parameter(typeof(object));
 
-		var fieldExpression = Expression.Field(Expression.Convert(ownerParameter, type), fieldInfo);
+		MemberExpression fieldExpression = Expression.Field(Expression.Convert(ownerParameter, type), fieldInfo);
 
 		return Expression.Lambda<Func<object, object>>(Expression.Convert(fieldExpression, typeof(object)), ownerParameter).Compile();
 	}
 
 	private static Action<object, object> CompileFieldSetter(Type type, FieldInfo fieldInfo)
 	{
-		var ownerParameter = Expression.Parameter(typeof(object));
-		var fieldParameter = Expression.Parameter(typeof(object));
+		ParameterExpression ownerParameter = Expression.Parameter(typeof(object));
+		ParameterExpression fieldParameter = Expression.Parameter(typeof(object));
 
-		var fieldExpression = Expression.Field(Expression.Convert(ownerParameter, type), fieldInfo);
+		MemberExpression fieldExpression = Expression.Field(Expression.Convert(ownerParameter, type), fieldInfo);
 
 		return Expression.Lambda<Action<object, object>>(
 				Expression.Assign(fieldExpression, Expression.Convert(fieldParameter, fieldInfo.FieldType)), ownerParameter, fieldParameter)

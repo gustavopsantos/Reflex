@@ -1,26 +1,33 @@
-﻿using Reflex.Core;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Reflex.Core;
 using Reflex.Sample.Application;
 using UnityEngine;
 
 namespace Reflex.Sample.Infrastructure
 {
-    internal class ReflexSampleInstaller : MonoBehaviour, IInstaller
-    {
-        [SerializeField] private PickupSoundEffect _pickupSoundEffectPrefab;
-        [SerializeField] private CollectorConfigurationModel _collectorConfigurationModel;
+	public static class Extensions
+	{
+		public static IServiceCollection InstallInput(this IServiceCollection serviceCollection, bool useMouse)
+		{
+			return serviceCollection.AddSingleton<ICollectorInput>(serviceProvider =>
+				useMouse
+					? new CollectorInputMouse()
+					: new CollectorInputKeyboard());
+		}
+	}
 
-        public void InstallBindings(ContainerDescriptor descriptor)
-        {
-            InstallInput(descriptor, useMouse: false);
-            descriptor.AddInstance(_pickupSoundEffectPrefab);
-            descriptor.AddInstance(_collectorConfigurationModel);
-            descriptor.AddSingleton(typeof(CollectionStoragePrefs), typeof(ICollectionStorage));
-        }
+	internal class ReflexSampleInstaller : MonoBehaviour, IInstaller
+	{
+		[SerializeField] private PickupSoundEffect _pickupSoundEffectPrefab;
+		[SerializeField] private CollectorConfigurationModel _collectorConfigurationModel;
 
-        private static void InstallInput(ContainerDescriptor descriptor, bool useMouse)
-        {
-            var implementation = useMouse ? typeof(CollectorInputMouse) : typeof(CollectorInputKeyboard);
-            descriptor.AddSingleton(implementation, typeof(ICollectorInput));
-        }
-    }
+		public void InstallBindings(IServiceCollection serviceCollection)
+		{
+			serviceCollection
+				.InstallInput(false)
+				.AddSingleton(_pickupSoundEffectPrefab)
+				.AddSingleton(_collectorConfigurationModel)
+				.AddSingleton<ICollectionStorage, CollectionStoragePrefs>();
+		}
+	}
 }

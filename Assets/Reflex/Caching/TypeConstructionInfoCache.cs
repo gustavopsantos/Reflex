@@ -12,7 +12,7 @@ namespace Reflex.Caching
 
         internal static TypeConstructionInfo Get(Type type)
         {
-            if (!_dictionary.TryGetValue(type, out var info))
+            if (!_dictionary.TryGetValue(type, out TypeConstructionInfo info))
             {
                 info = Generate(type);
                 _dictionary.Add(type, info);
@@ -23,10 +23,10 @@ namespace Reflex.Caching
         
         private static TypeConstructionInfo Generate(Type type)
         {
-            if (type.TryGetConstructors(out var constructors))
+            if (type.TryGetConstructors(out System.Reflection.ConstructorInfo[] constructors))
             {
-                var constructor = constructors.MaxBy(ctor => ctor.GetParameters().Length);
-                var parameters = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
+				System.Reflection.ConstructorInfo constructor = constructors.MaxBy(ctor => ctor.GetParameters().Length);
+				Type[] parameters = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
                 return new TypeConstructionInfo(ActivatorFactoryManager.Factory.GenerateActivator(type, constructor, parameters), parameters);
             }
 

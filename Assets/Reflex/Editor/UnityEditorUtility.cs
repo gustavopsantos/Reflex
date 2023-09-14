@@ -16,8 +16,8 @@ namespace Reflex.Editor
         
         public static void CreateScriptableObject<T>(string desiredAssetPath) where T : ScriptableObject
         {
-            var assetPath = AssetDatabase.GenerateUniqueAssetPath(desiredAssetPath);
-            var asset = ScriptableObject.CreateInstance<T>();
+			string assetPath = AssetDatabase.GenerateUniqueAssetPath(desiredAssetPath);
+            T asset = ScriptableObject.CreateInstance<T>();
             AssetDatabase.CreateAsset(asset, assetPath);
             AssetDatabase.SaveAssets();
             Focus(asset);
@@ -25,12 +25,12 @@ namespace Reflex.Editor
         
         public static void CreatePrefab(string desiredPrefabPath, Action<GameObject> edit = null)
         {
-            var prefabPath =  AssetDatabase.GenerateUniqueAssetPath(desiredPrefabPath);
-            var template = new GameObject(Path.GetFileNameWithoutExtension(prefabPath));
-            var prefab = PrefabUtility.SaveAsPrefabAsset(template, prefabPath);
+			string prefabPath =  AssetDatabase.GenerateUniqueAssetPath(desiredPrefabPath);
+			GameObject template = new GameObject(Path.GetFileNameWithoutExtension(prefabPath));
+			GameObject prefab = PrefabUtility.SaveAsPrefabAsset(template, prefabPath);
             Object.DestroyImmediate(template);
             
-            using (var editingScope = new PrefabUtility.EditPrefabContentsScope(prefabPath))
+            using (PrefabUtility.EditPrefabContentsScope editingScope = new PrefabUtility.EditPrefabContentsScope(prefabPath))
             {
                 edit?.Invoke(editingScope.prefabContentsRoot);
             }
@@ -40,9 +40,9 @@ namespace Reflex.Editor
         
         public static string GetSelectedPathInProjectWindow()
         {
-            var path = "Assets";
+			string path = "Assets";
 
-            foreach (var obj in Selection.GetFiltered(typeof(Object), SelectionMode.Assets))
+            foreach (Object obj in Selection.GetFiltered(typeof(Object), SelectionMode.Assets))
             {
                 path = AssetDatabase.GetAssetPath(obj);
                 if (!string.IsNullOrEmpty(path) && File.Exists(path))

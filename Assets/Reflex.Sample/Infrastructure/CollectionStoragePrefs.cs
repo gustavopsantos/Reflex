@@ -11,7 +11,7 @@ namespace Reflex.Sample.Infrastructure
 
         public CollectionStoragePrefs()
         {
-            var json = PlayerPrefs.GetString("collection-storage", "[]");
+			string json = PlayerPrefs.GetString("collection-storage", "[]");
             _storage = JsonConvert.DeserializeObject<HashSet<string>>(json);
         }
 
@@ -39,7 +39,7 @@ namespace Reflex.Sample.Infrastructure
         
         private void Persist()
         {
-            var json = JsonConvert.SerializeObject(_storage);
+			string json = JsonConvert.SerializeObject(_storage);
             PlayerPrefs.SetString("collection-storage", json);
         }
     }

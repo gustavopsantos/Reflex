@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 using Reflex.Core;
 using Reflex.Extensions;
 using Reflex.Generics;
@@ -15,18 +16,18 @@ namespace Reflex.Injectors
 {
     internal static class UnityInjector
     {
-        internal static Dictionary<Scene, Action<ContainerDescriptor>> Extensions { get; } = new();
+        internal static Dictionary<Scene, Action<IServiceCollection>> Extensions { get; } = new();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeAwakeOfFirstSceneOnly()
         {
-            var projectContainer = CreateProjectContainer();
-            var containersByScene = new Dictionary<Scene, Container>();
+			IServiceProvider projectContainer = CreateProjectContainer();
+			Dictionary<Scene, IServiceProvider> containersByScene = new Dictionary<Scene, IServiceProvider>();
 
             void InjectScene(Scene scene, LoadSceneMode mode = default)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
-                var sceneContainer = CreateSceneContainer(scene, projectContainer);
+				IServiceProvider sceneContainer = CreateSceneContainer(scene, projectContainer);
                 containersByScene.Add(scene, sceneContainer);
                 SceneInjector.Inject(scene, sceneContainer);
             }
@@ -34,18 +35,18 @@ namespace Reflex.Injectors
             void DisposeScene(Scene scene)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) unloaded", LogLevel.Development);
-                var sceneContainer = containersByScene[scene];
+				IServiceProvider sceneContainer = containersByScene[scene];
                 containersByScene.Remove(scene);
-                sceneContainer.Dispose();
+                ((ServiceProvider)sceneContainer).Dispose();
             }
             
             void DisposeProject()
             {
-                Tree<Container>.Root = null;
-                projectContainer.Dispose();
-                
-                // Unsubscribe from static events ensuring that Reflex works with domain reloading set to false
-                SceneManager.sceneLoaded -= InjectScene;
+                Tree<IServiceProvider>.Root = null;
+				((ServiceProvider)projectContainer).Dispose();
+
+				// Unsubscribe from static events ensuring that Reflex works with domain reloading set to false
+				SceneManager.sceneLoaded -= InjectScene;
                 SceneManager.sceneUnloaded -= DisposeScene;
                 Application.quitting -= DisposeProject;
             }
@@ -63,35 +64,36 @@ namespace Reflex.Injectors
             Application.quitting += DisposeProject;
         }
 
-        private static Container CreateProjectContainer()
+        private static IServiceProvider CreateProjectContainer()
         {
-            var builder = new ContainerDescriptor("ProjectContainer");
+			ServiceCollection builder = new ServiceCollection();
             
-            if (ResourcesUtilities.TryLoad<ProjectScope>(nameof(ProjectScope), out var projectScope))
+            if (ResourcesUtilities.TryLoad<ProjectScope>(nameof(ProjectScope), out ProjectScope projectScope))
             {
                 projectScope.InstallBindings(builder);
             }
-            
-            var container = Tree<Container>.Root = builder.Build();
+
+			IServiceProvider container = Tree<IServiceProvider>.Root = builder.BuildServiceProvider();
 
             return container;
         }
 
-        private static Container CreateSceneContainer(Scene scene, Container projectContainer)
+        private static IServiceProvider CreateSceneContainer(Scene scene, IServiceProvider projectServiceProvider)
         {
-            return projectContainer.Scope($"{scene.name} ({scene.GetHashCode()})", builder =>
+            IServiceCollection services = new ServiceCollection();
+
+            if (Extensions.TryGetValue(scene, out Action<IServiceCollection> preBuilder))
             {
-                if (Extensions.TryGetValue(scene, out var preBuilder))
-                {
-                    Extensions.Remove(scene);                    
-                    preBuilder.Invoke(builder);
-                }
+                Extensions.Remove(scene);                    
+                preBuilder.Invoke(services);
+            }
                 
-                if (scene.TryFindAtRoot<SceneScope>(out var sceneScope))
-                {
-                    sceneScope.InstallBindings(builder);
-                }
-            });
+            if (scene.TryFindAtRoot<SceneScope>(out SceneScope sceneScope))
+            {
+                sceneScope.InstallBindings(services);
+            }
+
+            return services.BuildServiceProvider();
         }
     }
 }

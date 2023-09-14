@@ -26,7 +26,7 @@ namespace Domain.Generics
 
         private static int Circle(int number, int rangeExclusive)
         {
-            var result = number % rangeExclusive;
+			int result = number % rangeExclusive;
 
             if ((result < 0 && rangeExclusive > 0) || (result > 0 && rangeExclusive < 0))
             {

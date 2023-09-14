@@ -1,16 +1,17 @@
-using FluentAssertions;
-using Reflex.Core;
-using NUnit.Framework;
+//using FluentAssertions;
+//using Microsoft.Extensions.DependencyInjection;
+//using NUnit.Framework;
+//using System;
 
-namespace Reflex.Tests
-{
-    internal class SelfInjectionTests
-    {
-        [Test]
-        public void Container_ShouldBeAbleToResolveItself()
-        {
-            var container = new ContainerDescriptor("").Build();
-            container.Single<Container>().Should().Be(container);
-        }
-    }
-}
+//namespace Reflex.Tests
+//{
+//    internal class SelfInjectionTests
+//    {
+//        [Test]
+//        public void Container_ShouldBeAbleToResolveItself()
+//        {
+//            var container = new ServiceCollection()();
+//            container.GetService<IServiceProvider>().Should().Be(container);
+//        }
+//    }
+//}

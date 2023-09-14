@@ -9,27 +9,27 @@ namespace Reflex.Reflectors
     {
         public ObjectActivator GenerateActivator(Type type, ConstructorInfo constructor, Type[] parameters)
         {
-            var param = Expression.Parameter(typeof(object[]));
-            var argumentsExpressions = new Expression[parameters.Length];
+			ParameterExpression param = Expression.Parameter(typeof(object[]));
+			Expression[] argumentsExpressions = new Expression[parameters.Length];
 
-            for (var i = 0; i < parameters.Length; i++)
+            for (int i = 0; i < parameters.Length; i++)
             {
-                var index = Expression.Constant(i);
-                var parameterType = parameters[i];
-                var parameterAccessor = Expression.ArrayIndex(param, index);
-                var parameterCast = Expression.Convert(parameterAccessor, parameterType);
+				ConstantExpression index = Expression.Constant(i);
+				Type parameterType = parameters[i];
+				BinaryExpression parameterAccessor = Expression.ArrayIndex(param, index);
+				UnaryExpression parameterCast = Expression.Convert(parameterAccessor, parameterType);
                 argumentsExpressions[i] = parameterCast;
             }
 
-            var newExpression = Expression.New(constructor, argumentsExpressions);
-            var lambda = Expression.Lambda(typeof(ObjectActivator), Expression.Convert(newExpression, typeof(object)), param);
+			NewExpression newExpression = Expression.New(constructor, argumentsExpressions);
+			LambdaExpression lambda = Expression.Lambda(typeof(ObjectActivator), Expression.Convert(newExpression, typeof(object)), param);
             return (ObjectActivator) lambda.Compile();
         }
 
         public ObjectActivator GenerateDefaultActivator(Type type)
         {
-            var body = Expression.Convert(Expression.Default(type), typeof(object));
-            var lambda = Expression.Lambda(typeof(ObjectActivator), body, Expression.Parameter(typeof(object[])));
+			UnaryExpression body = Expression.Convert(Expression.Default(type), typeof(object));
+			LambdaExpression lambda = Expression.Lambda(typeof(ObjectActivator), body, Expression.Parameter(typeof(object[])));
             return (ObjectActivator) lambda.Compile();
         }
     }

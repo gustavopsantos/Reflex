@@ -32,7 +32,7 @@ namespace Reflex.Editor.DebuggingWindow
 
 		protected override void RowGUI (RowGUIArgs args)
 		{
-			var item = (TreeViewItem<MyTreeElement>) args.item;
+			TreeViewItem<MyTreeElement> item = (TreeViewItem<MyTreeElement>) args.item;
 
 			for (int i = 0; i < args.GetNumVisibleColumns (); ++i)
 			{
@@ -70,7 +70,7 @@ namespace Reflex.Editor.DebuggingWindow
 			
 			rect.y += 1;
 
-			var style = new GUIStyle("CN CountBadge") // CN CountBadge, AssetLabel, AssetLabel Partial
+			GUIStyle style = new GUIStyle("CN CountBadge") // CN CountBadge, AssetLabel, AssetLabel Partial
 			{
 				wordWrap = true,
 				stretchWidth = false,
@@ -79,9 +79,9 @@ namespace Reflex.Editor.DebuggingWindow
 				fontSize = 11
 			};
 
-			foreach (var contract in contracts)
+			foreach (string contract in contracts)
 			{
-				var content = new GUIContent($"{contract}");
+				GUIContent content = new GUIContent($"{contract}");
 				rect.width = style.CalcSize(content).x;
 				GUI.Label(rect, content, style);
 				rect.x += rect.width + 4;
@@ -110,7 +110,7 @@ namespace Reflex.Editor.DebuggingWindow
 		
 		public static MultiColumnHeaderState CreateDefaultMultiColumnHeaderState()
 		{
-			var columns = new[] 
+			MultiColumnHeaderState.Column[] columns = new[] 
 			{
 				new MultiColumnHeaderState.Column 
 				{

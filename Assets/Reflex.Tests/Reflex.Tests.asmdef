@@ -16,7 +16,9 @@
     "precompiledReferences": [
         "NSubstitute.dll",
         "FluentAssertions.dll",
-        "nunit.framework.dll"
+        "nunit.framework.dll",
+        "Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+        "Microsoft.Extensions.DependencyInjection.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

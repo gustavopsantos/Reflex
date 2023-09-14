@@ -8,21 +8,21 @@ namespace Reflex.Injectors
 {
     internal static class MethodInjector
     {
-        public static void InjectMany(InjectedMethodInfo[] methods, object instance, Container container)
+        public static void InjectMany(InjectedMethodInfo[] methods, object instance, IServiceProvider serviceProvider)
         {
-            for (var i = 0; i < methods.Length; i++)
+            for (int i = 0; i < methods.Length; i++)
             {
-                Inject(methods[i], instance, container);
+                Inject(methods[i], instance, serviceProvider);
             }
         }
         
-        private static void Inject(InjectedMethodInfo method, object instance, Container container)
+        private static void Inject(InjectedMethodInfo method, object instance, IServiceProvider serviceProvider)
         {
-            var arguments = ExactArrayPool<object>.Shared.Rent(method.Parameters.Length);
+			object[] arguments = ExactArrayPool<object>.Shared.Rent(method.Parameters.Length);
 
-            for (var i = 0; i < method.Parameters.Length; i++)
+            for (int i = 0; i < method.Parameters.Length; i++)
             {
-                arguments[i] = container.Resolve(method.Parameters[i].ParameterType);
+                arguments[i] = serviceProvider.GetService(method.Parameters[i].ParameterType);
             }
 
             try

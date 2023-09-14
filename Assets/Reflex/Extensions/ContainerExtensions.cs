@@ -1,4 +1,4 @@
-﻿using Reflex.Core;
+﻿using System;
 using Reflex.Enums;
 using Reflex.Injectors;
 using UnityEngine;
@@ -7,14 +7,17 @@ namespace Reflex.Extensions
 {
     public static class ContainerExtensions
     {
-        public static T Instantiate<T>(this Container container, T original,
-            MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
+        public static T Instantiate<T>(
+            this IServiceProvider serviceProvider,
+            T original,
+            MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) 
+                where T : Component
         {
-            var instance = Object.Instantiate(original);
+            T instance = UnityEngine.Object.Instantiate(original);
 
-            foreach (var injectable in instance.GetInjectables(injectionMode))
+            foreach (MonoBehaviour injectable in instance.GetInjectables(injectionMode))
             {
-                AttributeInjector.Inject(injectable, container);
+                AttributeInjector.Inject(injectable, serviceProvider);
             }
 
             return instance;

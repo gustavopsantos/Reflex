@@ -50,8 +50,8 @@ namespace Reflex.Tests
         [Test]
         public void TestListToTreeWorks()
         {
-            // Arrange
-            var list = new List<TestElement>();
+			// Arrange
+			List<TestElement> list = new List<TestElement>();
             list.Add(new TestElement("root", -1));
             list.Add(new TestElement("A", 0));
             list.Add(new TestElement("B", 0));
@@ -72,8 +72,8 @@ namespace Reflex.Tests
         [Test]
         public void TestListToTreeThrowsExceptionIfRootIsInvalidDepth()
         {
-            // Arrange
-            var list = new List<TestElement>();
+			// Arrange
+			List<TestElement> list = new List<TestElement>();
             list.Add(new TestElement("root", 0));
             list.Add(new TestElement("A", 1));
             list.Add(new TestElement("B", 1));

@@ -11,7 +11,7 @@ namespace Reflex.Resolvers
         public Type Concrete { get; protected set; }
         public int Resolutions { get; protected set; }
 
-        public abstract object Resolve(Container container);
+        public abstract object Resolve(IServiceProvider serviceProvider);
 
         public void Dispose()
         {

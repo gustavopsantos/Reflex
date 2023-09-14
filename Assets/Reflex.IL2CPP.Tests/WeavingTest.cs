@@ -19,7 +19,7 @@ namespace Reflex.IL2CPP.Tests
         
         private void OnGUI()
         {
-            var content = GetContent(); 
+			string content = GetContent(); 
             GUILabel(content);
         }
 
@@ -37,8 +37,8 @@ namespace Reflex.IL2CPP.Tests
 
         private static void GUILabel(string content)
         {
-            var area = new Rect(0, 0, Screen.width, Screen.height);
-            var style = new GUIStyle("label") {fontSize = 16, alignment = TextAnchor.MiddleCenter};
+			Rect area = new Rect(0, 0, Screen.width, Screen.height);
+			GUIStyle style = new GUIStyle("label") {fontSize = 16, alignment = TextAnchor.MiddleCenter};
             GUI.Label(area, content, style);
         }
     }

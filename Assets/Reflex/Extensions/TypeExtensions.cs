@@ -29,8 +29,8 @@ namespace Reflex.Extensions
         {
             if (type.IsGenericType)
             {
-                var outerTypeName = type.Name!.Split('`').First();
-                var innerTypeNames = string.Join(", ", type.GenericTypeArguments.Select(GetFullName));
+				string outerTypeName = type.Name!.Split('`').First();
+				string innerTypeNames = string.Join(", ", type.GenericTypeArguments.Select(GetFullName));
                 return $"{outerTypeName}<{innerTypeNames}>";
             }
 
@@ -41,8 +41,8 @@ namespace Reflex.Extensions
         {
             if (type.IsGenericType)
             {
-                var outerTypeName = type.FullName!.Split('`').First();
-                var innerTypeNames = string.Join(", ", type.GenericTypeArguments.Select(GetFullName));
+				string outerTypeName = type.FullName!.Split('`').First();
+				string innerTypeNames = string.Join(", ", type.GenericTypeArguments.Select(GetFullName));
                 return $"{outerTypeName}<{innerTypeNames}>";
             }
 

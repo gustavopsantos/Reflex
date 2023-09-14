@@ -27,7 +27,7 @@ namespace Reflex.Benchmark.Utilities
 
 		private void Awake()
 		{
-			var height = (float) Screen.height / 3;
+			float height = (float) Screen.height / 3;
 			_area = new Rect(0, Order * height, Screen.width, height);
 		}
 
@@ -35,7 +35,11 @@ namespace Reflex.Benchmark.Utilities
 		{
 			_stopwatch.Restart();
 			Profiler.BeginSample(_identifier);
-			for (int i = 0; i < _iterations; i++) Sample();
+			for (int i = 0; i < _iterations; i++)
+			{
+				Sample();
+			}
+
 			Profiler.EndSample();
 			_stopwatch.Stop();
 			_samples.Push(_stopwatch.ElapsedMilliseconds);

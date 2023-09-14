@@ -1,7 +1,9 @@
-﻿namespace Reflex.Core
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Reflex.Core
 {
     public interface IInstaller
     {
-        void InstallBindings(ContainerDescriptor descriptor);
+        void InstallBindings(IServiceCollection descriptor);
     }
 }

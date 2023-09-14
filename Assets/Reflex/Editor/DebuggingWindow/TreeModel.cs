@@ -48,7 +48,7 @@ namespace Reflex.Editor.DebuggingWindow
 
         public IList<int> GetAncestors(int id)
         {
-            var parents = new List<int>();
+			List<int> parents = new List<int>();
             TreeElement T = Find(id);
             if (T != null)
             {
@@ -78,14 +78,14 @@ namespace Reflex.Editor.DebuggingWindow
             Stack<TreeElement> stack = new Stack<TreeElement>();
             stack.Push(searchFromThis);
 
-            var parentsBelow = new List<int>();
+			List<int> parentsBelow = new List<int>();
             while (stack.Count > 0)
             {
                 TreeElement current = stack.Pop();
                 if (current.HasChildren)
                 {
                     parentsBelow.Add(current.Id);
-                    foreach (var T in current.Children)
+                    foreach (TreeElement T in current.Children)
                     {
                         stack.Push(T);
                     }

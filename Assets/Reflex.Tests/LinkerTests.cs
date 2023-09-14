@@ -9,7 +9,7 @@ namespace Reflex.Tests
         [Test]
         public void LinkerFileExist()
         {
-            var linker = Resources.Load<TextAsset>("link");
+			TextAsset linker = Resources.Load<TextAsset>("link");
             linker.Should().NotBeNull();
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using Reflex.Core;
 
 namespace Reflex.Resolvers
@@ -13,7 +14,7 @@ namespace Reflex.Resolvers
             Concrete = _value.GetType();
         }
 
-        public override object Resolve(Container container)
+        public override object Resolve(IServiceProvider serviceProvider)
         {
             Resolutions++;
             return _value;

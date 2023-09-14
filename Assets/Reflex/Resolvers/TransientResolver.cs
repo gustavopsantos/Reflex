@@ -10,10 +10,10 @@ namespace Reflex.Resolvers
             Concrete = concrete;
         }
 
-        public override object Resolve(Container container)
+        public override object Resolve(IServiceProvider serviceProvider)
         {
             Resolutions++;
-            var instance = container.Construct(Concrete);
+			object instance = serviceProvider.GetService(Concrete);
             Disposables.TryAdd(instance);
             return instance;
         }

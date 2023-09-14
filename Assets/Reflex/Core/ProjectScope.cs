@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Reflex.Logging;
 using UnityEngine;
 
@@ -5,11 +6,11 @@ namespace Reflex.Core
 {
     public sealed class ProjectScope : MonoBehaviour
     {
-        public void InstallBindings(ContainerDescriptor descriptor)
+        public void InstallBindings(IServiceCollection serviceCollection)
         {
-            foreach (var nestedInstaller in GetComponentsInChildren<IInstaller>())
+            foreach (IInstaller nestedInstaller in GetComponentsInChildren<IInstaller>())
             {
-                nestedInstaller.InstallBindings(descriptor);
+                nestedInstaller.InstallBindings(serviceCollection);
             }
 
             ReflexLogger.Log($"{nameof(ProjectScope)} Bindings Installed", LogLevel.Info, gameObject);

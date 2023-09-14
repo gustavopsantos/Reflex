@@ -59,7 +59,7 @@ namespace Reflex.Editor.DebuggingWindow
         {
             foreach (T child in parent.Children)
             {
-                var item = new TreeViewItem<T>(child.Id, depth, child.Name, child);
+				TreeViewItem<T> item = new TreeViewItem<T>(child.Id, depth, child.Name, child);
                 newRows.Add(item);
 
                 if (child.HasChildren)
@@ -91,7 +91,7 @@ namespace Reflex.Editor.DebuggingWindow
             const int itemDepth = 0; // tree is flattened when searching
 
             Stack<T> stack = new Stack<T>();
-            foreach (var element in searchFromThis.Children)
+            foreach (TreeElement element in searchFromThis.Children)
             {
                 stack.Push((T) element);
             }
@@ -107,7 +107,7 @@ namespace Reflex.Editor.DebuggingWindow
 
                 if (current.Children != null && current.Children.Count > 0)
                 {
-                    foreach (var element in current.Children)
+                    foreach (TreeElement element in current.Children)
                     {
                         stack.Push((T) element);
                     }
