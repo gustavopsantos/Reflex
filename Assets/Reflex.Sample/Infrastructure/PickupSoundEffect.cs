@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Reflex.Sample.Infrastructure
+namespace Reflex.Microsoft.Sample.Infrastructure
 {
     internal class PickupSoundEffect : MonoBehaviour
     {

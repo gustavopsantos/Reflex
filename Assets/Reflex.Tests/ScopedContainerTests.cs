@@ -1,11 +1,11 @@
 //using System;
 //using System.Collections.Generic;
 //using FluentAssertions;
-//using Reflex.Core;
-//using Reflex.Exceptions;
+//using Reflex.Microsoft.Core;
+//using Reflex.Microsoft.Exceptions;
 //using NUnit.Framework;
 
-//namespace Reflex.Tests
+//namespace Reflex.Microsoft.Tests
 //{
 //    internal class ScopedContainerTests
 //    {

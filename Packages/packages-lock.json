@@ -1,11 +1,24 @@
 {
   "dependencies": {
+    "com.gustavopsantos.reflex": {
+      "version": "4.5.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
     "com.madsbangh.easybuttons": {
       "version": "https://github.com/madsbangh/EasyButtons.git#upm",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "39da70419a2dc9ce0059b40dd64abcdfcef58ea1"
+    },
+    "com.nlr.com.reflex.microsoft": {
+      "version": "file:Reflex.Microsoft",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.svermeulen.extenject": {
       "version": "https://github.com/modesttree/Zenject.git?path=/UnityProject/Assets/Plugins/Zenject/#9.2.1",
@@ -22,7 +35,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.24",
+      "version": "3.0.25",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -31,7 +44,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.20",
+      "version": "2.0.21",
       "depth": 0,
       "source": "registry",
       "dependencies": {

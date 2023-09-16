@@ -1,10 +1,10 @@
 using System;
 using IL2CPPTest.Models;
 using Microsoft.Extensions.DependencyInjection;
-using Reflex.Core;
+using Reflex.Microsoft.Core;
 using UnityEngine;
 
-namespace Reflex.IL2CPP.Tests
+namespace Reflex.Microsoft.IL2CPP.Tests
 {
     internal class PlatformRuntimeTest : MonoBehaviour
     {

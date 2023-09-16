@@ -1,4 +1,4 @@
-using Reflex.Attributes;
+using Reflex.Microsoft.Attributes;
 
 public sealed class AttributeInjectedService
 {

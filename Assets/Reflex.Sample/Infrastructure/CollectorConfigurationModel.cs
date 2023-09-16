@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Reflex.Sample.Infrastructure
+namespace Reflex.Microsoft.Sample.Infrastructure
 {
     [CreateAssetMenu]
     internal class CollectorConfigurationModel : ScriptableObject

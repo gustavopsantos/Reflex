@@ -1,10 +1,10 @@
-﻿using Reflex.Attributes;
-using Reflex.Sample.Application;
+﻿using Reflex.Microsoft.Attributes;
+using Reflex.Microsoft.Sample.Application;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Reflex.Sample.Infrastructure
+namespace Reflex.Microsoft.Sample.Infrastructure
 {
     internal class GameView : MonoBehaviour
     {

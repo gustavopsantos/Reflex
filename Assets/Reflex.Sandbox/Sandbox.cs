@@ -2,7 +2,7 @@ using EasyButtons;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Reflex.Sandbox
+namespace Reflex.Microsoft.Sandbox
 {
     public class Sandbox : MonoBehaviour
     {

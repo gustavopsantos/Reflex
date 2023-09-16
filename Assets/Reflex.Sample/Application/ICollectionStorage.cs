@@ -1,4 +1,4 @@
-﻿namespace Reflex.Sample.Application
+﻿namespace Reflex.Microsoft.Sample.Application
 {
     public interface ICollectionStorage
     {

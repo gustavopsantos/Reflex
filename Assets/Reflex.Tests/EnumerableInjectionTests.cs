@@ -2,10 +2,10 @@
 //using System.Collections.Generic;
 //using System.Linq;
 //using FluentAssertions;
-//using Reflex.Core;
+//using Reflex.Microsoft.Core;
 //using NUnit.Framework;
 
-//namespace Reflex.Tests
+//namespace Reflex.Microsoft.Tests
 //{
 //    internal class EnumerableInjectionTests
 //    {

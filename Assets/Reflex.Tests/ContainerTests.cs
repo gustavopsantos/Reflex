@@ -1,327 +1,228 @@
-//using System;
-//using FluentAssertions;
-//using Reflex.Core;
-//using Reflex.Exceptions;
-//using NUnit.Framework;
-//using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Data;
+using System.Linq;
+using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
+using NUnit.Framework;
 
-//namespace Reflex.Tests
-//{
-//    internal class ContainerTests
-//    {
-//        private interface IValuable
-//        {
-//            int Value { get; set; }
-//        }
+namespace Reflex.Microsoft.Tests
+{
+	public interface IStartable
+	{
+		void Start();
+	}
 
-//        private class Valuable : IValuable
-//        {
-//            public int Value { get; set; }
-//        }
+	internal class ContainerTests
+	{
+		private interface IValuable
+		{
+			int Value { get; set; }
+		}
 
-//        private interface IClassWithDependency
-//        {
-//        }
+		private interface IClassWithDependency
+		{
+		}
 
-//        private class ClassWithDependency : IClassWithDependency
-//        {
-//			private readonly IValuable _valuable;
+		private interface ISetup<T>
+		{
+			void Setup(ref T instance);
+		}
 
-//			public ClassWithDependency(IValuable valuable)
-//            {
-//				_valuable = valuable;
-//			}
-//        }
+		[Test]
+		public void Resolve_ValueTypeSingleton_ShouldReturn42()
+		{
+			var container = new ServiceCollection()
+				.AddSingleton<IValuable>(serviceProvider => new Valuable() { Value = 42 })
+				.BuildServiceProvider();
 
-//        [Test]
-//        public void Resolve_ValueTypeSingleton_ShouldReturn42()
-//        {
-//            var container = new ServiceCollection()
-//                .AddInstance(42, typeof(int))
-//                .Build();
+			container.GetService<IValuable>().Value.Should().Be(42);
+		}
 
-//            container.GetService<int>().Should().Be(42);
-//        }
+		[Test]
+		public void Resolve_ValueTypeSingleton_ShouldThrow()
+		{
+			var container = new ServiceCollection()
+				.AddSingleton<IValuable>(serviceProvider => new Valuable() { Value = 42 })
+				.Remove<IValuable>()
+				.BuildServiceProvider();
 
-//		[Test]
-//		public void Resolve_ValueTypeSingleton_ShouldThrow()
-//		{
-//			var container = new ServiceCollection()
-//				.AddInstance(42, typeof(int))
-//                .RemoveInstance(42, typeof(int))
-//				.Build();
+			Action resolve = () => container.GetRequiredService<IValuable>();
 
-//			Action resolve = () => container.GetService<int>();
+			resolve.Should().Throw<InvalidOperationException>();
+		}
 
-//            resolve.Should().Throw<UnknownContractException>();
-//		}
+		[Test]
+		public void Resolve_UninstalledValueType_ShouldThrowUnknownContractException()
+		{
+			var container = new ServiceCollection()
+				.BuildServiceProvider();
+			Action resolve = () => container.GetRequiredService<IValuable>();
+			resolve.Should().Throw<InvalidOperationException>();
+		}
 
-//		[Test]
-//        public void Resolve_UninstalledValueType_ShouldThrowUnknownContractException()
-//        {
-//            var container = new ServiceCollection().Build();
-//            Action resolve = () => container.GetService<int>();
-//            resolve.Should().Throw<UnknownContractException>();
-//        }
+		[Test]
+		public void Resolve_AsTransient_ShouldReturnAlwaysANewInstance()
+		{
+			var container = new ServiceCollection()
+				.AddTransient<IValuable, Valuable>()
+				.BuildServiceProvider();
 
-//        [Test]
-//        public void Resolve_AsTransient_ShouldReturnAlwaysANewInstance()
-//        {
-//            var container = new ServiceCollection()
-//                .AddTransient(typeof(Valuable), typeof(IValuable))
-//                .Build();
+			container.GetService<IValuable>().Value = 123;
+			container.GetService<IValuable>().Value.Should().Be(default);
+		}
 
-//            container.GetService<IValuable>().Value = 123;
-//            container.GetService<IValuable>().Value.Should().Be(default(int));
-//        }
+		[Test]
+		public void Resolve_AsSingleton_ShouldReturnAlwaysSameInstance()
+		{
+			var container = new ServiceCollection()
+				.AddSingleton<IValuable, Valuable>()
+				.BuildServiceProvider();
 
-//        [Test]
-//        public void Resolve_AsSingleton_ShouldReturnAlwaysSameInstance()
-//        {
-//            var container = new ServiceCollection()
-//                .AddSingleton<IValuable, Valuable>()
-//                .Build();
+			container.GetService<IValuable>().Value = 123;
+			container.GetService<IValuable>().Value.Should().Be(123);
+		}
 
-//            container.GetService<IValuable>().Value = 123;
-//            container.GetService<IValuable>().Value.Should().Be(123);
-//        }
+		[Test]
+		public void Resolve_UnknownDependency_ShouldThrowUnknownContractException()
+		{
+			var container = new ServiceCollection()
+				.BuildServiceProvider();
+			Action resolve = () => container.GetRequiredService<IValuable>();
+			resolve.Should().Throw<InvalidOperationException>();
+		}
 
-//        [Test]
-//        public void Resolve_UnknownDependency_ShouldThrowUnknownContractException()
-//        {
-//            var container = new ServiceCollection().Build();
-//            Action resolve = () => container.GetService<IValuable>();
-//            resolve.Should().Throw<UnknownContractException>();
-//        }
+		[Test]
+		public void Resolve_KnownDependencyAsTransientWithUnknownDependency_ShouldThrowUnknownContractException()
+		{
+			var container = new ServiceCollection()
+				.AddSingleton<IClassWithDependency, ClassWithDependency>()
+				.BuildServiceProvider();
 
-//        [Test]
-//        public void Resolve_KnownDependencyAsTransientWithUnknownDependency_ShouldThrowUnknownContractException()
-//        {
-//            var container = new ServiceCollection()
-//                .AddTransient(typeof(ClassWithDependency), typeof(IClassWithDependency))
-//                .Build();
+			Action resolve = () => container.GetService<IClassWithDependency>();
+			resolve.Should().Throw<InvalidOperationException>();
+		}
 
-//            Action resolve = () => container.GetService<IClassWithDependency>();
-//            resolve.Should().Throw<UnknownContractException>();
-//        }
+		[Test]
+		public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowUnknownContractException()
+		{
+			var container = new ServiceCollection()
+				.AddSingleton<IClassWithDependency, ClassWithDependency>()
+				.BuildServiceProvider();
 
-//        [Test]
-//        public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowUnknownContractException()
-//        {
-//            var container = new ServiceCollection()
-//                .AddSingleton(typeof(ClassWithDependency), typeof(IClassWithDependency))
-//                .Build();
+			Action resolve = () => container.GetService<IClassWithDependency>();
+			resolve.Should().Throw<InvalidOperationException>();
+		}
 
-//            Action resolve = () => container.GetService<IClassWithDependency>();
-//            resolve.Should().Throw<UnknownContractException>();
-//        }
+		[Test]
+		public void Resolve_ClassWithGenericDependency_WithNormalDefinition_ValuesShouldBe42AndABC()
+		{
+			var container = new ServiceCollection()
+				.AddTransient<Xing>()
+				.AddTransient<ISetup<int>, IntSetup>()
+				.AddTransient<ISetup<string>, StringSetup>()
+				.BuildServiceProvider();
 
-//        [Test]
-//        public void Resolve_ValueTypeAsTransient_ShouldReturnDefault()
-//        {
-//            var container = new ServiceCollection()
-//                .AddTransient(typeof(int), typeof(int))
-//                .Build();
+			var instance = container.GetService<Xing>();
+			instance.Int.Should().Be(42);
+			instance.String.Should().Be("abc");
+		}
 
-//        	container.GetService<int>().Should().Be(default);
-//        }
+		[Test]
+		public void Bind_LazySingleton_ThenInvokeInstantiateNonLazySingletons_ShouldNotRunConstructor()
+		{
+			new ServiceCollection()
+				.AddSingleton<SomeSingleton>()
+				.BuildServiceProvider();
+			SomeSingleton.ConstructorCalled = false;
+			SomeSingleton.ConstructorCalled.Should().BeFalse();
+		}
 
-//        private struct MyStruct
-//        {
-//            public readonly int Value;
+		[Test]
+		public void AddInstance_WithoutContract_ShouldBindToItsType()
+		{
+			var container = new ServiceCollection()
+				.AddSingleton<IValuable>(serviceProvider => new Valuable() { Value = 42 })
+				.BuildServiceProvider();
 
-//            public MyStruct(int value)
-//            {
-//                this.Value = value;
-//            }
-//        }
+			container.GetService<IValuable>().Value.Should().Be(42);
+		}
 
-//        [Test]
-//        public void Resolve_ValueTypeAsTransient_CustomConstructor_ValueShouldReturn42()
-//        {
-//            var container = new ServiceCollection()
-//                .AddInstance(42, typeof(int))
-//                .AddTransient(typeof(MyStruct), typeof(MyStruct))
-//                .Build();
+		[Test]
+		public void ResolveAll_WithoutMatch_ShouldReturnEmptyEnumerable()
+		{
+			var container = new ServiceCollection().BuildServiceProvider();
+			container.GetServices<IDisposable>().Should().BeEmpty();
+		}
 
-//            container.GetService<MyStruct>().Value.Should().Be(42);
-//        }
+		private class Valuable : IValuable
+		{
+			public int Value { get; set; }
+		}
 
-//        private interface ISetup<T>
-//        {
-//            void Setup(ref T instance);
-//        }
+		private class ClassWithDependency : IClassWithDependency
+		{
+			private readonly IValuable _valuable;
 
-//        private class IntSetup : ISetup<int>
-//        {
-//            public void Setup(ref int instance)
-//            {
-//                instance = 42;
-//            }
-//        }
+			public ClassWithDependency(IValuable valuable)
+			{
+				_valuable = valuable;
+			}
+		}
 
-//        private class StringSetup : ISetup<string>
-//        {
-//            public void Setup(ref string instance)
-//            {
-//                instance = "abc";
-//            }
-//        }
+		private class IntSetup : ISetup<int>
+		{
+			public void Setup(ref int instance)
+			{
+				instance = 42;
+			}
+		}
 
-//        private class Xing
-//        {
-//            public int Int;
-//            public string String;
+		private class StringSetup : ISetup<string>
+		{
+			public void Setup(ref string instance)
+			{
+				instance = "abc";
+			}
+		}
 
-//            public Xing(ISetup<int> intSetup, ISetup<string> stringSetup)
-//            {
-//                Int = default;
-//                String = string.Empty;
-//                intSetup.Setup(ref Int);
-//                stringSetup.Setup(ref String);
-//            }
-//        }
+		private class Xing
+		{
+			public int Int;
+			public string String;
 
-//        [Test]
-//        public void Resolve_ClassWithGenericDependency_WithNormalDefinition_ValuesShouldBe42AndABC()
-//        {
-//            var container = new ServiceCollection()
-//                .AddTransient(typeof(Xing), typeof(Xing))
-//                .AddTransient(typeof(IntSetup), typeof(ISetup<int>))
-//                .AddTransient(typeof(StringSetup), typeof(ISetup<string>))
-//                .Build();
+			public Xing(ISetup<int> intSetup, ISetup<string> stringSetup)
+			{
+				Int = default;
+				String = string.Empty;
+				intSetup.Setup(ref Int);
+				stringSetup.Setup(ref String);
+			}
+		}
 
-//        	var instance = container.Construct<Xing>();
-//        	instance.Int.Should().Be(42);
-//        	instance.String.Should().Be("abc");
-//        }
+		private class SomeSingleton
+		{
+			public static bool ConstructorCalled;
 
-//        private class SomeSingleton
-//        {
-//            public static bool ConstructorCalled;
+			public SomeSingleton()
+			{
+				ConstructorCalled = true;
+			}
+		}
+	}
+}
 
-//            public SomeSingleton()
-//            {
-//                ConstructorCalled = true;
-//            }
-//        }
+public static class ServiceCollectionExtensions
+{
+	public static IServiceCollection Remove<T>(this IServiceCollection services)
+	{
+		if (services.IsReadOnly)
+		{
+			throw new ReadOnlyException($"{nameof(services)} is read only");
+		}
 
-//        [Test]
-//        public void Bind_LazySingleton_ThenInvokeInstantiateNonLazySingletons_ShouldNotRunConstructor()
-//        {
-//            new ServiceCollection().AddSingleton<SomeSingleton>().BuildServiceProvider();
-//            SomeSingleton.ConstructorCalled = false;
-//            SomeSingleton.ConstructorCalled.Should().BeFalse();
-//        }
+		var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(T));
+		if (serviceDescriptor != null) services.Remove(serviceDescriptor);
 
-//        [Test]
-//        public void AddInstance_WithoutContract_ShouldBindToItsType()
-//        {
-//            var container = new ServiceCollection()
-//                .AddInstance(42)
-//                .Build();
-
-//            container.GetService<int>().Should().Be(42);
-//        }
-
-//        [Test]
-//        public void ResolveAll_WithoutMatch_ShouldReturnEmptyEnumerable()
-//        {
-//            var container = new ServiceCollection().Build();
-//            container.GetServices<IDisposable>().Should().BeEmpty();
-//        }
-
-//        public class StartableSingleton : IStartable
-//        {
-//            public static Action OnConstructed;
-//            public static Action OnStarted;
-
-//            public StartableSingleton()
-//            {
-//                OnConstructed?.Invoke();
-//            }
-
-//            public bool WasStarted { get; private set; }
-
-//            public void Start()
-//            {
-//                WasStarted = true;
-//                OnStarted?.Invoke();
-//            }
-//        }
-
-//        [Test]
-//        public void NonStartableSingleton_ShouldNotBeConstructedAfterContainerBuild()
-//        {
-//            var callbackAssertion = new CallbackAssertion();
-//            StartableSingleton.OnConstructed = callbackAssertion;
-
-//            var container = new ServiceCollection()
-//                .AddSingleton(typeof(StartableSingleton))
-//                .Build();
-
-//            callbackAssertion.ShouldNotHaveBeenCalled();
-//        }
-
-//        [Test]
-//        public void StartableSingleton_ShouldBeConstructedAfterContainerBuild()
-//        {
-//            var callbackAssertion = new CallbackAssertion();
-//            StartableSingleton.OnConstructed = callbackAssertion;
-
-//            var container = new ServiceCollection()
-//                .AddSingleton(typeof(StartableSingleton), typeof(IStartable))
-//                .Build();
-
-//            callbackAssertion.ShouldHaveBeenCalledOnce();
-//        }
-
-//        [Test]
-//        public void StartableSingleton_ShouldBeStartedAfterContainerBuild()
-//        {
-//            var container = new ServiceCollection()
-//                .AddSingleton<IStartable, StartableSingleton>()
-//                .Build();
-
-//            var startable = container.GetService<StartableSingleton>().WasStarted.Should().BeTrue();
-//        }
-
-//        [Test]
-//        public void All_OnParentShouldNotBeAffectedByScoped()
-//        {
-//            var container = new ServiceCollection().AddInstance(1).Build();
-//            string.Join(",", container.GetServices<int>()).Should().Be("1");
-//            var scoped = container.Scope("", descriptor => { descriptor.AddInstance(2); });
-//            string.Join(",", container.GetServices<int>()).Should().Be("1");
-//        }
-
-//        [Test]
-//        public void HasBindingReturnFalseWhenBindingIsNotDefined()
-//        {
-//            var container = new ServiceCollection().Build();
-//            container.HasBinding<int>().Should().BeFalse();
-//        }
-
-//        [Test]
-//        public void HasBindingReturnTrueWhenBindingIsDefined()
-//        {
-//            var container = new ServiceCollection().AddInstance(42).Build();
-//            container.HasBinding<int>().Should().BeTrue();
-//        }
-
-//        [Test]
-//        public void IStartable_Start_ShouldNotBeInvokedAgainAfterScoping()
-//        {
-//            var callbackAssertion = new CallbackAssertion();
-//            StartableSingleton.OnStarted = callbackAssertion;
-
-//            var container = new ServiceCollection()
-//                .AddSingleton(typeof(StartableSingleton), typeof(IStartable))
-//                .Build();
-
-//            var scoped = container.Scope("");
-
-//            callbackAssertion.ShouldHaveBeenCalledOnce();
-//        }
-//    }
-//}
+		return services;
+	}
+}

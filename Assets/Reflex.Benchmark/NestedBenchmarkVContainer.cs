@@ -1,8 +1,8 @@
-using Reflex.Benchmark.NestedModel;
-using Reflex.Benchmark.Utilities;
+using Reflex.Microsoft.Benchmark.NestedModel;
+using Reflex.Microsoft.Benchmark.Utilities;
 using VContainer;
 
-namespace Reflex.Benchmark
+namespace Reflex.Microsoft.Benchmark
 {
     internal class NestedBenchmarkVContainer : MonoProfiler
     {

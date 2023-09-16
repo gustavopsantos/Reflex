@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Profiling;
-using Reflex.Attributes;
-using Reflex.Injectors;
+using Reflex.Microsoft.Attributes;
+using Reflex.Microsoft.Injectors;
 using System;
 
 public class Benchy : MonoBehaviour

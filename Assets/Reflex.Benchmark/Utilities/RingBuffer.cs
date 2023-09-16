@@ -1,6 +1,6 @@
 using System;
 
-namespace Reflex.Benchmark.Utilities
+namespace Reflex.Microsoft.Benchmark.Utilities
 {
     internal class RingBuffer<T>
     {
@@ -28,7 +28,8 @@ namespace Reflex.Benchmark.Utilities
         {
 			int result = number % rangeExclusive;
 
-            if ((result < 0 && rangeExclusive > 0) || (result > 0 && rangeExclusive < 0))
+            if ((result < 0 && rangeExclusive > 0) ||
+                (result > 0 && rangeExclusive < 0))
             {
                 result += rangeExclusive;
             }
@@ -37,14 +38,16 @@ namespace Reflex.Benchmark.Utilities
         }
 
         private static void ValidateCapacity(int capacity)
-        {
-            if (capacity <= 0)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(capacity),
-                    capacity,
-                    "Capacity should not be less or equal to zero.");
-            }
-        }
-    }
+		{
+			if (capacity > 0)
+			{
+				return;
+			}
+
+			throw new ArgumentOutOfRangeException(
+				nameof(capacity),
+				capacity,
+				"Capacity should not be less or equal to zero.");
+		}
+	}
 }

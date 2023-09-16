@@ -2,10 +2,10 @@
     "name": "Reflex.Tests",
     "rootNamespace": "",
     "references": [
-        "Reflex",
-        "Reflex.Editor",
         "UnityEditor.TestRunner",
-        "UnityEngine.TestRunner"
+        "UnityEngine.TestRunner",
+        "Reflex.Microsoft",
+        "ReflexMicrosoft.Editor"
     ],
     "includePlatforms": [
         "Editor"

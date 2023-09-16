@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3708985, g: 0.3783704, b: 0.35722548, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 47592999}
   - component: {fileID: 47593001}
   - component: {fileID: 47593002}
+  - component: {fileID: 47593003}
   m_Layer: 0
   m_Name: Benchmark
   m_TagString: Untagged
@@ -192,13 +193,27 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 47592998}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 628f8370ee633b145b7aa89a755ebc6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _identifier: DIFramework Zenject
   _iterations: 1000
+--- !u!114 &47593003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 47592998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04766cec1b008314ba11e8fd47b32345, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _identifier: DIFramework Microsoft
+  _iterations: 10000
 --- !u!1 &262441148
 GameObject:
   m_ObjectHideFlags: 0

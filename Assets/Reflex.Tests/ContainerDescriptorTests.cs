@@ -3,7 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
-namespace Reflex.Tests
+namespace Reflex.Microsoft.Tests
 {
 	internal class ContainerDescriptorTests
 	{

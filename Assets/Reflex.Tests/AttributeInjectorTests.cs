@@ -1,9 +1,9 @@
 //using FluentAssertions;
-//using Reflex.Attributes;
-//using Reflex.Core;
+//using Reflex.Microsoft.Attributes;
+//using Reflex.Microsoft.Core;
 //using NUnit.Framework;
 
-//namespace Reflex.Tests
+//namespace Reflex.Microsoft.Tests
 //{
 //    internal class AttributeInjectorTests
 //    {

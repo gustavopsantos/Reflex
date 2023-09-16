@@ -1,13 +1,13 @@
 ﻿//using System.Collections;
 //using System.Collections.Generic;
 //using FluentAssertions;
-//using Reflex.Attributes;
-//using Reflex.Core;
-//using Reflex.Extensions;
+//using Reflex.Microsoft.Attributes;
+//using Reflex.Microsoft.Core;
+//using Reflex.Microsoft.Extensions;
 //using UnityEngine;
 //using UnityEngine.TestTools;
 
-//namespace Reflex.Tests
+//namespace Reflex.Microsoft.Tests
 //{
 //    internal class MonoRuntimeInstantiationTests
 //    {

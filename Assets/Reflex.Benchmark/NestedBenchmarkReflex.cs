@@ -1,30 +1,29 @@
-using System;
-using Microsoft.Extensions.DependencyInjection;
-using Reflex.Benchmark.NestedModel;
-using Reflex.Benchmark.Utilities;
+using Reflex.Core;
+using Reflex.Microsoft.Benchmark.NestedModel;
+using Reflex.Microsoft.Benchmark.Utilities;
 
-namespace Reflex.Benchmark
+namespace Reflex.Microsoft.Benchmark
 {
-    internal class NestedBenchmarkReflex : MonoProfiler
-    {
-        private IServiceProvider _serviceProvider;
+	internal class NestedBenchmarkReflex : MonoProfiler
+	{
+		private Container _container;
 
-        private void Start()
-        {
-            _serviceProvider = new ServiceCollection()
-                .AddTransient<IA,A>()
-                .AddTransient<IB,B>()
-                .AddTransient<IC,C>()
-                .AddTransient<ID,D>()
-                .AddTransient<IE,E>()
-                .BuildServiceProvider();
-        }
+		protected override int Order => 0;
 
-        protected override int Order => 0;
+		protected override void Sample()
+		{
+			_container.Single<IA>();
+		}
 
-        protected override void Sample()
-        {
-            _serviceProvider.GetService<IA>();
-        }
-    }
+		private void Start()
+		{
+			_container = new ContainerDescriptor("")
+				.AddTransient(typeof(A), typeof(IA))
+				.AddTransient(typeof(B), typeof(IB))
+				.AddTransient(typeof(C), typeof(IC))
+				.AddTransient(typeof(D), typeof(ID))
+				.AddTransient(typeof(E), typeof(IE))
+				.Build();
+		}
+	}
 }

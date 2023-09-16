@@ -1,8 +1,8 @@
-﻿using Reflex.Attributes;
-using Reflex.Sample.Application;
+﻿using Reflex.Microsoft.Attributes;
+using Reflex.Microsoft.Sample.Application;
 using UnityEngine;
 
-namespace Reflex.Sample.Infrastructure
+namespace Reflex.Microsoft.Sample.Infrastructure
 {
     internal class Collectable : MonoBehaviour
     {

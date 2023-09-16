@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
-using Reflex.Extensions;
+using Reflex.Microsoft.Extensions;
 
-namespace Reflex.Tests
+namespace Reflex.Microsoft.Tests
 {
     internal class TypeExtensionsTests
     {

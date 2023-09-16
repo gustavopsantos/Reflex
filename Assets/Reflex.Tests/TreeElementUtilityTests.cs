@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Reflex.Editor.DebuggingWindow;
+using Reflex.Microsoft.Editor.DebuggingWindow;
 
-namespace Reflex.Tests
+namespace Reflex.Microsoft.Tests
 {
     public class TreeElementUtilityTests
     {

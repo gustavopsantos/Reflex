@@ -3,7 +3,7 @@
 //using NUnit.Framework;
 //using System;
 
-//namespace Reflex.Tests
+//namespace Reflex.Microsoft.Tests
 //{
 //    internal class SelfInjectionTests
 //    {

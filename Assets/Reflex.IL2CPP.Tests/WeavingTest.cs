@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Reflex.Extensions;
+using Reflex.Microsoft.Extensions;
 using UnityEngine;
 
-namespace Reflex.IL2CPP.Tests
+namespace Reflex.Microsoft.IL2CPP.Tests
 {
     public class WeavingTest : MonoBehaviour
     {

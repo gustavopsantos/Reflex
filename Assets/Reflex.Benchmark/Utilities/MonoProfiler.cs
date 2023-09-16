@@ -3,19 +3,19 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-namespace Reflex.Benchmark.Utilities
+namespace Reflex.Microsoft.Benchmark.Utilities
 {
 	public abstract class MonoProfiler : MonoBehaviour
 	{
-		private const int SampleCount = 32;
+		private const int _sampleCount = 32;
 		
-		[SerializeField] public string _identifier;
-		[SerializeField, Min(1)] public int _iterations;
+		[SerializeField] private string _identifier;
+		[SerializeField, Min(1)] private int _iterations;
 		
 		private Rect _area;
-		private readonly Stopwatch _stopwatch = new Stopwatch();
-		private readonly RingBuffer<long> _samples = new RingBuffer<long>(SampleCount);
-		private readonly Lazy<GUIStyle> _style = new Lazy<GUIStyle>(() => new GUIStyle("label")
+		private readonly Stopwatch _stopwatch = new();
+		private readonly RingBuffer<long> _samples = new(_sampleCount);
+		private readonly Lazy<GUIStyle> _style = new(() => new GUIStyle("label")
 		{
 			fontSize = 48,
 			alignment = TextAnchor.MiddleCenter
@@ -27,7 +27,7 @@ namespace Reflex.Benchmark.Utilities
 
 		private void Awake()
 		{
-			float height = (float) Screen.height / 3;
+			float height = (float) Screen.height / 4;
 			_area = new Rect(0, Order * height, Screen.width, height);
 		}
 

@@ -1,7 +1,7 @@
-﻿using Reflex.Sample.Application;
+﻿using Reflex.Microsoft.Sample.Application;
 using UnityEngine;
 
-namespace Reflex.Sample.Infrastructure
+namespace Reflex.Microsoft.Sample.Infrastructure
 {
     internal class CollectorInputKeyboard : ICollectorInput
     {

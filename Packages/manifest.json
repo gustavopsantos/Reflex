@@ -1,9 +1,10 @@
 {
   "dependencies": {
+    "com.gustavopsantos.reflex": "4.5.0",
     "com.madsbangh.easybuttons": "https://github.com/madsbangh/EasyButtons.git#upm",
     "com.svermeulen.extenject": "https://github.com/modesttree/Zenject.git?path=/UnityProject/Assets/Plugins/Zenject/#9.2.1",
-    "com.unity.ide.rider": "3.0.24",
-    "com.unity.ide.visualstudio": "2.0.20",
+    "com.unity.ide.rider": "3.0.25",
+    "com.unity.ide.visualstudio": "2.0.21",
     "com.unity.nuget.mono-cecil": "1.11.4",
     "com.unity.nuget.newtonsoft-json": "3.0.2",
     "com.unity.test-framework": "1.1.33",
@@ -14,5 +15,14 @@
     "com.unity.modules.particlesystem": "1.0.0",
     "com.unity.modules.physics": "1.0.0",
     "com.unity.modules.ui": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.gustavopsantos.reflex"
+      ]
+    }
+  ]
 }
