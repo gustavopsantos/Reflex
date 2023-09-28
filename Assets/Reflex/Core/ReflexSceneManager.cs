@@ -8,10 +8,9 @@ namespace Reflex.Core
     public static class ReflexSceneManager
     {
         [PublicAPI]
-        public static void LoadScene(string sceneName, LoadSceneMode mode, Action<ContainerDescriptor> builder = null)
+        public static void PreInstallScene(Scene scene, Action<ContainerDescriptor> builder)
         {
-            var scene = SceneManager.LoadScene(sceneName, new LoadSceneParameters(mode));
-            UnityInjector.Extensions.Add(scene, builder);
+            UnityInjector.ScenePreInstaller.Add(scene, builder);
         }
     }
 }

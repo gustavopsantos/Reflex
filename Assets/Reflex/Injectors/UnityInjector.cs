@@ -16,7 +16,7 @@ namespace Reflex.Injectors
 {
     internal static class UnityInjector
     {
-        internal static Dictionary<Scene, Action<ContainerDescriptor>> Extensions { get; } = new();
+        internal static Dictionary<Scene, Action<ContainerDescriptor>> ScenePreInstaller { get; } = new();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeAwakeOfFirstSceneOnly()
@@ -84,10 +84,10 @@ namespace Reflex.Injectors
         {
             return projectContainer.Scope($"{scene.name} ({scene.GetHashCode()})", builder =>
             {
-                if (Extensions.TryGetValue(scene, out var preBuilder))
+                if (ScenePreInstaller.TryGetValue(scene, out var preInstaller))
                 {
-                    Extensions.Remove(scene);                    
-                    preBuilder.Invoke(builder);
+                    ScenePreInstaller.Remove(scene);                    
+                    preInstaller.Invoke(builder);
                 }
                 
                 if (scene.TryFindAtRoot<SceneScope>(out var sceneScope))
