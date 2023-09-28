@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Reflex.Core;
 using Reflex.Extensions;
 using Reflex.Generics;
@@ -8,6 +9,7 @@ using Reflex.Resolvers;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Reflex.Editor.DebuggingWindow
 {
@@ -29,12 +31,34 @@ namespace Reflex.Editor.DebuggingWindow
 
         private void OnEnable()
         {
-            EditorApplication.playModeStateChanged += Refresh;
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
         private void OnDisable()
         {
-            EditorApplication.playModeStateChanged -= Refresh;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        }
+        
+        private async void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            await Task.Yield();
+            Refresh();
+        }
+        
+        private async void OnSceneUnloaded(Scene scene)
+        {
+            await Task.Yield();
+            Refresh();
+        }
+        
+        private async void OnPlayModeStateChanged(PlayModeStateChange playModeStateChange)
+        {
+            await Task.Yield();
+            Refresh();
         }
 
         private void InitIfNeeded()
