@@ -154,11 +154,16 @@ public class Loader : MonoBehaviour
 {
     private void Start()
     {
-        ReflexSceneManager.LoadScene("Greet", LoadSceneMode.Single, builder =>
-        {
-            // This deferred descriptor will run just before Greet.unity SceneScope installers
-            builder.AddInstance("beautiful");
-        });
+	// If you are loading scenes without addressables
+	var scene = SceneManager.LoadScene("Greet", new LoadSceneParameters(LoadSceneMode.Single));
+	ReflexSceneManager.PreInstallScene(scene, descriptor => descriptor.AddInstance("beautiful"));
+
+	// If you are loading scenes with addressables
+	Addressables.LoadSceneAsync("Greet", activateOnLoad: false).Completed += handle =>
+	{
+		ReflexSceneManager.PreInstallScene(handle.Result.Scene, descriptor => descriptor.AddInstance("beautiful"));
+		handle.Result.ActivateAsync();
+	};
     }
 }
 ```
