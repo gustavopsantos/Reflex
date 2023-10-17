@@ -26,6 +26,9 @@ namespace Reflex.Tests
 
         void ICallbacks.RunFinished(ITestResultAdaptor result)
         {
+            var testRunnerApi = ScriptableObject.CreateInstance<TestRunnerApi>();
+            testRunnerApi.UnregisterCallbacks(this);
+            
             using (new ApplicationStackTraceLogTypeScope(LogType.Log, StackTraceLogType.None))
             {
                 ReportStatus(TestStatus.Passed);
