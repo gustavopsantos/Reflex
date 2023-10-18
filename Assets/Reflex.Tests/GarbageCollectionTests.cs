@@ -1,7 +1,9 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
-using Reflex.Core;
 using NUnit.Framework;
+using Reflex.Core;
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -11,97 +13,77 @@ namespace Reflex.Tests
     {
         private class Service
         {
-            public event Action OnFinalized;
+        }
 
-            ~Service()
+        private static void AssertIncrementalGarbageCollectionIsDisabled()
+        {
+            if (GarbageCollector.isIncremental) // Incremental GC can mess a bit with finalizer queue
             {
-                OnFinalized?.Invoke();
+                Assert.Inconclusive();
             }
+        }
+
+        private static void ForceGarbageCollection()
+        {
+            Resources.UnloadUnusedAssets();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         [Test]
         public void Singleton_ShouldBeFinalized_WhenOwnerIsDisposed()
         {
-            if (GarbageCollector.isIncremental) // Incremental GC can mess a bit with finalizer queue
-            {
-                Assert.Inconclusive();
-            }
+            AssertIncrementalGarbageCollectionIsDisabled();
+            var references = new List<WeakReference>();
+            var container = new ContainerDescriptor("").AddSingleton(typeof(Service), typeof(Service)).Build();
             
-            var finalized = false;
-            
-            var container = new ContainerDescriptor("")
-                .AddSingleton(typeof(Service), typeof(Service))
-                .Build();
-
-            Action dispose = () =>
+            void Act()
             {
-                container.Single<Service>().OnFinalized += () => finalized = true;
+                var service = container.Single<Service>();
+                references.Add(new WeakReference(service));
                 container.Dispose();
-            };
+            }
 
-            dispose.Invoke();
-            
-            Resources.UnloadUnusedAssets();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            
-            finalized.Should().BeTrue();
+            Act();
+            ForceGarbageCollection();
+            references.Any(r => r.IsAlive).Should().BeFalse();
         }
 
         [Test]
-        public void DisposedScopedContainer_ShouldHaveNoReferencesToIt_AndShouldBeCollectedAndFinalized()
+        public void DisposedScopedContainer_ShouldHaveNoReferencesToItself_AndShouldBeCollectedAndFinalized()
         {
-            if (GarbageCollector.isIncremental) // Incremental GC can mess a bit with finalizer queue
+            AssertIncrementalGarbageCollectionIsDisabled();
+            var references = new List<WeakReference>();
+            var parent = new ContainerDescriptor("").Build();
+
+            void Act()
             {
-                Assert.Inconclusive();
+                var scoped = parent.Scope("");
+                references.Add(new WeakReference(scoped));
+                scoped.Dispose();
             }
 
-            var parent = new ContainerDescriptor("").Build();
-            WeakReference<Container> scopedWeakRef = null;
-
-            Action dispose = () =>
-            {
-                // This will go out of scope after dispose() is invoked
-                var scoped = parent.Scope("");
-                scopedWeakRef = new WeakReference<Container>(scoped);
-                scopedWeakRef.TryGetTarget(out _).Should().BeTrue();
-                scoped.Dispose();
-            };
-
-            dispose.Invoke();
-            
-            Resources.UnloadUnusedAssets();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            
-            scopedWeakRef.TryGetTarget(out _).Should().BeFalse();
+            Act();
+            ForceGarbageCollection();
+            references.Any(r => r.IsAlive).Should().BeFalse();
         }
-        
+
         [Test]
         public void Construct_ContainerShouldNotControlConstructedObjectLifeCycle_ByNotKeepingReferenceToIt()
         {
-            if (GarbageCollector.isIncremental) // Incremental GC can mess a bit with finalizer queue
-            {
-                Assert.Inconclusive();
-            }
-
-            var finalized = false;
+            AssertIncrementalGarbageCollectionIsDisabled();
+            var references = new List<WeakReference>();
             var container = new ContainerDescriptor("").Build();
 
-            Action dispose = () =>
+            void Act()
             {
-                // This will go out of scope after dispose() is invoked
                 var service = container.Construct<Service>();
-                service.OnFinalized += () => finalized = true;
-            };
+                references.Add(new WeakReference(service));
+            }
 
-            dispose.Invoke();
-            
-            Resources.UnloadUnusedAssets();
-            GC.Collect(0, GCCollectionMode.Forced);
-            GC.WaitForPendingFinalizers();
-
-            finalized.Should().BeTrue();
+            Act();
+            ForceGarbageCollection();
+            references.Any(r => r.IsAlive).Should().BeFalse();
         }
     }
 }
