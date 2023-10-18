@@ -44,7 +44,7 @@ namespace Reflex.Core
 
         public ContainerDescriptor AddSingleton(Type concrete, params Type[] contracts)
         {
-            return Add(concrete, contracts, () => new SingletonResolver(concrete));
+            return Add(concrete, contracts, new SingletonResolver(concrete));
         }
 
         public ContainerDescriptor AddSingleton(Type concrete)
@@ -54,7 +54,7 @@ namespace Reflex.Core
 
         public ContainerDescriptor AddTransient(Type concrete, params Type[] contracts)
         {
-            return Add(concrete, contracts, () => new TransientResolver(concrete));
+            return Add(concrete, contracts, new TransientResolver(concrete));
         }
 
         public ContainerDescriptor AddTransient(Type concrete)
@@ -64,7 +64,7 @@ namespace Reflex.Core
 
         public ContainerDescriptor AddInstance(object instance, params Type[] contracts)
         {
-            return Add(instance.GetType(), contracts, () => new InstanceResolver(instance));
+            return Add(instance.GetType(), contracts, new InstanceResolver(instance));
         }
 
         public ContainerDescriptor AddInstance(object instance)
@@ -106,10 +106,9 @@ namespace Reflex.Core
             return _descriptors.Any(descriptor => descriptor.Contracts.Contains(type));
         }
 
-        private ContainerDescriptor Add(Type concrete, Type[] contracts, Func<Resolver> resolverFactory)
+        private ContainerDescriptor Add(Type concrete, Type[] contracts, Resolver resolver)
         {
             ValidateContracts(concrete, contracts);
-            var resolver = resolverFactory.Invoke();
             var resolverDescriptor = new ResolverDescriptor(resolver, contracts);
             _descriptors.Add(resolverDescriptor);
             return this;
