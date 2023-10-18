@@ -6,5 +6,10 @@ namespace Reflex.Configuration
     internal class ReflexSettings : ScriptableObject
     {
         [field: SerializeField] public LogLevel LogLevel { get; private set; }
+
+        private void OnValidate()
+        {
+            ReflexLogger.UpdateLogLevel(LogLevel);
+        }
     }
 }
