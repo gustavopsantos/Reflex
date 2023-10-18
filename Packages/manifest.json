@@ -7,7 +7,7 @@
     "com.unity.nuget.newtonsoft-json": "3.0.2",
     "com.unity.test-framework": "1.1.33",
     "com.unity.ugui": "1.0.0",
-    "jp.hadashikick.vcontainer": "https://github.com/hadashiA/VContainer.git?path=/VContainer/Assets/VContainer/#1.8.6",
+    "jp.hadashikick.vcontainer": "https://github.com/hadashiA/VContainer.git?path=/VContainer/Assets/VContainer/#1.13.2",
     "com.unity.modules.animation": "1.0.0",
     "com.unity.modules.audio": "1.0.0",
     "com.unity.modules.particlesystem": "1.0.0",
