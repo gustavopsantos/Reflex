@@ -13,6 +13,7 @@ namespace Reflex.Core
     {
         private string _name;
         private Container _parent;
+        private Dictionary<Type, HashSet<Type>> _ignoredParentConcretesByContract = new();
         private List<ResolverDescriptor> _descriptors = new();
         public event Action<Container> OnContainerBuilt;
         public ContainerDescriptor(string name, Container parent = null)
@@ -31,6 +32,7 @@ namespace Reflex.Core
             _name = null;
             _parent = null;
             _descriptors = null;
+            _ignoredParentConcretesByContract = null;
             
             // Call initializers
             foreach (var startable in toStart.Select(r => (IStartable) r.Resolve(container)))
@@ -72,6 +74,55 @@ namespace Reflex.Core
             return AddInstance(instance, instance.GetType());
         }
 
+        public ContainerDescriptor AddSingletonExtend(string name, Action<ContainerDescriptor> extend, Type concrete, params Type[] contracts)
+        {
+            return Add(concrete, contracts, new ExtendResolverDecorator(name, extend, new SingletonResolver(concrete)));
+        }
+
+        public ContainerDescriptor AddSingletonExtend(string name, Action<ContainerDescriptor> extend, Type concrete)
+        {
+            return AddSingletonExtend(name, extend, concrete, concrete);
+        }
+        
+        public ContainerDescriptor AddTransientExtend(string name, Action<ContainerDescriptor> extend, Type concrete, params Type[] contracts)
+        {
+            return Add(concrete, contracts, new ExtendResolverDecorator(name, extend, new TransientResolver(concrete)));
+        }
+
+        public ContainerDescriptor AddTransientExtend(string name, Action<ContainerDescriptor> extend, Type concrete)
+        {
+            return AddTransientExtend(name, extend, concrete, concrete);
+        }
+        
+        public ContainerDescriptor AddInstanceExtend(string name, Action<ContainerDescriptor> extend, object instance, params Type[] contracts)
+        {
+            return Add(instance.GetType(), contracts, new ExtendResolverDecorator(name, extend, new InstanceResolver(instance)));
+        }
+
+        public ContainerDescriptor AddInstanceExtend(string name, Action<ContainerDescriptor> extend, object instance)
+        {
+            return AddInstanceExtend(name, extend, instance, instance.GetType());
+        }
+        
+        public ContainerDescriptor IgnoreParentBind(Type concrete, params Type[] contracts)
+        {
+            foreach (var contract in contracts)
+            {
+                if (!_ignoredParentConcretesByContract.TryGetValue(contract, out var ignoreConcrete))
+                {
+                    ignoreConcrete = new HashSet<Type>();
+                    _ignoredParentConcretesByContract.Add(contract, ignoreConcrete);
+                }
+                ignoreConcrete.Add(concrete);
+            }
+            return this;
+        }
+        
+        public ContainerDescriptor IgnoreParentBind(Type concrete)
+        {
+            return IgnoreParentBind(concrete, concrete);
+        }
+
         private void Build(out DisposableCollection disposables, out Dictionary<Type, List<Resolver>> resolversByContract, out IEnumerable<Resolver> toStart)
         {
             disposables = new DisposableCollection();
@@ -83,6 +134,15 @@ namespace Reflex.Core
                 foreach (var kvp in _parent.ResolversByContract)
                 {
                     resolversByContract[kvp.Key] = kvp.Value.ToList();
+                }
+
+                // Ignore specific parent contracts 
+                foreach (var concretesByContract in _ignoredParentConcretesByContract)
+                {
+                    if (resolversByContract.TryGetValue(concretesByContract.Key, out var resolvers))
+                    {
+                        resolvers.RemoveAll(resolver => concretesByContract.Value.Contains(resolver.Concrete));
+                    }
                 }
             }
 
