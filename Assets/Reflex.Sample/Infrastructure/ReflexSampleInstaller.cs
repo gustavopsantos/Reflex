@@ -12,8 +12,8 @@ namespace Reflex.Sample.Infrastructure
         public void InstallBindings(ContainerDescriptor descriptor)
         {
             InstallInput(descriptor, useMouse: false);
-            descriptor.AddInstance(_pickupSoundEffectPrefab);
-            descriptor.AddInstance(_collectorConfigurationModel);
+            descriptor.AddSingleton(_pickupSoundEffectPrefab);
+            descriptor.AddSingleton(_collectorConfigurationModel);
             descriptor.AddSingleton(typeof(CollectionStoragePrefs), typeof(ICollectionStorage));
         }
 

@@ -20,57 +20,57 @@ namespace Reflex.Tests
         }
         
         [Test]
-        public void AddInstance_ValuableWithIDisposableAsContract_ShouldThrow()
+        public void AddSingletonFromValue_ValuableWithIDisposableAsContract_ShouldThrow()
         {
             var builder = new ContainerDescriptor("");
-            Action addInstance = () => builder.AddInstance(new Valuable(), typeof(IDisposable));
-            addInstance.Should().ThrowExactly<ContractDefinitionException>();
+            Action addSingleton = () => builder.AddSingleton(new Valuable(), typeof(IDisposable));
+            addSingleton.Should().ThrowExactly<ContractDefinitionException>();
         }
         
         [Test]
-        public void AddInstance_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
+        public void AddSingletonFromValue_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
         {
             var builder = new ContainerDescriptor("");
-            Action addInstance = () => builder.AddInstance(new Valuable(), typeof(object), typeof(Valuable), typeof(IValuable));
-            addInstance.Should().NotThrow();
+            Action addSingleton = () => builder.AddSingleton(new Valuable(), typeof(object), typeof(Valuable), typeof(IValuable));
+            addSingleton.Should().NotThrow();
         }
         
         [Test]
         public void AddTransient_ValuableWithIDisposableAsContract_ShouldThrow()
         {
             var builder = new ContainerDescriptor("");
-            Action addInstance = () => builder.AddTransient(typeof(Valuable), typeof(IDisposable));
-            addInstance.Should().ThrowExactly<ContractDefinitionException>();
+            Action addSingleton = () => builder.AddTransient(typeof(Valuable), typeof(IDisposable));
+            addSingleton.Should().ThrowExactly<ContractDefinitionException>();
         }
 
         [Test]
         public void AddTransient_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
         {
             var builder = new ContainerDescriptor("");
-            Action addInstance = () => builder.AddTransient(typeof(Valuable), typeof(object), typeof(Valuable), typeof(IValuable));
-            addInstance.Should().NotThrow();
+            Action addSingleton = () => builder.AddTransient(typeof(Valuable), typeof(object), typeof(Valuable), typeof(IValuable));
+            addSingleton.Should().NotThrow();
         }
         
         [Test]
         public void AddSingleton_ValuableWithIDisposableAsContract_ShouldThrow()
         {
             var builder = new ContainerDescriptor("");
-            Action addInstance = () => builder.AddSingleton(typeof(Valuable), typeof(IDisposable));
-            addInstance.Should().ThrowExactly<ContractDefinitionException>();
+            Action addSingleton = () => builder.AddSingleton(typeof(Valuable), typeof(IDisposable));
+            addSingleton.Should().ThrowExactly<ContractDefinitionException>();
         }
 
         [Test]
         public void AddSingleton_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
         {
             var builder = new ContainerDescriptor("");
-            Action addInstance = () => builder.AddSingleton(typeof(Valuable), typeof(object), typeof(Valuable), typeof(IValuable));
-            addInstance.Should().NotThrow();
+            Action addSingleton = () => builder.AddSingleton(typeof(Valuable), typeof(object), typeof(Valuable), typeof(IValuable));
+            addSingleton.Should().NotThrow();
         }
 
         [Test]
         public void HasBinding_ShouldTrue()
         {
-            var builder = new ContainerDescriptor("").AddInstance(Debug.unityLogger);
+            var builder = new ContainerDescriptor("").AddSingleton(Debug.unityLogger);
             builder.HasBinding(Debug.unityLogger.GetType()).Should().BeTrue();
         }
         
@@ -80,7 +80,7 @@ namespace Reflex.Tests
             Container container = null;
             var builder = new ContainerDescriptor("");
             builder.OnContainerBuilt += ContainerCallback;
-            Action addInstance = () => builder.AddInstance(new Valuable(), typeof(IDisposable)).Build();
+            Action addSingleton = () => builder.AddSingleton(new Valuable(), typeof(IDisposable)).Build();
             void ContainerCallback(Container ctx)
             {
                 container = ctx;

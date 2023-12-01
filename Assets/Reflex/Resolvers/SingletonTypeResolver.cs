@@ -3,11 +3,11 @@ using Reflex.Core;
 
 namespace Reflex.Resolvers
 {
-    internal sealed class SingletonResolver : Resolver
+    internal sealed class SingletonTypeResolver : Resolver
     {
         private object _instance;
 
-        public SingletonResolver(Type concrete)
+        public SingletonTypeResolver(Type concrete)
         {
             Concrete = concrete;
             RegisterCallSite();

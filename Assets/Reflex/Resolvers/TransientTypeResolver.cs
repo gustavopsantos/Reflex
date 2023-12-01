@@ -3,9 +3,9 @@ using Reflex.Core;
 
 namespace Reflex.Resolvers
 {
-    internal sealed class TransientResolver : Resolver
+    internal sealed class TransientTypeResolver : Resolver
     {
-        public TransientResolver(Type concrete)
+        public TransientTypeResolver(Type concrete)
         {
             Concrete = concrete;
             RegisterCallSite();

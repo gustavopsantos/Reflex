@@ -44,32 +44,32 @@ namespace Reflex.Core
 
         public ContainerDescriptor AddSingleton(Type concrete, params Type[] contracts)
         {
-            return Add(concrete, contracts, new SingletonResolver(concrete));
+            return Add(concrete, contracts, new SingletonTypeResolver(concrete));
         }
 
         public ContainerDescriptor AddSingleton(Type concrete)
         {
             return AddSingleton(concrete, concrete);
         }
+        
+        public ContainerDescriptor AddSingleton(object instance, params Type[] contracts)
+        {
+            return Add(instance.GetType(), contracts, new SingletonValueResolver(instance));
+        }
+
+        public ContainerDescriptor AddSingleton(object instance)
+        {
+            return AddSingleton(instance, instance.GetType());
+        }
 
         public ContainerDescriptor AddTransient(Type concrete, params Type[] contracts)
         {
-            return Add(concrete, contracts, new TransientResolver(concrete));
+            return Add(concrete, contracts, new TransientTypeResolver(concrete));
         }
 
         public ContainerDescriptor AddTransient(Type concrete)
         {
             return AddTransient(concrete, concrete);
-        }
-
-        public ContainerDescriptor AddInstance(object instance, params Type[] contracts)
-        {
-            return Add(instance.GetType(), contracts, new InstanceResolver(instance));
-        }
-
-        public ContainerDescriptor AddInstance(object instance)
-        {
-            return AddInstance(instance, instance.GetType());
         }
 
         private void Build(out DisposableCollection disposables, out Dictionary<Type, List<Resolver>> resolversByContract, out IEnumerable<Resolver> toStart)

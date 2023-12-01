@@ -96,7 +96,7 @@ public class ProjectInstaller : MonoBehaviour, IInstaller
 {
     public void InstallBindings(ContainerDescriptor descriptor)
     {
-        descriptor.AddInstance("Hello");
+        descriptor.AddSingleton("Hello");
     }
 }
 ```
@@ -136,7 +136,7 @@ public class GreetInstaller : MonoBehaviour, IInstaller
 {
     public void InstallBindings(ContainerDescriptor descriptor)
     {
-        descriptor.AddInstance("World");
+        descriptor.AddSingleton("World");
         descriptor.AddSingleton(typeof(Greeter), typeof(IStartable)); // IStartable will force it to be constructed on container build
     }
 }
@@ -156,12 +156,12 @@ public class Loader : MonoBehaviour
     {
 	// If you are loading scenes without addressables
 	var scene = SceneManager.LoadScene("Greet", new LoadSceneParameters(LoadSceneMode.Single));
-	ReflexSceneManager.PreInstallScene(scene, descriptor => descriptor.AddInstance("beautiful"));
+	ReflexSceneManager.PreInstallScene(scene, descriptor => descriptor.AddSingleton("beautiful"));
 
 	// If you are loading scenes with addressables
 	Addressables.LoadSceneAsync("Greet", activateOnLoad: false).Completed += handle =>
 	{
-		ReflexSceneManager.PreInstallScene(handle.Result.Scene, descriptor => descriptor.AddInstance("beautiful"));
+		ReflexSceneManager.PreInstallScene(handle.Result.Scene, descriptor => descriptor.AddSingleton("beautiful"));
 		handle.Result.ActivateAsync();
 	};
     }
@@ -211,15 +211,7 @@ using var scopedContainer = parentContainer.Scope("Scoped", descriptor =>
 
 ## 🔩 Bindings
 
-### AddInstance
-```csharp
-ContainerDescriptor::AddInstance(object instance, params Type[] contracts)
-```
-Adds an object already contructed by the user to the container as a singleton, everytime the contracts given is asked to be resolved, the same object will be returned.
-If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
-
-### AddSingleton
+### AddSingleton (From Type)
 ```csharp
 ContainerDescriptor::AddSingleton(Type concrete, params Type[] contracts)
 ```
@@ -230,7 +222,15 @@ If you want your singleton to be constructed just after container build (non-laz
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
 Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
-### AddTransient
+### AddSingleton (From Value)
+```csharp
+ContainerDescriptor::AddSingleton(object instance, params Type[] contracts)
+```
+Adds an object already contructed by the user to the container as a singleton, everytime the contracts given is asked to be resolved, the same object will be returned.
+If object implements `IDisposable` it will be disposed when its parent Container are disposed.
+Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+
+### AddTransient (From Type)
 ```csharp
 ContainerDescriptor::AddTransient(Type concrete, params Type[] contracts)
 ```
@@ -293,9 +293,9 @@ Example:
 private void Documentation_Bindings()  
 {  
 	var container = new ContainerDescriptor("")  
-		.AddInstance(1)  
-		.AddInstance(2)  
-		.AddInstance(3)  
+		.AddSingleton(1)  
+		.AddSingleton(2)  
+		.AddSingleton(3)  
 		.Build();  
   
 	Debug.Log(string.Join(", ", container.All<int>())); // Prints: 1, 2, 3

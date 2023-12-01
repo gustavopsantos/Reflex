@@ -121,7 +121,7 @@ namespace Reflex.Core
         
         private void OverrideSelfInjection()
         {
-            ResolversByContract[typeof(Container)] = new List<Resolver> { new InstanceResolver(this) };
+            ResolversByContract[typeof(Container)] = new List<Resolver> { new SingletonValueResolver(this) };
         }
 
         internal void SetParent([CanBeNull] Container parent)

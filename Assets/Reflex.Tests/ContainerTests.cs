@@ -36,7 +36,7 @@ namespace Reflex.Tests
         public void Resolve_ValueTypeSingleton_ShouldReturn42()
         {
             var container = new ContainerDescriptor("")
-                .AddInstance(42, typeof(int))
+                .AddSingleton(42, typeof(int))
                 .Build();
             
             container.Single<int>().Should().Be(42);
@@ -126,7 +126,7 @@ namespace Reflex.Tests
         public void Resolve_ValueTypeAsTransient_CustomConstructor_ValueShouldReturn42()
         {
             var container = new ContainerDescriptor("")
-                .AddInstance(42, typeof(int))
+                .AddSingleton(42, typeof(int))
                 .AddTransient(typeof(MyStruct), typeof(MyStruct))
                 .Build();
             
@@ -201,10 +201,10 @@ namespace Reflex.Tests
         }
         
         [Test]
-        public void AddInstance_WithoutContract_ShouldBindToItsType()
+        public void AddSingleton_WithoutContract_ShouldBindToItsType()
         {
             var container = new ContainerDescriptor("")
-                .AddInstance(42)
+                .AddSingleton(42)
                 .Build();
             
             container.Single<int>().Should().Be(42);
@@ -275,9 +275,9 @@ namespace Reflex.Tests
         [Test]
         public void All_OnParentShouldNotBeAffectedByScoped()
         {
-            var container = new ContainerDescriptor("").AddInstance(1).Build();
+            var container = new ContainerDescriptor("").AddSingleton(1).Build();
             string.Join(",", container.All<int>()).Should().Be("1");
-            var scoped = container.Scope("", descriptor => { descriptor.AddInstance(2); });
+            var scoped = container.Scope("", descriptor => { descriptor.AddSingleton(2); });
             string.Join(",", container.All<int>()).Should().Be("1");
         }
         
@@ -291,7 +291,7 @@ namespace Reflex.Tests
         [Test]
         public void HasBindingReturnTrueWhenBindingIsDefined()
         {
-            var container = new ContainerDescriptor("").AddInstance(42).Build();
+            var container = new ContainerDescriptor("").AddSingleton(42).Build();
             container.HasBinding<int>().Should().BeTrue();
         }
         

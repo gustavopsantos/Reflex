@@ -42,11 +42,11 @@ namespace Reflex.Tests
         }
 
         [Test]
-        public void Instance_ShouldBeDisposed_WhenOwnerIsDisposed()
+        public void SingletonFromValue_ShouldBeDisposed_WhenOwnerIsDisposed()
         {
             var service = new Service();
             var container = new ContainerDescriptor("")
-                .AddInstance(service, typeof(Service))
+                .AddSingleton(service, typeof(Service))
                 .Build();
             
             container.Dispose();

@@ -2,11 +2,11 @@ using Reflex.Core;
 
 namespace Reflex.Resolvers
 {
-    internal sealed class InstanceResolver : Resolver
+    internal sealed class SingletonValueResolver : Resolver
     {
         private readonly object _value;
 
-        public InstanceResolver(object value)
+        public SingletonValueResolver(object value)
         {
             _value = value;
             Disposables.TryAdd(value);
