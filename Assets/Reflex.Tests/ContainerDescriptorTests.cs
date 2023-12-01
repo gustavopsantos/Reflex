@@ -20,6 +20,22 @@ namespace Reflex.Tests
         }
         
         [Test]
+        public void AddSingletonFromType_ValuableWithIDisposableAsContract_ShouldThrow()
+        {
+            var builder = new ContainerDescriptor("");
+            Action addSingleton = () => builder.AddSingleton(typeof(Valuable), typeof(IDisposable));
+            addSingleton.Should().ThrowExactly<ContractDefinitionException>();
+        }
+
+        [Test]
+        public void AddSingletonFromType_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
+        {
+            var builder = new ContainerDescriptor("");
+            Action addSingleton = () => builder.AddSingleton(typeof(Valuable), typeof(object), typeof(Valuable), typeof(IValuable));
+            addSingleton.Should().NotThrow();
+        }
+        
+        [Test]
         public void AddSingletonFromValue_ValuableWithIDisposableAsContract_ShouldThrow()
         {
             var builder = new ContainerDescriptor("");
@@ -36,6 +52,32 @@ namespace Reflex.Tests
         }
         
         [Test]
+        public void AddSingletonFromFactory_ValuableWithIDisposableAsContract_ShouldThrow()
+        {
+            Valuable Factory(Container container)
+            {
+                return new Valuable();
+            }
+            
+            var builder = new ContainerDescriptor("");
+            Action addSingleton = () => builder.AddSingleton(Factory, typeof(IDisposable));
+            addSingleton.Should().ThrowExactly<ContractDefinitionException>();
+        }
+        
+        [Test]
+        public void AddSingletonFromFactory_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
+        {
+            Valuable Factory(Container container)
+            {
+                return new Valuable();
+            }
+            
+            var builder = new ContainerDescriptor("");
+            Action addSingleton = () => builder.AddSingleton(Factory, typeof(object), typeof(Valuable), typeof(IValuable));
+            addSingleton.Should().NotThrow();
+        }
+        
+        [Test]
         public void AddTransient_ValuableWithIDisposableAsContract_ShouldThrow()
         {
             var builder = new ContainerDescriptor("");
@@ -48,22 +90,6 @@ namespace Reflex.Tests
         {
             var builder = new ContainerDescriptor("");
             Action addSingleton = () => builder.AddTransient(typeof(Valuable), typeof(object), typeof(Valuable), typeof(IValuable));
-            addSingleton.Should().NotThrow();
-        }
-        
-        [Test]
-        public void AddSingleton_ValuableWithIDisposableAsContract_ShouldThrow()
-        {
-            var builder = new ContainerDescriptor("");
-            Action addSingleton = () => builder.AddSingleton(typeof(Valuable), typeof(IDisposable));
-            addSingleton.Should().ThrowExactly<ContractDefinitionException>();
-        }
-
-        [Test]
-        public void AddSingleton_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
-        {
-            var builder = new ContainerDescriptor("");
-            Action addSingleton = () => builder.AddSingleton(typeof(Valuable), typeof(object), typeof(Valuable), typeof(IValuable));
             addSingleton.Should().NotThrow();
         }
 

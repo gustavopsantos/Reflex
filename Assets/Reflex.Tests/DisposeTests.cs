@@ -18,12 +18,41 @@ namespace Reflex.Tests
         }
 
         [Test]
-        public void Singleton_ShouldBeDisposed_WhenOwnerIsDisposed()
+        public void SingletonFromType_ShouldBeDisposed_WhenOwnerIsDisposed()
         {
             var container = new ContainerDescriptor("")
                 .AddSingleton(typeof(Service), typeof(Service))
                 .Build();
             
+            var service = container.Single<Service>();
+            container.Dispose();
+            service.Disposed.Should().Be(1);
+        }
+        
+        [Test]
+        public void SingletonFromValue_ShouldBeDisposed_WhenOwnerIsDisposed()
+        {
+            var service = new Service();
+            var container = new ContainerDescriptor("")
+                .AddSingleton(service, typeof(Service))
+                .Build();
+            
+            container.Dispose();
+            service.Disposed.Should().Be(1);
+        }
+
+        [Test]
+        public void SingletonFromFactory_ShouldBeDisposed_WhenOwnerIsDisposed()
+        {
+            Service Factory(Container container)
+            {
+                return new Service();
+            }
+            
+            var container = new ContainerDescriptor("")
+                .AddSingleton(Factory, typeof(Service))
+                .Build();
+
             var service = container.Single<Service>();
             container.Dispose();
             service.Disposed.Should().Be(1);
@@ -37,18 +66,6 @@ namespace Reflex.Tests
                 .Build();
             
             var service = container.Single<Service>();
-            container.Dispose();
-            service.Disposed.Should().Be(1);
-        }
-
-        [Test]
-        public void SingletonFromValue_ShouldBeDisposed_WhenOwnerIsDisposed()
-        {
-            var service = new Service();
-            var container = new ContainerDescriptor("")
-                .AddSingleton(service, typeof(Service))
-                .Build();
-            
             container.Dispose();
             service.Disposed.Should().Be(1);
         }

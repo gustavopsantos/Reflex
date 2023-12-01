@@ -230,6 +230,17 @@ Adds an object already contructed by the user to the container as a singleton, e
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
 Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
+### AddSingleton (From Factory)
+```csharp
+ContainerDescriptor::AddSingleton<T>(Func<Container, T> factory, params Type[] contracts)
+```
+Adds a defered object creation based on the given factory and its contracts.
+The object will be constructed lazyli, once first request to resolve any of its contracts is called.
+The factory will be ran once, and then the **same** object will always be returned.
+If you want your singleton to be constructed just after container build (non-lazyli), add `typeof(IStartable)` as one of your contracts.
+If object implements `IDisposable` it will be disposed when its parent Container are disposed.
+Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+
 ### AddTransient (From Type)
 ```csharp
 ContainerDescriptor::AddTransient(Type concrete, params Type[] contracts)

@@ -62,7 +62,7 @@ namespace Reflex.Tests
         }
 
         [Test]
-        public void Resolve_AsSingleton_ShouldReturnAlwaysSameInstance()
+        public void Resolve_AsSingletonFromType_ShouldReturnAlwaysSameInstance()
         {
             var container = new ContainerDescriptor("")
                 .AddSingleton(typeof(Valuable), typeof(IValuable))
@@ -70,6 +70,27 @@ namespace Reflex.Tests
             
             container.Single<IValuable>().Value = 123;
             container.Single<IValuable>().Value.Should().Be(123);
+        }
+        
+        [Test]
+        public void Resolve_AsSingletonFromFactory_ShouldRunFactoryOnce()
+        {
+            var callbackAssertion = new CallbackAssertion();
+            
+            string Factory(Container container)
+            {
+                callbackAssertion.Invoke();
+                return "Hello World!";
+            }
+            
+            var container = new ContainerDescriptor("")
+                .AddSingleton(Factory)
+                .Build();
+            
+            container.Single<string>().Should().Be("Hello World!");
+            container.Single<string>().Should().Be("Hello World!");
+            container.Single<string>().Should().Be("Hello World!");
+            callbackAssertion.ShouldHaveBeenCalledOnce();
         }
 
         [Test]
@@ -237,7 +258,7 @@ namespace Reflex.Tests
         }
         
         [Test]
-        public void NonStartableSingleton_ShouldNotBeConstructedAfterContainerBuild()
+        public void NonStartableSingletonFromType_ShouldNotBeConstructedAfterContainerBuild()
         {
             var callbackAssertion = new CallbackAssertion();
             StartableSingleton.OnConstructed = callbackAssertion;
@@ -250,7 +271,7 @@ namespace Reflex.Tests
         }
         
         [Test]
-        public void StartableSingleton_ShouldBeConstructedAfterContainerBuild()
+        public void StartableSingletonFromType_ShouldBeConstructedAfterContainerBuild()
         {
             var callbackAssertion = new CallbackAssertion();
             StartableSingleton.OnConstructed = callbackAssertion;
@@ -263,10 +284,61 @@ namespace Reflex.Tests
         }
         
         [Test]
-        public void StartableSingleton_ShouldBeStartedAfterContainerBuild()
+        public void StartableSingletonFromType_ShouldBeStartedAfterContainerBuild()
         {
             var container = new ContainerDescriptor("")
                 .AddSingleton(typeof(StartableSingleton), typeof(StartableSingleton), typeof(IStartable))
+                .Build();
+            
+            var startable = container.Single<StartableSingleton>().WasStarted.Should().BeTrue();
+        }
+        
+        [Test]
+        public void NonStartableSingletonFromFactory_ShouldNotBeConstructedAfterContainerBuild()
+        {
+            StartableSingleton Factory(Container container)
+            {
+                return new StartableSingleton();
+            }
+            
+            var callbackAssertion = new CallbackAssertion();
+            StartableSingleton.OnConstructed = callbackAssertion;
+            
+            var container = new ContainerDescriptor("")
+                .AddSingleton(Factory)
+                .Build();
+            
+            callbackAssertion.ShouldNotHaveBeenCalled();
+        }
+        
+        [Test]
+        public void StartableSingletonFromFactory_ShouldBeConstructedAfterContainerBuild()
+        {
+            StartableSingleton Factory(Container container)
+            {
+                return new StartableSingleton();
+            }
+            
+            var callbackAssertion = new CallbackAssertion();
+            StartableSingleton.OnConstructed = callbackAssertion;
+            
+            var container = new ContainerDescriptor("")
+                .AddSingleton(Factory, typeof(IStartable))
+                .Build();
+            
+            callbackAssertion.ShouldHaveBeenCalledOnce();
+        }
+        
+        [Test]
+        public void StartableSingletonFromFactory_ShouldBeStartedAfterContainerBuild()
+        {
+            StartableSingleton Factory(Container container)
+            {
+                return new StartableSingleton();
+            }
+            
+            var container = new ContainerDescriptor("")
+                .AddSingleton(Factory, typeof(StartableSingleton), typeof(IStartable))
                 .Build();
             
             var startable = container.Single<StartableSingleton>().WasStarted.Should().BeTrue();

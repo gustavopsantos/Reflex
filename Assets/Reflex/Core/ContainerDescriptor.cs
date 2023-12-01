@@ -62,6 +62,22 @@ namespace Reflex.Core
             return AddSingleton(instance, instance.GetType());
         }
 
+        public ContainerDescriptor AddSingleton<T>(Func<Container, T> factory, params Type[] contracts)
+        {
+            var resolver = new SingletonFactoryResolver(Proxy, typeof(T));
+            return Add(typeof(T), contracts, resolver);
+
+            object Proxy(Container container)
+            {
+                return factory.Invoke(container);
+            }
+        }
+        
+        public ContainerDescriptor AddSingleton<T>(Func<Container, T> factory)
+        {
+            return AddSingleton(factory, typeof(T));
+        }
+
         public ContainerDescriptor AddTransient(Type concrete, params Type[] contracts)
         {
             return Add(concrete, contracts, new TransientTypeResolver(concrete));

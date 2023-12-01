@@ -4,16 +4,15 @@
     public class CallbackAssertion
     {
         private int _calls;
-        private readonly Action _call;
 
-        public CallbackAssertion()
+        public void Invoke()
         {
-            _call = () => _calls++;
+            _calls++;
         }
 
         public static implicit operator Action(CallbackAssertion callbackAssertion)
         {
-            return callbackAssertion._call;
+            return callbackAssertion.Invoke;
         }
 
         public void ShouldHaveBeenCalledOnce()
