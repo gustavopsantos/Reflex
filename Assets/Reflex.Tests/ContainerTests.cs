@@ -51,7 +51,7 @@ namespace Reflex.Tests
         }
 
         [Test]
-        public void Resolve_AsTransient_ShouldReturnAlwaysANewInstance()
+        public void Resolve_AsTransientFromType_ShouldReturnAlwaysANewInstance()
         {
             var container = new ContainerDescriptor("")
                 .AddTransient(typeof(Valuable), typeof(IValuable))
@@ -59,6 +59,27 @@ namespace Reflex.Tests
             
             container.Single<IValuable>().Value = 123;
             container.Single<IValuable>().Value.Should().Be(default(int));
+        }
+        
+        [Test]
+        public void Resolve_AsTransientFromFactory_ShouldRunFactoryAlways()
+        {
+            var callbackAssertion = new CallbackAssertion();
+            
+            string Factory(Container container)
+            {
+                callbackAssertion.Invoke();
+                return "Hello World!";
+            }
+            
+            var container = new ContainerDescriptor("")
+                .AddTransient(Factory)
+                .Build();
+            
+            container.Single<string>().Should().Be("Hello World!");
+            container.Single<string>().Should().Be("Hello World!");
+            container.Single<string>().Should().Be("Hello World!");
+            callbackAssertion.ShouldHaveBeenCalled(3);
         }
 
         [Test]

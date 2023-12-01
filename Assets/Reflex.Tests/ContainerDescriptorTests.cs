@@ -78,7 +78,7 @@ namespace Reflex.Tests
         }
         
         [Test]
-        public void AddTransient_ValuableWithIDisposableAsContract_ShouldThrow()
+        public void AddTransientFromType_ValuableWithIDisposableAsContract_ShouldThrow()
         {
             var builder = new ContainerDescriptor("");
             Action addSingleton = () => builder.AddTransient(typeof(Valuable), typeof(IDisposable));
@@ -86,10 +86,36 @@ namespace Reflex.Tests
         }
 
         [Test]
-        public void AddTransient_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
+        public void AddTransientFromType_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
         {
             var builder = new ContainerDescriptor("");
             Action addSingleton = () => builder.AddTransient(typeof(Valuable), typeof(object), typeof(Valuable), typeof(IValuable));
+            addSingleton.Should().NotThrow();
+        }
+        
+        [Test]
+        public void AddTransientFromFactory_ValuableWithIDisposableAsContract_ShouldThrow()
+        {
+            Valuable Factory(Container container)
+            {
+                return new Valuable();
+            }
+            
+            var builder = new ContainerDescriptor("");
+            Action addSingleton = () => builder.AddTransient(Factory, typeof(IDisposable));
+            addSingleton.Should().ThrowExactly<ContractDefinitionException>();
+        }
+
+        [Test]
+        public void AddTransientFromFactory_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
+        {
+            Valuable Factory(Container container)
+            {
+                return new Valuable();
+            }
+            
+            var builder = new ContainerDescriptor("");
+            Action addSingleton = () => builder.AddTransient(Factory, typeof(object), typeof(Valuable), typeof(IValuable));
             addSingleton.Should().NotThrow();
         }
 

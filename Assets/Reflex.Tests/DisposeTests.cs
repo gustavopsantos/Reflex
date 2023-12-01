@@ -59,10 +59,27 @@ namespace Reflex.Tests
         }
 
         [Test]
-        public void Transient_ShouldBeDisposed_WhenOwnerIsDisposed()
+        public void TransientFromType_ShouldBeDisposed_WhenOwnerIsDisposed()
         {
             var container = new ContainerDescriptor("")
                 .AddTransient(typeof(Service), typeof(Service))
+                .Build();
+            
+            var service = container.Single<Service>();
+            container.Dispose();
+            service.Disposed.Should().Be(1);
+        }
+        
+        [Test]
+        public void TransientFromFactory_ShouldBeDisposed_WhenOwnerIsDisposed()
+        {
+            Service Factory(Container container)
+            {
+                return new Service();
+            }
+            
+            var container = new ContainerDescriptor("")
+                .AddTransient(Factory, typeof(Service))
                 .Build();
             
             var service = container.Single<Service>();

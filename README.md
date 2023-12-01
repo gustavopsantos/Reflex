@@ -252,6 +252,17 @@ If object implements `IDisposable` it will be disposed when its parent Container
 Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 > Note that `IStartable` also works for **Transients** but pay attention that any resolve API will create a new instance
 
+### AddTransient (From Factory)
+```csharp
+ContainerDescriptor::AddTransient(Func<Container, T> factory, params Type[] contracts)
+```
+Adds a defered object creation based on the given factory and its contracts.
+The object will be constructed lazyli, once first request to resolve any of its contracts is called.
+Then for any request of any contract, a new object will be created, use this carefully.
+If object created by factory implements `IDisposable` it will be disposed when its parent Container are disposed.
+Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+> Note that `IStartable` also works for **Transients** but pay attention that any resolve API will create a new instance
+
 ## 🔍 Resolving
 ### Constructor
 If your type is non-mono, and its gonna be created by the container, then the most recommended way to inject dependencies into it its by constructor injection.

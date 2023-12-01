@@ -87,6 +87,22 @@ namespace Reflex.Core
         {
             return AddTransient(concrete, concrete);
         }
+        
+        public ContainerDescriptor AddTransient<T>(Func<Container, T> factory, params Type[] contracts)
+        {
+            var resolver = new TransientFactoryResolver(Proxy, typeof(T));
+            return Add(typeof(T), contracts, resolver);
+
+            object Proxy(Container container)
+            {
+                return factory.Invoke(container);
+            }
+        }
+        
+        public ContainerDescriptor AddTransient<T>(Func<Container, T> factory)
+        {
+            return AddTransient(factory, typeof(T));
+        }
 
         private void Build(out DisposableCollection disposables, out Dictionary<Type, List<Resolver>> resolversByContract, out IEnumerable<Resolver> toStart)
         {
