@@ -1,5 +1,6 @@
 ﻿using System;
 using Reflex.Core;
+using Reflex.Enums;
 
 namespace Reflex.Resolvers
 {
@@ -9,8 +10,9 @@ namespace Reflex.Resolvers
 
         public SingletonTypeResolver(Type concrete)
         {
-            Concrete = concrete;
             RegisterCallSite();
+            Concrete = concrete;
+            Lifetime = Lifetime.Singleton;
         }
 
         public override object Resolve(Container container)

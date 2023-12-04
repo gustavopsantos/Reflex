@@ -31,5 +31,19 @@ namespace Reflex.Injectors
                 ExactArrayPool<object>.Shared.Return(arguments);
             }
         }
+        
+        public static object Construct(Type concrete, object[] arguments)
+        {
+            var info = TypeConstructionInfoCache.Get(concrete);
+
+            try
+            {
+                return info.ObjectActivator.Invoke(arguments);
+            }
+            catch (Exception e)
+            {
+                throw new ConstructorInjectorException(concrete, e);
+            }
+        }
     }
 }

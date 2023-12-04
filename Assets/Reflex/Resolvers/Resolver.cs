@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using Reflex.Core;
+using Reflex.Enums;
 using Reflex.Extensions;
 using Reflex.Generics;
 
@@ -12,6 +13,7 @@ namespace Reflex.Resolvers
         protected readonly DisposableCollection Disposables = new();
 
         public Type Concrete { get; protected set; }
+        public Lifetime Lifetime { get; protected set; }
 
         public abstract object Resolve(Container container);
 

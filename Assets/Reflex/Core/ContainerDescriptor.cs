@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Reflex.Enums;
 using Reflex.Exceptions;
 using Reflex.Extensions;
 using Reflex.Generics;
+using Reflex.Injectors;
 using Reflex.Resolvers;
 
 namespace Reflex.Core
@@ -15,6 +17,7 @@ namespace Reflex.Core
         private Container _parent;
         private List<ResolverDescriptor> _descriptors = new();
         public event Action<Container> OnContainerBuilt;
+
         public ContainerDescriptor(string name, Container parent = null)
         {
             _name = name;
@@ -26,18 +29,18 @@ namespace Reflex.Core
             Build(out var disposables, out var resolversByContract, out var toStart);
             var container = new Container(_name, resolversByContract, disposables);
             container.SetParent(_parent);
-            
+
             // Clear references
             _name = null;
             _parent = null;
             _descriptors = null;
-            
+
             // Call initializers
             foreach (var startable in toStart.Select(r => (IStartable) r.Resolve(container)))
             {
                 startable.Start();
             }
-            
+
             OnContainerBuilt?.Invoke(container);
             return container;
         }
@@ -51,7 +54,7 @@ namespace Reflex.Core
         {
             return AddSingleton(concrete, concrete);
         }
-        
+
         public ContainerDescriptor AddSingleton(object instance, params Type[] contracts)
         {
             return Add(instance.GetType(), contracts, new SingletonValueResolver(instance));
@@ -72,7 +75,7 @@ namespace Reflex.Core
                 return factory.Invoke(container);
             }
         }
-        
+
         public ContainerDescriptor AddSingleton<T>(Func<Container, T> factory)
         {
             return AddSingleton(factory, typeof(T));
@@ -87,7 +90,7 @@ namespace Reflex.Core
         {
             return AddTransient(concrete, concrete);
         }
-        
+
         public ContainerDescriptor AddTransient<T>(Func<Container, T> factory, params Type[] contracts)
         {
             var resolver = new TransientFactoryResolver(Proxy, typeof(T));
@@ -98,10 +101,44 @@ namespace Reflex.Core
                 return factory.Invoke(container);
             }
         }
-        
+
         public ContainerDescriptor AddTransient<T>(Func<Container, T> factory)
         {
             return AddTransient(factory, typeof(T));
+        }
+
+        public ContainerDescriptor AddDecorator(Type concrete, Type contract)
+        {
+            var count = _descriptors.Count;
+
+            for (int i = 0; i < count; i++)
+            {
+                var descriptor = _descriptors[i];
+
+                if (!descriptor.Contracts.Contains(contract))
+                {
+                    continue;
+                }
+
+                var decoratedContract = new DecoratedType(contract);
+
+                object Factory(Container container)
+                {
+                    var dependency = container.Resolve(decoratedContract);
+                    return ConstructorInjector.Construct(concrete, new[] {dependency});
+                }
+
+                var resolver = descriptor.Resolver.Lifetime == Lifetime.Singleton
+                    ? (Resolver) new SingletonFactoryResolver(Factory, concrete)
+                    : (Resolver) new TransientFactoryResolver(Factory, concrete);
+                
+                AddWithoutValidation(new[] {contract}, resolver);
+
+                var originalDescriptorNewContracts = descriptor.Contracts.Except(new[] {contract}).Concat(new[] {decoratedContract}).ToArray();
+                _descriptors[i] = new ResolverDescriptor(descriptor.Resolver, originalDescriptorNewContracts);
+            }
+
+            return this;
         }
 
         private void Build(out DisposableCollection disposables, out Dictionary<Type, List<Resolver>> resolversByContract, out IEnumerable<Resolver> toStart)
@@ -141,6 +178,13 @@ namespace Reflex.Core
         private ContainerDescriptor Add(Type concrete, Type[] contracts, Resolver resolver)
         {
             ValidateContracts(concrete, contracts);
+            var resolverDescriptor = new ResolverDescriptor(resolver, contracts);
+            _descriptors.Add(resolverDescriptor);
+            return this;
+        }
+
+        private ContainerDescriptor AddWithoutValidation(Type[] contracts, Resolver resolver)
+        {
             var resolverDescriptor = new ResolverDescriptor(resolver, contracts);
             _descriptors.Add(resolverDescriptor);
             return this;

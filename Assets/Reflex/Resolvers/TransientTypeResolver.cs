@@ -1,5 +1,6 @@
 using System;
 using Reflex.Core;
+using Reflex.Enums;
 
 namespace Reflex.Resolvers
 {
@@ -7,8 +8,9 @@ namespace Reflex.Resolvers
     {
         public TransientTypeResolver(Type concrete)
         {
-            Concrete = concrete;
             RegisterCallSite();
+            Concrete = concrete;
+            Lifetime = Lifetime.Transient;
         }
 
         public override object Resolve(Container container)
