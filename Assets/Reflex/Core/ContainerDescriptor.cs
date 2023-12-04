@@ -44,6 +44,26 @@ namespace Reflex.Core
             OnContainerBuilt?.Invoke(container);
             return container;
         }
+        
+        public ContainerDescriptor AddType(Type concrete, Type[] contracts, Lifetime lifetime)
+        {
+            switch (lifetime)
+            {
+                case Lifetime.Singleton: return Add(concrete, contracts, new SingletonTypeResolver(concrete));
+                case Lifetime.Transient: return Add(concrete, contracts, new TransientTypeResolver(concrete));
+                default: throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, null);
+            }
+        }
+        
+        public ContainerDescriptor AddValue(Type concrete, Type[] contracts, Lifetime lifetime)
+        {
+            switch (lifetime)
+            {
+                case Lifetime.Singleton: return Add(concrete, contracts, new SingletonTypeResolver(concrete));
+                case Lifetime.Transient: return Add(concrete, contracts, new TransientTypeResolver(concrete));
+                default: throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, null);
+            }
+        }
 
         public ContainerDescriptor AddSingleton(Type concrete, params Type[] contracts)
         {
@@ -89,6 +109,16 @@ namespace Reflex.Core
         public ContainerDescriptor AddTransient(Type concrete)
         {
             return AddTransient(concrete, concrete);
+        }
+        
+        public ContainerDescriptor AddTransient(object instance, params Type[] contracts)
+        {
+            return Add(instance.GetType(), contracts, new TransientValueResolver(instance));
+        }
+
+        public ContainerDescriptor AddTransient(object instance)
+        {
+            return AddTransient(instance, instance.GetType());
         }
 
         public ContainerDescriptor AddTransient<T>(Func<Container, T> factory, params Type[] contracts)

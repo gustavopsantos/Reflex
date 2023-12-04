@@ -77,7 +77,10 @@ namespace Reflex.Core
                 return All(elementType).CastDynamic(elementType);
             }
 
-            return GetResolvers(type).Last().Resolve(this);
+            var resolvers = GetResolvers(type);
+            var lastResolver = resolvers.Last();
+            var resolved = lastResolver.Resolve(this);
+            return resolved;
         }
 
         public TContract Resolve<TContract>()
