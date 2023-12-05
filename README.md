@@ -408,12 +408,12 @@ To enable reflex debug mode you must go to Edit → Project Settings → Player,
 > Note that debug mode reduces performance and increases memory pressure, so use it wisely.  
 
 And from there you can check:
-- Container Hierarchy
-- Implementation
-- Contracts
+- Hierarchy of Containers, Bindings and Instances
+- Binding Contracts, Kind and Lifetime
 - Resolution Count
-- Binding Type
-- Binding assignment call stack
+- Container call stack (who created the container)
+- Binding call stack (who created the binding)
+- Instance call stack (who resolved the binding making selected instance to be instantiated)
 
 ---
 
