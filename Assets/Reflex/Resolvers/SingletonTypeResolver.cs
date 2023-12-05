@@ -8,11 +8,9 @@ namespace Reflex.Resolvers
     {
         private object _instance;
 
-        public SingletonTypeResolver(Type concrete)
+        public SingletonTypeResolver(Type concrete) : base(concrete, Lifetime.Singleton)
         {
             RegisterCallSite();
-            Concrete = concrete;
-            Lifetime = Lifetime.Singleton;
         }
 
         public override object Resolve(Container container)
@@ -21,8 +19,9 @@ namespace Reflex.Resolvers
 
             if (_instance == null)
             {
-                _instance = container.Construct(Concrete);
+                _instance = container.Construct(ConcreteType);
                 Disposables.TryAdd(_instance);
+                RegisterInstance(_instance);
             }
 
             return _instance;

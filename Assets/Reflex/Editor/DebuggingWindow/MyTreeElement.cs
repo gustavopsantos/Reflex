@@ -1,5 +1,5 @@
 using System;
-using Reflex.Resolvers;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,7 +12,8 @@ namespace Reflex.Editor.DebuggingWindow
         public Texture Icon { get; }
         public string[] Contracts { get; }
         public string ResolutionType { get; }
-        public ResolverDebugProperties Properties { get; }
+        public List<CallSite> Callsite { get; }
+        public string Kind { get; }
 
         public MyTreeElement(
             string name,
@@ -22,14 +23,16 @@ namespace Reflex.Editor.DebuggingWindow
             Func<string> resolutions,
             string[] contracts,
             string resolutionType,
-            ResolverDebugProperties properties
+            List<CallSite> callsite,
+            string kind = ""
             ) : base(name, depth, id)
         {
             Resolutions = resolutions;
             ResolutionType = resolutionType;
             Contracts = contracts;
             Icon = EditorGUIUtility.IconContent(icon).image;
-            Properties = properties;
+            Callsite = callsite;
+            Kind = kind;
         }
     }
 }

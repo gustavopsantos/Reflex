@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using Reflex.Core;
 using Reflex.Enums;
 using Reflex.Extensions;
@@ -12,8 +11,14 @@ namespace Reflex.Resolvers
     {
         protected readonly DisposableCollection Disposables = new();
 
-        public Type Concrete { get; protected set; }
-        public Lifetime Lifetime { get; protected set; }
+        public Type ConcreteType { get; }
+        public Lifetime Lifetime { get; }
+
+        protected Resolver(Type concreteType, Lifetime lifetime)
+        {
+            ConcreteType = concreteType;
+            Lifetime = lifetime;
+        }
 
         public abstract object Resolve(Container container);
 
@@ -27,21 +32,23 @@ namespace Reflex.Resolvers
         {
             this.GetDebugProperties().Resolutions++;
         }
+        
+        [Conditional("REFLEX_DEBUG")]
+        protected void RegisterInstance(object instance)
+        {
+            this.GetDebugProperties().Instances.Add((instance, Diagnosis.GetCallSite(3)));
+        }
+        
+        [Conditional("REFLEX_DEBUG")]
+        protected void ClearInstances()
+        {
+            this.GetDebugProperties().Instances.Clear();
+        }
 
         [Conditional("REFLEX_DEBUG")]
         protected void RegisterCallSite()
         {
-            var stackTrace = new StackTrace(3, true);
-            var frames = stackTrace.GetFrames();
-
-            foreach (var frame in frames.Where(f => f.GetFileName() != null))
-            {
-                var methodName = frame.GetMethod()?.Name;
-                var className = frame.GetMethod()?.DeclaringType?.FullName;
-                var lineNumber = frame.GetFileLineNumber();
-                var filePath = UnityPathUtilities.GetUnityPath(frame.GetFileName());
-                this.GetDebugProperties().Callsite.Add(new CallSite(className, methodName, filePath, lineNumber));
-            }
+            this.GetDebugProperties().BindingCallsite.AddRange(Diagnosis.GetCallSite(4));
         }
     }
 }

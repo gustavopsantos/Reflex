@@ -23,5 +23,12 @@ namespace Reflex.Editor.DebuggingWindow
             Id = id;
             Depth = depth;
         }
+
+        public void SetParent(TreeElement parent)
+        {
+            Parent?.Children.Remove(this);
+            Parent = parent;
+            Parent?.Children.Add(this);
+        }
     }
 }

@@ -8,13 +8,12 @@ namespace Reflex.Resolvers
     {
         private object _value;
 
-        public TransientValueResolver(object value)
+        public TransientValueResolver(object value) : base(value.GetType(), Lifetime.Transient)
         {
             RegisterCallSite();
+            RegisterInstance(value);
             _value = value;
             Disposables.TryAdd(value);
-            Concrete = _value.GetType();
-            Lifetime = Lifetime.Transient;
         }
 
         public override object Resolve(Container container)
@@ -28,6 +27,7 @@ namespace Reflex.Resolvers
             
             var value = _value;
             _value = null;
+            ClearInstances();
             return value;
         }
     }

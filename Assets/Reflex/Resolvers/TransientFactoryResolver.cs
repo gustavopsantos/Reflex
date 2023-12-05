@@ -8,12 +8,10 @@ namespace Reflex.Resolvers
     {
         private readonly Func<Container, object> _factory;
 
-        public TransientFactoryResolver(Func<Container, object> factory, Type concrete)
+        public TransientFactoryResolver(Func<Container, object> factory, Type concrete) : base(concrete, Lifetime.Transient)
         {
             RegisterCallSite();
             _factory = factory;
-            Concrete = concrete;
-            Lifetime = Lifetime.Transient;
         }
 
         public override object Resolve(Container container)
@@ -21,6 +19,7 @@ namespace Reflex.Resolvers
             IncrementResolutions();
             var instance = _factory.Invoke(container);
             Disposables.TryAdd(instance);
+            RegisterInstance(instance);
             return instance;
         }
     }

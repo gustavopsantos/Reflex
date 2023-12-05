@@ -29,6 +29,7 @@ namespace Reflex.Core
             Build(out var disposables, out var resolversByContract, out var toStart);
             var container = new Container(_name, resolversByContract, disposables);
             container.SetParent(_parent);
+            RegisterBuildCallSite(container);
 
             // Clear references
             _name = null;
@@ -210,6 +211,12 @@ namespace Reflex.Core
                     throw new ContractDefinitionException(concrete, contract);
                 }
             }
+        }
+        
+        [Conditional("REFLEX_DEBUG")]
+        private static void RegisterBuildCallSite(Container container)
+        {
+            container.GetDebugProperties().BuildCallsite.AddRange(Diagnosis.GetCallSite(4));
         }
     }
 }

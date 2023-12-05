@@ -7,13 +7,12 @@ namespace Reflex.Resolvers
     {
         private readonly object _value;
 
-        public SingletonValueResolver(object value)
+        public SingletonValueResolver(object value) : base(value.GetType(), Lifetime.Singleton)
         {
             RegisterCallSite();
+            RegisterInstance(value);
             _value = value;
             Disposables.TryAdd(value);
-            Concrete = _value.GetType();
-            Lifetime = Lifetime.Singleton;
         }
 
         public override object Resolve(Container container)

@@ -9,12 +9,10 @@ namespace Reflex.Resolvers
         private readonly Func<Container, object> _factory;
         private object _instance;
 
-        public SingletonFactoryResolver(Func<Container, object> factory, Type concrete)
+        public SingletonFactoryResolver(Func<Container, object> factory, Type concrete) : base(concrete, Lifetime.Singleton)
         {
             RegisterCallSite();
             _factory = factory;
-            Concrete = concrete;
-            Lifetime = Lifetime.Singleton;
         }
         
         public override object Resolve(Container container)
@@ -25,6 +23,7 @@ namespace Reflex.Resolvers
             {
                 _instance = _factory.Invoke(container);
                 Disposables.TryAdd(_instance);
+                RegisterInstance(_instance);
             }
 
             return _instance;

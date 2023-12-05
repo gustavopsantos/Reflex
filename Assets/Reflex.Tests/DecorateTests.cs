@@ -26,14 +26,14 @@ namespace Reflex.Tests
                 };
             }
         }
-        
+
         public class DoubledNumber : INumber
         {
             private readonly INumber _number;
             public DoubledNumber(INumber number) => _number = number;
             public int Get() => _number.Get() * 2;
         }
-        
+
         public class HalvedNumber : INumber
         {
             private readonly INumber _number;
@@ -59,7 +59,7 @@ namespace Reflex.Tests
             {
             }
         }
-        
+
         [Test]
         public void Decorate_ShouldDecorateAllMatchingContracts()
         {
@@ -74,7 +74,7 @@ namespace Reflex.Tests
             numbers.Length.Should().Be(3);
             numbers.Should().BeEquivalentTo(new int[] {2, 4, 6});
         }
-        
+
         [Test]
         public void Decorate_ShouldBeAbleToNestDecorations()
         {
@@ -92,6 +92,22 @@ namespace Reflex.Tests
             var number = container.Single<INumber>();
             number.Get().Should().Be(80);
         }
+        
+        [Test]
+        public void Decorate_ShouldBeAbleToNestDecorations2()
+        {
+            var container = new ContainerDescriptor("")
+                .AddSingleton(Number.FromValue(10), typeof(INumber))
+                .AddDecorator(typeof(DoubledNumber), typeof(INumber))
+                .AddDecorator(typeof(DoubledNumber), typeof(INumber))
+                .AddSingleton(Number.FromValue(8), typeof(INumber))
+                .AddDecorator(typeof(HalvedNumber), typeof(INumber))
+                .AddDecorator(typeof(HalvedNumber), typeof(INumber))
+                .Build();
+
+            var numbers = container.All<INumber>();
+            numbers.Select(n => n.Get()).Should().BeEquivalentTo(new int[] {10, 2});
+        }
 
         [Test]
         public void DecoratedContract_ShouldReplaceOnlyDecoratedContract()
@@ -104,7 +120,7 @@ namespace Reflex.Tests
             container.Resolve<IManager>().GetType().Should().Be<BundleManager>();
             container.Resolve<IBundleManager>().GetType().Should().Be<ResilientBundleManager>();
         }
-        
+
         [Test]
         public void DecoratedSingleton_ShouldDecorateWithSingleton()
         {
@@ -122,7 +138,7 @@ namespace Reflex.Tests
 
             distinctInstances.Count.Should().Be(1);
         }
-        
+
         [Test]
         public void DecoratedTransient_ShouldDecorateWithTransient()
         {

@@ -5,6 +5,7 @@ namespace Reflex.Resolvers
     public class ResolverDebugProperties
     {
         public int Resolutions;
-        public List<CallSite> Callsite { get; } = new();
+        public List<(object, List<CallSite>)> Instances { get; } = new();
+        public List<CallSite> BindingCallsite { get; } = new();
     }
 }
