@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Reflex.Enums;
 using Reflex.Exceptions;
 using Reflex.Extensions;
 using Reflex.Generics;
-using Reflex.Injectors;
 using Reflex.Resolvers;
 
 namespace Reflex.Core
@@ -118,40 +116,6 @@ namespace Reflex.Core
             return AddTransient(factory, typeof(T));
         }
 
-        public ContainerDescriptor AddDecorator(Type concrete, Type contract)
-        {
-            var count = _descriptors.Count;
-
-            for (int i = 0; i < count; i++)
-            {
-                var descriptor = _descriptors[i];
-
-                if (!descriptor.Contracts.Contains(contract))
-                {
-                    continue;
-                }
-
-                var decoratedContract = new DecoratedType(contract);
-
-                object Factory(Container container)
-                {
-                    var dependency = container.Resolve(decoratedContract);
-                    return ConstructorInjector.Construct(concrete, new[] {dependency});
-                }
-
-                var resolver = descriptor.Resolver.Lifetime == Lifetime.Singleton
-                    ? (Resolver) new SingletonFactoryResolver(Factory, concrete)
-                    : (Resolver) new TransientFactoryResolver(Factory, concrete);
-                
-                AddWithoutValidation(new[] {contract}, resolver);
-
-                var originalDescriptorNewContracts = descriptor.Contracts.Except(new[] {contract}).Concat(new[] {decoratedContract}).ToArray();
-                _descriptors[i] = new ResolverDescriptor(descriptor.Resolver, originalDescriptorNewContracts);
-            }
-
-            return this;
-        }
-
         private void Build(out DisposableCollection disposables, out Dictionary<Type, List<Resolver>> resolversByContract, out IEnumerable<Resolver> toStart)
         {
             disposables = new DisposableCollection();
@@ -189,13 +153,6 @@ namespace Reflex.Core
         private ContainerDescriptor Add(Type concrete, Type[] contracts, Resolver resolver)
         {
             ValidateContracts(concrete, contracts);
-            var resolverDescriptor = new ResolverDescriptor(resolver, contracts);
-            _descriptors.Add(resolverDescriptor);
-            return this;
-        }
-
-        private ContainerDescriptor AddWithoutValidation(Type[] contracts, Resolver resolver)
-        {
             var resolverDescriptor = new ResolverDescriptor(resolver, contracts);
             _descriptors.Add(resolverDescriptor);
             return this;
