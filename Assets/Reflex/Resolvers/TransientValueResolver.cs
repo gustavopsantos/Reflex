@@ -8,7 +8,7 @@ namespace Reflex.Resolvers
     {
         private object _value;
 
-        public TransientValueResolver(object value) : base(value.GetType(), Lifetime.Transient)
+        public TransientValueResolver(object value) : base(Lifetime.Transient)
         {
             RegisterCallSite();
             RegisterInstance(value);

@@ -9,7 +9,7 @@ namespace Reflex.Resolvers
         private readonly Func<Container, object> _factory;
         private object _instance;
 
-        public SingletonFactoryResolver(Func<Container, object> factory, Type concrete) : base(concrete, Lifetime.Singleton)
+        public SingletonFactoryResolver(Func<Container, object> factory) : base(Lifetime.Singleton)
         {
             RegisterCallSite();
             _factory = factory;

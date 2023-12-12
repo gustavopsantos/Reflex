@@ -7,7 +7,7 @@ namespace Reflex.Resolvers
     {
         private readonly object _value;
 
-        public SingletonValueResolver(object value) : base(value.GetType(), Lifetime.Singleton)
+        public SingletonValueResolver(object value) : base(Lifetime.Singleton)
         {
             RegisterCallSite();
             RegisterInstance(value);

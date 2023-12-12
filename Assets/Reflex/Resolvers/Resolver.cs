@@ -11,12 +11,10 @@ namespace Reflex.Resolvers
     {
         protected readonly DisposableCollection Disposables = new();
 
-        public Type ConcreteType { get; }
         public Lifetime Lifetime { get; }
 
-        protected Resolver(Type concreteType, Lifetime lifetime)
+        protected Resolver(Lifetime lifetime)
         {
-            ConcreteType = concreteType;
             Lifetime = lifetime;
         }
 

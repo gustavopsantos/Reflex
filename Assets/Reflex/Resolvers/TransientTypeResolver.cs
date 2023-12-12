@@ -6,15 +6,18 @@ namespace Reflex.Resolvers
 {
     internal sealed class TransientTypeResolver : Resolver
     {
-        public TransientTypeResolver(Type concrete) : base(concrete, Lifetime.Transient)
+        private readonly Type _concreteType;
+
+        public TransientTypeResolver(Type concreteType) : base(Lifetime.Transient)
         {
             RegisterCallSite();
+            _concreteType = concreteType;
         }
 
         public override object Resolve(Container container)
         {
             IncrementResolutions();
-            var instance = container.Construct(ConcreteType);
+            var instance = container.Construct(_concreteType);
             Disposables.TryAdd(instance);
             RegisterInstance(instance);
             return instance;

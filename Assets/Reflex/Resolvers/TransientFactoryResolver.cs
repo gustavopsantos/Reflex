@@ -8,7 +8,7 @@ namespace Reflex.Resolvers
     {
         private readonly Func<Container, object> _factory;
 
-        public TransientFactoryResolver(Func<Container, object> factory, Type concrete) : base(concrete, Lifetime.Transient)
+        public TransientFactoryResolver(Func<Container, object> factory) : base(Lifetime.Transient)
         {
             RegisterCallSite();
             _factory = factory;

@@ -7,10 +7,12 @@ namespace Reflex.Resolvers
     internal sealed class SingletonTypeResolver : Resolver
     {
         private object _instance;
+        private readonly Type _concreteType;
 
-        public SingletonTypeResolver(Type concrete) : base(concrete, Lifetime.Singleton)
+        public SingletonTypeResolver(Type concreteType) : base(Lifetime.Singleton)
         {
             RegisterCallSite();
+            _concreteType = concreteType;
         }
 
         public override object Resolve(Container container)
@@ -19,7 +21,7 @@ namespace Reflex.Resolvers
 
             if (_instance == null)
             {
-                _instance = container.Construct(ConcreteType);
+                _instance = container.Construct(_concreteType);
                 Disposables.TryAdd(_instance);
                 RegisterInstance(_instance);
             }
