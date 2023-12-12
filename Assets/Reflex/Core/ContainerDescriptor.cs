@@ -27,7 +27,7 @@ namespace Reflex.Core
             Build(out var disposables, out var resolversByContract, out var toStart);
             var container = new Container(_name, resolversByContract, disposables);
             container.SetParent(_parent);
-            RegisterBuildCallSite(container);
+            Diagnosis.RegisterBuildCallSite(container);
 
             // Clear references
             _name = null;
@@ -89,7 +89,7 @@ namespace Reflex.Core
         {
             return AddTransient(concrete, concrete);
         }
-        
+
         public ContainerDescriptor AddTransient(object instance, params Type[] contracts)
         {
             return Add(instance.GetType(), contracts, new TransientValueResolver(instance));
@@ -116,10 +116,10 @@ namespace Reflex.Core
             return AddTransient(factory, typeof(T));
         }
 
-        private void Build(out DisposableCollection disposables, out Dictionary<Type, List<Resolver>> resolversByContract, out IEnumerable<Resolver> toStart)
+        private void Build(out DisposableCollection disposables, out Dictionary<Type, List<IResolver>> resolversByContract, out IEnumerable<IResolver> toStart)
         {
             disposables = new DisposableCollection();
-            resolversByContract = new Dictionary<Type, List<Resolver>>();
+            resolversByContract = new Dictionary<Type, List<IResolver>>();
 
             // Copy Inherited Resolvers
             if (_parent != null)
@@ -137,7 +137,7 @@ namespace Reflex.Core
 
                 foreach (var contract in descriptor.Contracts)
                 {
-                    resolversByContract.GetOrAdd(contract, _ => new List<Resolver>()).Add(descriptor.Resolver);
+                    resolversByContract.GetOrAdd(contract, _ => new List<IResolver>()).Add(descriptor.Resolver);
                 }
             }
 
@@ -150,7 +150,7 @@ namespace Reflex.Core
             return _descriptors.Any(descriptor => descriptor.Contracts.Contains(type));
         }
 
-        private ContainerDescriptor Add(Type concrete, Type[] contracts, Resolver resolver)
+        private ContainerDescriptor Add(Type concrete, Type[] contracts, IResolver resolver)
         {
             ValidateContracts(concrete, contracts);
             var resolverDescriptor = new ResolverDescriptor(resolver, contracts);
@@ -168,12 +168,6 @@ namespace Reflex.Core
                     throw new ContractDefinitionException(concrete, contract);
                 }
             }
-        }
-        
-        [Conditional("REFLEX_DEBUG")]
-        private static void RegisterBuildCallSite(Container container)
-        {
-            container.GetDebugProperties().BuildCallsite.AddRange(Diagnosis.GetCallSite(4));
         }
     }
 }

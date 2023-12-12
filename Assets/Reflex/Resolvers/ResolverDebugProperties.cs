@@ -2,7 +2,7 @@
 
 namespace Reflex.Resolvers
 {
-    public class ResolverDebugProperties
+    public sealed class ResolverDebugProperties
     {
         public int Resolutions;
         public List<(object, List<CallSite>)> Instances { get; } = new();

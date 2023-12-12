@@ -1,26 +1,34 @@
 using System;
 using Reflex.Core;
 using Reflex.Enums;
+using Reflex.Generics;
 
 namespace Reflex.Resolvers
 {
-    internal sealed class TransientTypeResolver : Resolver
+    internal sealed class TransientTypeResolver : IResolver
     {
         private readonly Type _concreteType;
+        private readonly DisposableCollection _disposables = new();
+        public Lifetime Lifetime => Lifetime.Transient;
 
-        public TransientTypeResolver(Type concreteType) : base(Lifetime.Transient)
+        public TransientTypeResolver(Type concreteType)
         {
-            RegisterCallSite();
+            Diagnosis.RegisterCallSite(this);
             _concreteType = concreteType;
         }
 
-        public override object Resolve(Container container)
+        public object Resolve(Container container)
         {
-            IncrementResolutions();
+            Diagnosis.IncrementResolutions(this);
             var instance = container.Construct(_concreteType);
-            Disposables.TryAdd(instance);
-            RegisterInstance(instance);
+            _disposables.TryAdd(instance);
+            Diagnosis.RegisterInstance(this, instance);
             return instance;
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
     }
 }

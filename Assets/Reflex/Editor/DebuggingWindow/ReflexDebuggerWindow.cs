@@ -98,13 +98,13 @@ namespace Reflex.Editor.DebuggingWindow
             }
         }
 
-        private static List<(Resolver, Type[])> BuildMatrix(Container container)
+        private static List<(IResolver, Type[])> BuildMatrix(Container container)
         {
             var resolvers = container.ResolversByContract.Values.SelectMany(r => r).Distinct();
             return resolvers.Select(resolver => (resolver, GetContracts(resolver, container))).ToList();
         }
         
-        private static Type[] GetContracts(Resolver resolver, Container container)
+        private static Type[] GetContracts(IResolver resolver, Container container)
         {
             var result = new List<Type>();
 

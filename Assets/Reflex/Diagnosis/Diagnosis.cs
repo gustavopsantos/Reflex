@@ -1,13 +1,46 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Reflex.Core;
+using Reflex.Extensions;
+using Reflex.Resolvers;
 using UnityEngine;
 
 namespace Reflex
 {
     internal static class Diagnosis
     {
-        public static List<CallSite> GetCallSite(int skipFrames)
+        [Conditional("REFLEX_DEBUG")]
+        internal static void IncrementResolutions(IResolver resolver)
+        {
+            resolver.GetDebugProperties().Resolutions++;
+        }
+        
+        [Conditional("REFLEX_DEBUG")]
+        internal static void RegisterInstance(IResolver resolver, object instance)
+        {
+            resolver.GetDebugProperties().Instances.Add((instance, GetCallSite(3)));
+        }
+        
+        [Conditional("REFLEX_DEBUG")]
+        internal static void ClearInstances(IResolver resolver)
+        {
+            resolver.GetDebugProperties().Instances.Clear();
+        }
+
+        [Conditional("REFLEX_DEBUG")]
+        internal static void RegisterCallSite(IResolver resolver)
+        {
+            resolver.GetDebugProperties().BindingCallsite.AddRange(GetCallSite(4));
+        }
+        
+        [Conditional("REFLEX_DEBUG")]
+        internal static void RegisterBuildCallSite(Container container)
+        {
+            container.GetDebugProperties().BuildCallsite.AddRange(GetCallSite(4));
+        }
+        
+        private static List<CallSite> GetCallSite(int skipFrames)
         {
             var result = new List<CallSite>();
             var stackTrace = new StackTrace(skipFrames, true);

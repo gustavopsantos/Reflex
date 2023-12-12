@@ -18,9 +18,9 @@ namespace Reflex.Core
         public string Name { get; }
         internal Container Parent { get; private set; }
         internal List<Container> Children { get; } = new();
-        internal Dictionary<Type, List<Resolver>> ResolversByContract { get; }
+        internal Dictionary<Type, List<IResolver>> ResolversByContract { get; }
         
-        internal Container(string name, Dictionary<Type, List<Resolver>> resolversByContract, DisposableCollection disposables)
+        internal Container(string name, Dictionary<Type, List<IResolver>> resolversByContract, DisposableCollection disposables)
         {
             Name = name;
             ResolversByContract = resolversByContract;
@@ -112,7 +112,7 @@ namespace Reflex.Core
                 : Enumerable.Empty<TContract>();
         }
 
-        private IEnumerable<Resolver> GetResolvers(Type contract)
+        private IEnumerable<IResolver> GetResolvers(Type contract)
         {
             if (ResolversByContract.TryGetValue(contract, out var resolvers))
             {
@@ -124,7 +124,7 @@ namespace Reflex.Core
         
         private void OverrideSelfInjection()
         {
-            ResolversByContract[typeof(Container)] = new List<Resolver> { new SingletonValueResolver(this) };
+            ResolversByContract[typeof(Container)] = new List<IResolver> { new SingletonValueResolver(this) };
         }
 
         internal void SetParent([CanBeNull] Container parent)
