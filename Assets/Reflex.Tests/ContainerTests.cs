@@ -259,112 +259,6 @@ namespace Reflex.Tests
             container.All<IDisposable>().Should().BeEmpty();
         }
         
-        public class StartableSingleton : IStartable
-        {
-            public static Action OnConstructed;
-            public static Action OnStarted;
-
-            public StartableSingleton()
-            {
-                OnConstructed?.Invoke();
-            }
-            
-            public bool WasStarted { get; private set; }
-            
-            public void Start()
-            {
-                WasStarted = true;
-                OnStarted?.Invoke();
-            }
-        }
-        
-        [Test]
-        public void NonStartableSingletonFromType_ShouldNotBeConstructedAfterContainerBuild()
-        {
-            var callbackAssertion = new CallbackAssertion();
-            StartableSingleton.OnConstructed = callbackAssertion;
-            
-            var container = new ContainerDescriptor("")
-                .AddSingleton(typeof(StartableSingleton))
-                .Build();
-            
-            callbackAssertion.ShouldNotHaveBeenCalled();
-        }
-        
-        [Test]
-        public void StartableSingletonFromType_ShouldBeConstructedAfterContainerBuild()
-        {
-            var callbackAssertion = new CallbackAssertion();
-            StartableSingleton.OnConstructed = callbackAssertion;
-            
-            var container = new ContainerDescriptor("")
-                .AddSingleton(typeof(StartableSingleton), typeof(IStartable))
-                .Build();
-            
-            callbackAssertion.ShouldHaveBeenCalledOnce();
-        }
-        
-        [Test]
-        public void StartableSingletonFromType_ShouldBeStartedAfterContainerBuild()
-        {
-            var container = new ContainerDescriptor("")
-                .AddSingleton(typeof(StartableSingleton), typeof(StartableSingleton), typeof(IStartable))
-                .Build();
-            
-            var startable = container.Single<StartableSingleton>().WasStarted.Should().BeTrue();
-        }
-        
-        [Test]
-        public void NonStartableSingletonFromFactory_ShouldNotBeConstructedAfterContainerBuild()
-        {
-            StartableSingleton Factory(Container container)
-            {
-                return new StartableSingleton();
-            }
-            
-            var callbackAssertion = new CallbackAssertion();
-            StartableSingleton.OnConstructed = callbackAssertion;
-            
-            var container = new ContainerDescriptor("")
-                .AddSingleton(Factory)
-                .Build();
-            
-            callbackAssertion.ShouldNotHaveBeenCalled();
-        }
-        
-        [Test]
-        public void StartableSingletonFromFactory_ShouldBeConstructedAfterContainerBuild()
-        {
-            StartableSingleton Factory(Container container)
-            {
-                return new StartableSingleton();
-            }
-            
-            var callbackAssertion = new CallbackAssertion();
-            StartableSingleton.OnConstructed = callbackAssertion;
-            
-            var container = new ContainerDescriptor("")
-                .AddSingleton(Factory, typeof(IStartable))
-                .Build();
-            
-            callbackAssertion.ShouldHaveBeenCalledOnce();
-        }
-        
-        [Test]
-        public void StartableSingletonFromFactory_ShouldBeStartedAfterContainerBuild()
-        {
-            StartableSingleton Factory(Container container)
-            {
-                return new StartableSingleton();
-            }
-            
-            var container = new ContainerDescriptor("")
-                .AddSingleton(Factory, typeof(StartableSingleton), typeof(IStartable))
-                .Build();
-            
-            var startable = container.Single<StartableSingleton>().WasStarted.Should().BeTrue();
-        }
-        
         [Test]
         public void All_OnParentShouldNotBeAffectedByScoped()
         {
@@ -386,21 +280,6 @@ namespace Reflex.Tests
         {
             var container = new ContainerDescriptor("").AddSingleton(42).Build();
             container.HasBinding<int>().Should().BeTrue();
-        }
-        
-        [Test]
-        public void IStartable_Start_ShouldNotBeInvokedAgainAfterScoping()
-        {
-            var callbackAssertion = new CallbackAssertion();
-            StartableSingleton.OnStarted = callbackAssertion;
-            
-            var container = new ContainerDescriptor("")
-                .AddSingleton(typeof(StartableSingleton), typeof(IStartable))
-                .Build();
-            
-            var scoped = container.Scope("");
-            
-            callbackAssertion.ShouldHaveBeenCalledOnce();
         }
     }
 }
