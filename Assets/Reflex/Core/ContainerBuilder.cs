@@ -16,11 +16,6 @@ namespace Reflex.Core
         public Container Parent { get; private set; }
         public event Action<Container> OnContainerBuilt;
 
-        public ContainerBuilder(Container parent = null)
-        {
-            Parent = parent;
-        }
-
         public Container Build()
         {
             Build(out var disposables, out var resolversByContract);
@@ -40,6 +35,12 @@ namespace Reflex.Core
         public ContainerBuilder SetName(string name)
         {
             Name = name;
+            return this;
+        }
+        
+        public ContainerBuilder SetParent(Container parent)
+        {
+            Parent = parent;
             return this;
         }
 

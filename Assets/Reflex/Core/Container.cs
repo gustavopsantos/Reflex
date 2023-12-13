@@ -53,7 +53,7 @@ namespace Reflex.Core
 
         public Container Scope(Action<ContainerBuilder> extend = null)
         {
-            var builder = new ContainerBuilder(this);
+            var builder = new ContainerBuilder().SetParent(this);
             extend?.Invoke(builder);
             return builder.Build();
         }
