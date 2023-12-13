@@ -11,26 +11,26 @@ namespace Reflex.Core
 {
     public class ContainerBuilder
     {
-        private Container _parent;
         private List<ResolverDescriptor> _descriptors = new();
         public string Name { get; private set; }
+        public Container Parent { get; private set; }
         public event Action<Container> OnContainerBuilt;
 
         public ContainerBuilder(Container parent = null)
         {
-            _parent = parent;
+            Parent = parent;
         }
 
         public Container Build()
         {
             Build(out var disposables, out var resolversByContract);
             var container = new Container(Name, resolversByContract, disposables);
-            container.SetParent(_parent);
+            container.SetParent(Parent);
             Diagnosis.RegisterBuildCallSite(container);
 
             // Clear references
             Name = null;
-            _parent = null;
+            Parent = null;
             _descriptors = null;
 
             OnContainerBuilt?.Invoke(container);
@@ -121,9 +121,9 @@ namespace Reflex.Core
             resolversByContract = new Dictionary<Type, List<IResolver>>();
 
             // Copy Inherited Resolvers
-            if (_parent != null)
+            if (Parent != null)
             {
-                foreach (var kvp in _parent.ResolversByContract)
+                foreach (var kvp in Parent.ResolversByContract)
                 {
                     resolversByContract[kvp.Key] = kvp.Value.ToList();
                 }
