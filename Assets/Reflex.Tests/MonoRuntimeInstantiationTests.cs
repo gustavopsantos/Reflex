@@ -36,7 +36,7 @@ namespace Reflex.Tests
         [UnityTest]
         public IEnumerator ExecutionOrderOfRuntimeInstantiatedMonoBehaviours_ShouldBe_AwakeInjectStart()
         {
-            using (var container = new ContainerDescriptor("").Build())
+            using (var container = new ContainerBuilder("").Build())
             {
                 var prefab = new GameObject("Prefab").AddComponent<MonoEventHook>();
                 var instance = container.Instantiate(prefab);

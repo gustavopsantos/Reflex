@@ -16,7 +16,7 @@ namespace Reflex.Injectors
 {
     internal static class UnityInjector
     {
-        internal static Dictionary<Scene, Action<ContainerDescriptor>> ScenePreInstaller { get; } = new();
+        internal static Dictionary<Scene, Action<ContainerBuilder>> ScenePreInstaller { get; } = new();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeAwakeOfFirstSceneOnly()
@@ -68,7 +68,7 @@ namespace Reflex.Injectors
 
         private static Container CreateProjectContainer()
         {
-            var builder = new ContainerDescriptor("ProjectContainer");
+            var builder = new ContainerBuilder("ProjectContainer");
             
             if (ResourcesUtilities.TryLoad<ProjectScope>(nameof(ProjectScope), out var projectScope))
             {

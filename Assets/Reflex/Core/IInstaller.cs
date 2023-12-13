@@ -2,6 +2,6 @@
 {
     public interface IInstaller
     {
-        void InstallBindings(ContainerDescriptor descriptor);
+        void InstallBindings(ContainerBuilder containerBuilder);
     }
 }

@@ -8,7 +8,7 @@ namespace Reflex.Core
     public static class ReflexSceneManager
     {
         [PublicAPI]
-        public static void PreInstallScene(Scene scene, Action<ContainerDescriptor> builder)
+        public static void PreInstallScene(Scene scene, Action<ContainerBuilder> builder)
         {
             UnityInjector.ScenePreInstaller.Add(scene, builder);
         }

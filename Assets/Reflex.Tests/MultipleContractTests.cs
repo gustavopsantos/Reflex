@@ -30,7 +30,7 @@ namespace Reflex.Tests
         [Test]
         public void SingletonWithMultipleContractsCanBeResolved()
         {
-            var container = new ContainerDescriptor("")
+            var container = new ContainerBuilder("")
                 .AddSingleton(typeof(BundleManager), typeof(IBundleManager), typeof(IManager))
                 .AddSingleton(typeof(PrefabManager), typeof(IPrefabManager), typeof(IManager))
                 .Build();

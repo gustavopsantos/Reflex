@@ -37,7 +37,7 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_CanResolveDependency_FromParentContainer()
         {
-            using (var outer = new ContainerDescriptor("").AddSingleton(42, typeof(int)).Build())
+            using (var outer = new ContainerBuilder("").AddSingleton(42, typeof(int)).Build())
             {
                 using (var inner = outer.Scope(""))
                 {
@@ -49,7 +49,7 @@ namespace Reflex.Tests
         [Test]
         public void ParentWithScopedContainer_ParentShouldNotBeAbleToResolveDependencyFromChild()
         {
-            var outer = new ContainerDescriptor("").Build();
+            var outer = new ContainerBuilder("").Build();
             var inner = outer.Scope("", builder => builder.AddSingleton(42, typeof(int)));
             Action resolve = () => outer.Single<int>();
             resolve.Should().ThrowExactly<UnknownContractException>();
@@ -58,7 +58,7 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_WhenDisposed_ShouldNotDisposeDependencyFromParentContainer()
         {
-            using (var outer = new ContainerDescriptor("").AddSingleton(typeof(Disposable), typeof(Disposable)).Build())
+            using (var outer = new ContainerBuilder("").AddSingleton(typeof(Disposable), typeof(Disposable)).Build())
             {
                 using (var inner = outer.Scope(""))
                 {
@@ -73,7 +73,7 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_Scoped_ShouldParentAsParent()
         {
-            using (var outer = new ContainerDescriptor("").Build())
+            using (var outer = new ContainerBuilder("").Build())
             {
                 using (var inner = outer.Scope(""))
                 {
@@ -85,7 +85,7 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_Parent_ShouldHaveScopedAsChild()
         {
-            using (var outer = new ContainerDescriptor("").Build())
+            using (var outer = new ContainerBuilder("").Build())
             {
                 using (var inner = outer.Scope(""))
                 {
@@ -97,7 +97,7 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_AfterParentDisposal_ShouldBeUnParented()
         {
-            var outer = new ContainerDescriptor("").Build();
+            var outer = new ContainerBuilder("").Build();
             var inner = outer.Scope("");
 
             inner.Parent.Should().Be(outer);
@@ -112,7 +112,7 @@ namespace Reflex.Tests
         {
             var disposalOrder = new List<string>();
 
-            var a = new ContainerDescriptor("")
+            var a = new ContainerBuilder("")
                 .AddSingleton(new DisposeHook(() => { disposalOrder.Add("a"); }))
                 .Build();
 
@@ -131,7 +131,7 @@ namespace Reflex.Tests
         {
             var disposalOrder = new List<string>();
 
-            var a = new ContainerDescriptor("")
+            var a = new ContainerBuilder("")
                 .AddSingleton(new DisposeHook(() => { disposalOrder.Add("a"); }))
                 .Build();
 
@@ -145,7 +145,7 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_ResolvingContainerFromInnerScope_ShouldResolveInner()
         {
-            using (var outer = new ContainerDescriptor("").Build())
+            using (var outer = new ContainerBuilder("").Build())
             {
                 using (var inner = outer.Scope(""))
                 {
@@ -157,7 +157,7 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_ResolvingContainerFromOuterScope_ShouldResolveOuter()
         {
-            using var outer = new ContainerDescriptor("").Build();
+            using var outer = new ContainerBuilder("").Build();
             using var inner = outer.Scope(""); 
             var temp = inner.Single<Container>();
             outer.Single<Container>().Should().Be(outer);

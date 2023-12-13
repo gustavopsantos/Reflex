@@ -9,14 +9,14 @@ using Reflex.Resolvers;
 
 namespace Reflex.Core
 {
-    public class ContainerDescriptor
+    public class ContainerBuilder
     {
         private string _name;
         private Container _parent;
         private List<ResolverDescriptor> _descriptors = new();
         public event Action<Container> OnContainerBuilt;
 
-        public ContainerDescriptor(string name, Container parent = null)
+        public ContainerBuilder(string name, Container parent = null)
         {
             _name = name;
             _parent = parent;
@@ -38,27 +38,27 @@ namespace Reflex.Core
             return container;
         }
 
-        public ContainerDescriptor AddSingleton(Type concrete, params Type[] contracts)
+        public ContainerBuilder AddSingleton(Type concrete, params Type[] contracts)
         {
             return Add(concrete, contracts, new SingletonTypeResolver(concrete));
         }
 
-        public ContainerDescriptor AddSingleton(Type concrete)
+        public ContainerBuilder AddSingleton(Type concrete)
         {
             return AddSingleton(concrete, concrete);
         }
 
-        public ContainerDescriptor AddSingleton(object instance, params Type[] contracts)
+        public ContainerBuilder AddSingleton(object instance, params Type[] contracts)
         {
             return Add(instance.GetType(), contracts, new SingletonValueResolver(instance));
         }
 
-        public ContainerDescriptor AddSingleton(object instance)
+        public ContainerBuilder AddSingleton(object instance)
         {
             return AddSingleton(instance, instance.GetType());
         }
 
-        public ContainerDescriptor AddSingleton<T>(Func<Container, T> factory, params Type[] contracts)
+        public ContainerBuilder AddSingleton<T>(Func<Container, T> factory, params Type[] contracts)
         {
             var resolver = new SingletonFactoryResolver(Proxy);
             return Add(typeof(T), contracts, resolver);
@@ -69,32 +69,32 @@ namespace Reflex.Core
             }
         }
 
-        public ContainerDescriptor AddSingleton<T>(Func<Container, T> factory)
+        public ContainerBuilder AddSingleton<T>(Func<Container, T> factory)
         {
             return AddSingleton(factory, typeof(T));
         }
 
-        public ContainerDescriptor AddTransient(Type concrete, params Type[] contracts)
+        public ContainerBuilder AddTransient(Type concrete, params Type[] contracts)
         {
             return Add(concrete, contracts, new TransientTypeResolver(concrete));
         }
 
-        public ContainerDescriptor AddTransient(Type concrete)
+        public ContainerBuilder AddTransient(Type concrete)
         {
             return AddTransient(concrete, concrete);
         }
 
-        public ContainerDescriptor AddTransient(object instance, params Type[] contracts)
+        public ContainerBuilder AddTransient(object instance, params Type[] contracts)
         {
             return Add(instance.GetType(), contracts, new TransientValueResolver(instance));
         }
 
-        public ContainerDescriptor AddTransient(object instance)
+        public ContainerBuilder AddTransient(object instance)
         {
             return AddTransient(instance, instance.GetType());
         }
 
-        public ContainerDescriptor AddTransient<T>(Func<Container, T> factory, params Type[] contracts)
+        public ContainerBuilder AddTransient<T>(Func<Container, T> factory, params Type[] contracts)
         {
             var resolver = new TransientFactoryResolver(Proxy);
             return Add(typeof(T), contracts, resolver);
@@ -105,7 +105,7 @@ namespace Reflex.Core
             }
         }
 
-        public ContainerDescriptor AddTransient<T>(Func<Container, T> factory)
+        public ContainerBuilder AddTransient<T>(Func<Container, T> factory)
         {
             return AddTransient(factory, typeof(T));
         }
@@ -141,7 +141,7 @@ namespace Reflex.Core
             return _descriptors.Any(descriptor => descriptor.Contracts.Contains(type));
         }
 
-        private ContainerDescriptor Add(Type concrete, Type[] contracts, IResolver resolver)
+        private ContainerBuilder Add(Type concrete, Type[] contracts, IResolver resolver)
         {
             ValidateContracts(concrete, contracts);
             var resolverDescriptor = new ResolverDescriptor(resolver, contracts);

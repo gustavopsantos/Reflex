@@ -9,18 +9,18 @@ namespace Reflex.Sample.Infrastructure
         [SerializeField] private PickupSoundEffect _pickupSoundEffectPrefab;
         [SerializeField] private CollectorConfigurationModel _collectorConfigurationModel;
 
-        public void InstallBindings(ContainerDescriptor descriptor)
+        public void InstallBindings(ContainerBuilder containerBuilder)
         {
-            InstallInput(descriptor, useMouse: false);
-            descriptor.AddSingleton(_pickupSoundEffectPrefab);
-            descriptor.AddSingleton(_collectorConfigurationModel);
-            descriptor.AddSingleton(typeof(CollectionStoragePrefs), typeof(ICollectionStorage));
+            InstallInput(containerBuilder, useMouse: false);
+            containerBuilder.AddSingleton(_pickupSoundEffectPrefab);
+            containerBuilder.AddSingleton(_collectorConfigurationModel);
+            containerBuilder.AddSingleton(typeof(CollectionStoragePrefs), typeof(ICollectionStorage));
         }
 
-        private static void InstallInput(ContainerDescriptor descriptor, bool useMouse)
+        private static void InstallInput(ContainerBuilder containerBuilder, bool useMouse)
         {
             var implementation = useMouse ? typeof(CollectorInputMouse) : typeof(CollectorInputKeyboard);
-            descriptor.AddSingleton(implementation, typeof(ICollectorInput));
+            containerBuilder.AddSingleton(implementation, typeof(ICollectorInput));
         }
     }
 }

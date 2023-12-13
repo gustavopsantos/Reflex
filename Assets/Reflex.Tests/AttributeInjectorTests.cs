@@ -24,7 +24,7 @@ namespace Reflex.Tests
         [Test]
         public void AddSingleton_ShouldRunAttributeInjectionOnFieldsPropertiesAndMethodsMarkedWithInjectAttribute()
         {
-            var container = new ContainerDescriptor("")
+            var container = new ContainerBuilder("")
                 .AddSingleton(42, typeof(int))
                 .AddSingleton(typeof(Foo), typeof(Foo))
                 .Build();
@@ -38,7 +38,7 @@ namespace Reflex.Tests
         [Test]
         public void AddTransient_ShouldRunAttributeInjectionOnFieldsPropertiesAndMethodsMarkedWithInjectAttribute()
         {
-            var container = new ContainerDescriptor("")
+            var container = new ContainerBuilder("")
                 .AddSingleton(42, typeof(int))
                 .AddTransient(typeof(Foo), typeof(Foo))
                 .Build();
