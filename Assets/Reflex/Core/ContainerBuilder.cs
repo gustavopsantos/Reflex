@@ -11,7 +11,7 @@ namespace Reflex.Core
 {
     public class ContainerBuilder
     {
-        private readonly List<ResolverDescriptor> _descriptors = new();
+        private readonly List<BindingDescriptor> _descriptors = new();
         public string Name { get; private set; }
         public Container Parent { get; private set; }
         public event Action<Container> OnContainerBuilt;
@@ -140,7 +140,7 @@ namespace Reflex.Core
         private ContainerBuilder Add(Type concrete, Type[] contracts, IResolver resolver)
         {
             ValidateContracts(concrete, contracts);
-            var resolverDescriptor = new ResolverDescriptor(resolver, contracts);
+            var resolverDescriptor = new BindingDescriptor(resolver, contracts);
             _descriptors.Add(resolverDescriptor);
             return this;
         }
