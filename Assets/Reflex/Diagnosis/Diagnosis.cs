@@ -31,7 +31,7 @@ namespace Reflex
         [Conditional("REFLEX_DEBUG")]
         internal static void RegisterCallSite(IResolver resolver)
         {
-            resolver.GetDebugProperties().BindingCallsite.AddRange(GetCallSite(4));
+            resolver.GetDebugProperties().BindingCallsite.AddRange(GetCallSite(2));
         }
         
         [Conditional("REFLEX_DEBUG")]
