@@ -11,7 +11,7 @@ namespace Reflex.Core
 {
     public class ContainerBuilder
     {
-        private List<ResolverDescriptor> _descriptors = new();
+        private readonly List<ResolverDescriptor> _descriptors = new();
         public string Name { get; private set; }
         public Container Parent { get; private set; }
         public event Action<Container> OnContainerBuilt;
@@ -44,11 +44,6 @@ namespace Reflex.Core
             var container = new Container(Name, resolversByContract, disposables);
             container.SetParent(Parent);
             Diagnosis.RegisterBuildCallSite(container);
-
-            // Clear references
-            Name = null;
-            Parent = null;
-            _descriptors = null;
 
             OnContainerBuilt?.Invoke(container);
             return container;

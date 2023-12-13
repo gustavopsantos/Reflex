@@ -35,10 +35,10 @@ namespace Reflex.Tests
         {
             AssertIncrementalGarbageCollectionIsDisabled();
             var references = new List<WeakReference>();
-            var container = new ContainerBuilder().AddSingleton(typeof(Service), typeof(Service)).Build();
             
             void Act()
             {
+                var container = new ContainerBuilder().AddSingleton(typeof(Service), typeof(Service)).Build();
                 var service = container.Single<Service>();
                 references.Add(new WeakReference(service));
                 container.Dispose();
