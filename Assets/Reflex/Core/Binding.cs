@@ -1,4 +1,5 @@
 ﻿using System;
+using Reflex.Exceptions;
 using Reflex.Resolvers;
 
 namespace Reflex.Core
@@ -8,10 +9,32 @@ namespace Reflex.Core
         public IResolver Resolver { get; }
         public Type[] Contracts { get; }
 
-        public Binding(IResolver resolver, Type[] contracts)
+        private Binding()
+        {
+        }
+
+        private Binding(IResolver resolver, Type[] contracts)
         {
             Resolver = resolver;
             Contracts = contracts;
+        }
+
+        public static Binding Validated(IResolver resolver, Type concrete, params Type[] contracts)
+        {
+            foreach (var contract in contracts)
+            {
+                if (!contract.IsAssignableFrom(concrete))
+                {
+                    throw new ContractDefinitionException(concrete, contract);
+                }
+            }
+
+            return new Binding(resolver, contracts);
+        }
+
+        public static Binding Unvalidated(IResolver resolver, params Type[] contracts)
+        {
+            return new Binding(resolver, contracts);
         }
     }
 }

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Reflex.Exceptions;
 using Reflex.Extensions;
 using Reflex.Generics;
 using Reflex.Resolvers;
@@ -139,22 +137,9 @@ namespace Reflex.Core
 
         private ContainerBuilder Add(Type concrete, Type[] contracts, IResolver resolver)
         {
-            ValidateContracts(concrete, contracts);
-            var binding = new Binding(resolver, contracts);
+            var binding = Binding.Validated(resolver, concrete, contracts);
             _bindings.Add(binding);
             return this;
-        }
-
-        [Conditional("UNITY_EDITOR")]
-        private static void ValidateContracts(Type concrete, params Type[] contracts)
-        {
-            foreach (var contract in contracts)
-            {
-                if (!contract.IsAssignableFrom(concrete))
-                {
-                    throw new ContractDefinitionException(concrete, contract);
-                }
-            }
         }
     }
 }
