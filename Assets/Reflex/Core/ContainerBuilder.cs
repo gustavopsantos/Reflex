@@ -11,7 +11,7 @@ namespace Reflex.Core
 {
     public class ContainerBuilder
     {
-        private readonly List<BindingDescriptor> _descriptors = new();
+        private readonly List<Binding> _bindings = new();
         public string Name { get; private set; }
         public Container Parent { get; private set; }
         public event Action<Container> OnContainerBuilt;
@@ -31,13 +31,13 @@ namespace Reflex.Core
             }
 
             // Owned Resolvers
-            foreach (var descriptor in _descriptors)
+            foreach (var binding in _bindings)
             {
-                disposables.Add(descriptor.Resolver);
+                disposables.Add(binding.Resolver);
 
-                foreach (var contract in descriptor.Contracts)
+                foreach (var contract in binding.Contracts)
                 {
-                    resolversByContract.GetOrAdd(contract, _ => new List<IResolver>()).Add(descriptor.Resolver);
+                    resolversByContract.GetOrAdd(contract, _ => new List<IResolver>()).Add(binding.Resolver);
                 }
             }
 
@@ -134,14 +134,14 @@ namespace Reflex.Core
 
         public bool HasBinding(Type type)
         {
-            return _descriptors.Any(descriptor => descriptor.Contracts.Contains(type));
+            return _bindings.Any(binding => binding.Contracts.Contains(type));
         }
 
         private ContainerBuilder Add(Type concrete, Type[] contracts, IResolver resolver)
         {
             ValidateContracts(concrete, contracts);
-            var resolverDescriptor = new BindingDescriptor(resolver, contracts);
-            _descriptors.Add(resolverDescriptor);
+            var binding = new Binding(resolver, contracts);
+            _bindings.Add(binding);
             return this;
         }
 

@@ -3,12 +3,12 @@ using Reflex.Resolvers;
 
 namespace Reflex.Core
 {
-    internal class BindingDescriptor
+    internal class Binding
     {
         public IResolver Resolver { get; }
         public Type[] Contracts { get; }
 
-        public BindingDescriptor(IResolver resolver, Type[] contracts)
+        public Binding(IResolver resolver, Type[] contracts)
         {
             Resolver = resolver;
             Contracts = contracts;

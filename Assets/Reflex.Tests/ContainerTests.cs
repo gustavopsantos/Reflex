@@ -264,7 +264,7 @@ namespace Reflex.Tests
         {
             var container = new ContainerBuilder().AddSingleton(1).Build();
             string.Join(",", container.All<int>()).Should().Be("1");
-            var scoped = container.Scope(descriptor => { descriptor.AddSingleton(2); });
+            var scoped = container.Scope(containerBuilder => { containerBuilder.AddSingleton(2); });
             string.Join(",", container.All<int>()).Should().Be("1");
         }
         
