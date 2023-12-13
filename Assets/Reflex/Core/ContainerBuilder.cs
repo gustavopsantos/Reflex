@@ -18,7 +18,29 @@ namespace Reflex.Core
 
         public Container Build()
         {
-            Build(out var disposables, out var resolversByContract);
+            var disposables = new DisposableCollection();
+            var resolversByContract = new Dictionary<Type, List<IResolver>>();
+
+            // Inherit parent resolvers
+            if (Parent != null)
+            {
+                foreach (var kvp in Parent.ResolversByContract)
+                {
+                    resolversByContract[kvp.Key] = kvp.Value.ToList();
+                }
+            }
+
+            // Owned Resolvers
+            foreach (var descriptor in _descriptors)
+            {
+                disposables.Add(descriptor.Resolver);
+
+                foreach (var contract in descriptor.Contracts)
+                {
+                    resolversByContract.GetOrAdd(contract, _ => new List<IResolver>()).Add(descriptor.Resolver);
+                }
+            }
+
             var container = new Container(Name, resolversByContract, disposables);
             container.SetParent(Parent);
             Diagnosis.RegisterBuildCallSite(container);
@@ -114,32 +136,6 @@ namespace Reflex.Core
         public ContainerBuilder AddTransient<T>(Func<Container, T> factory)
         {
             return AddTransient(factory, typeof(T));
-        }
-
-        private void Build(out DisposableCollection disposables, out Dictionary<Type, List<IResolver>> resolversByContract)
-        {
-            disposables = new DisposableCollection();
-            resolversByContract = new Dictionary<Type, List<IResolver>>();
-
-            // Copy Inherited Resolvers
-            if (Parent != null)
-            {
-                foreach (var kvp in Parent.ResolversByContract)
-                {
-                    resolversByContract[kvp.Key] = kvp.Value.ToList();
-                }
-            }
-
-            // Owned Resolvers
-            foreach (var descriptor in _descriptors)
-            {
-                disposables.Add(descriptor.Resolver);
-
-                foreach (var contract in descriptor.Contracts)
-                {
-                    resolversByContract.GetOrAdd(contract, _ => new List<IResolver>()).Add(descriptor.Resolver);
-                }
-            }
         }
 
         public bool HasBinding(Type type)
