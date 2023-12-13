@@ -43,7 +43,6 @@ namespace Reflex.Core
 
             var container = new Container(Name, resolversByContract, disposables);
             container.SetParent(Parent);
-            Diagnosis.RegisterBuildCallSite(container);
 
             OnContainerBuilt?.Invoke(container);
             return container;

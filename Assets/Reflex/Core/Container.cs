@@ -22,6 +22,7 @@ namespace Reflex.Core
         
         internal Container(string name, Dictionary<Type, List<IResolver>> resolversByContract, DisposableCollection disposables)
         {
+            Diagnosis.RegisterBuildCallSite(this);
             Name = name;
             ResolversByContract = resolversByContract;
             _disposables = disposables;

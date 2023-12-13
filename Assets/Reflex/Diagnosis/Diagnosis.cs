@@ -37,7 +37,7 @@ namespace Reflex
         [Conditional("REFLEX_DEBUG")]
         internal static void RegisterBuildCallSite(Container container)
         {
-            container.GetDebugProperties().BuildCallsite.AddRange(GetCallSite(4));
+            container.GetDebugProperties().BuildCallsite.AddRange(GetCallSite(2));
         }
         
         private static List<CallSite> GetCallSite(int skipFrames)
