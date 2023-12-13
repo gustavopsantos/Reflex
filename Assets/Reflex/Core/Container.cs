@@ -51,9 +51,9 @@ namespace Reflex.Core
             ReflexLogger.Log($"Container {Name} disposed", LogLevel.Info);
         }
 
-        public Container Scope(string name, Action<ContainerBuilder> extend = null)
+        public Container Scope(Action<ContainerBuilder> extend = null)
         {
-            var builder = new ContainerBuilder(name, this);
+            var builder = new ContainerBuilder(this);
             extend?.Invoke(builder);
             return builder.Build();
         }

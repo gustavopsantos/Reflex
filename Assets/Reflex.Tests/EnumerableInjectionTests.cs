@@ -22,7 +22,7 @@ namespace Reflex.Tests
         [Test]
         public void Container_ShouldBeAbleToConstructObjectWithIEnumerableDependency()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddSingleton(1)
                 .AddSingleton(2)
                 .AddSingleton(3)
@@ -35,7 +35,7 @@ namespace Reflex.Tests
         [Test]
         public void NestedEnumerableShouldBeSupported()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddSingleton(new List<int> {1, 2, 3})
                 .AddSingleton(new List<int> {4, 5, 6})
                 .Build();

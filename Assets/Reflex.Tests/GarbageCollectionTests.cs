@@ -35,7 +35,7 @@ namespace Reflex.Tests
         {
             AssertIncrementalGarbageCollectionIsDisabled();
             var references = new List<WeakReference>();
-            var container = new ContainerBuilder("").AddSingleton(typeof(Service), typeof(Service)).Build();
+            var container = new ContainerBuilder().AddSingleton(typeof(Service), typeof(Service)).Build();
             
             void Act()
             {
@@ -54,11 +54,11 @@ namespace Reflex.Tests
         {
             AssertIncrementalGarbageCollectionIsDisabled();
             var references = new List<WeakReference>();
-            var parent = new ContainerBuilder("").Build();
+            var parent = new ContainerBuilder().Build();
 
             void Act()
             {
-                var scoped = parent.Scope("");
+                var scoped = parent.Scope();
                 references.Add(new WeakReference(scoped));
                 scoped.Dispose();
             }
@@ -73,7 +73,7 @@ namespace Reflex.Tests
         {
             AssertIncrementalGarbageCollectionIsDisabled();
             var references = new List<WeakReference>();
-            var container = new ContainerBuilder("").Build();
+            var container = new ContainerBuilder().Build();
 
             void Act()
             {

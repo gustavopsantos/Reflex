@@ -35,7 +35,7 @@ namespace Reflex.Tests
         [Test]
         public void Resolve_ValueTypeSingleton_ShouldReturn42()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddSingleton(42, typeof(int))
                 .Build();
             
@@ -45,7 +45,7 @@ namespace Reflex.Tests
         [Test]
         public void Resolve_UninstalledValueType_ShouldThrowUnknownContractException()
         {
-            var container = new ContainerBuilder("").Build();
+            var container = new ContainerBuilder().Build();
             Action resolve = () => container.Single<int>();
             resolve.Should().Throw<UnknownContractException>();
         }
@@ -53,7 +53,7 @@ namespace Reflex.Tests
         [Test]
         public void Resolve_AsTransientFromType_ShouldReturnAlwaysANewInstance()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddTransient(typeof(Valuable), typeof(IValuable))
                 .Build();
             
@@ -72,7 +72,7 @@ namespace Reflex.Tests
                 return "Hello World!";
             }
             
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddTransient(Factory)
                 .Build();
             
@@ -85,7 +85,7 @@ namespace Reflex.Tests
         [Test]
         public void Resolve_AsSingletonFromType_ShouldReturnAlwaysSameInstance()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddSingleton(typeof(Valuable), typeof(IValuable))
                 .Build();
             
@@ -104,7 +104,7 @@ namespace Reflex.Tests
                 return "Hello World!";
             }
             
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddSingleton(Factory)
                 .Build();
             
@@ -117,7 +117,7 @@ namespace Reflex.Tests
         [Test]
         public void Resolve_UnknownDependency_ShouldThrowUnknownContractException()
         {
-            var container = new ContainerBuilder("").Build();
+            var container = new ContainerBuilder().Build();
             Action resolve = () => container.Single<IValuable>();
             resolve.Should().Throw<UnknownContractException>();
         }
@@ -125,7 +125,7 @@ namespace Reflex.Tests
         [Test]
         public void Resolve_KnownDependencyAsTransientWithUnknownDependency_ShouldThrowUnknownContractException()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddTransient(typeof(ClassWithDependency), typeof(IClassWithDependency))
                 .Build();
             
@@ -136,7 +136,7 @@ namespace Reflex.Tests
         [Test]
         public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowUnknownContractException()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddSingleton(typeof(ClassWithDependency), typeof(IClassWithDependency))
                 .Build();
             
@@ -147,7 +147,7 @@ namespace Reflex.Tests
         [Test]
         public void Resolve_ValueTypeAsTransient_ShouldReturnDefault()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddTransient(typeof(int), typeof(int))
                 .Build();
             
@@ -167,7 +167,7 @@ namespace Reflex.Tests
         [Test]
         public void Resolve_ValueTypeAsTransient_CustomConstructor_ValueShouldReturn42()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddSingleton(42, typeof(int))
                 .AddTransient(typeof(MyStruct), typeof(MyStruct))
                 .Build();
@@ -213,7 +213,7 @@ namespace Reflex.Tests
         [Test]
         public void Resolve_ClassWithGenericDependency_WithNormalDefinition_ValuesShouldBe42AndABC()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddTransient(typeof(Xing), typeof(Xing))
                 .AddTransient(typeof(IntSetup), typeof(ISetup<int>))
                 .AddTransient(typeof(StringSetup), typeof(ISetup<string>))
@@ -237,7 +237,7 @@ namespace Reflex.Tests
         [Test]
         public void Bind_LazySingleton_ThenInvokeInstantiateNonLazySingletons_ShouldNotRunConstructor()
         {
-            new ContainerBuilder("").AddSingleton(typeof(SomeSingleton), typeof(SomeSingleton)).Build();
+            new ContainerBuilder().AddSingleton(typeof(SomeSingleton), typeof(SomeSingleton)).Build();
             SomeSingleton.ConstructorCalled = false;
             SomeSingleton.ConstructorCalled.Should().BeFalse();
         }
@@ -245,7 +245,7 @@ namespace Reflex.Tests
         [Test]
         public void AddSingleton_WithoutContract_ShouldBindToItsType()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddSingleton(42)
                 .Build();
             
@@ -255,30 +255,30 @@ namespace Reflex.Tests
         [Test]
         public void ResolveAll_WithoutMatch_ShouldReturnEmptyEnumerable()
         {
-            var container = new ContainerBuilder("").Build();
+            var container = new ContainerBuilder().Build();
             container.All<IDisposable>().Should().BeEmpty();
         }
         
         [Test]
         public void All_OnParentShouldNotBeAffectedByScoped()
         {
-            var container = new ContainerBuilder("").AddSingleton(1).Build();
+            var container = new ContainerBuilder().AddSingleton(1).Build();
             string.Join(",", container.All<int>()).Should().Be("1");
-            var scoped = container.Scope("", descriptor => { descriptor.AddSingleton(2); });
+            var scoped = container.Scope(descriptor => { descriptor.AddSingleton(2); });
             string.Join(",", container.All<int>()).Should().Be("1");
         }
         
         [Test]
         public void HasBindingReturnFalseWhenBindingIsNotDefined()
         {
-            var container = new ContainerBuilder("").Build();
+            var container = new ContainerBuilder().Build();
             container.HasBinding<int>().Should().BeFalse();
         }
         
         [Test]
         public void HasBindingReturnTrueWhenBindingIsDefined()
         {
-            var container = new ContainerBuilder("").AddSingleton(42).Build();
+            var container = new ContainerBuilder().AddSingleton(42).Build();
             container.HasBinding<int>().Should().BeTrue();
         }
     }

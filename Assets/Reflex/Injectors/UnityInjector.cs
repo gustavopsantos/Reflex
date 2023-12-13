@@ -68,7 +68,7 @@ namespace Reflex.Injectors
 
         private static Container CreateProjectContainer()
         {
-            var builder = new ContainerBuilder("ProjectContainer");
+            var builder = new ContainerBuilder().SetName("ProjectContainer");
             
             if (ResourcesUtilities.TryLoad<ProjectScope>(nameof(ProjectScope), out var projectScope))
             {
@@ -82,8 +82,10 @@ namespace Reflex.Injectors
 
         private static Container CreateSceneContainer(Scene scene, Container projectContainer)
         {
-            return projectContainer.Scope($"{scene.name} ({scene.GetHashCode()})", builder =>
+            return projectContainer.Scope(builder =>
             {
+                builder.SetName($"{scene.name} ({scene.GetHashCode()})");
+                
                 if (ScenePreInstaller.TryGetValue(scene, out var preInstaller))
                 {
                     ScenePreInstaller.Remove(scene);                    

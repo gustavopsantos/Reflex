@@ -37,9 +37,9 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_CanResolveDependency_FromParentContainer()
         {
-            using (var outer = new ContainerBuilder("").AddSingleton(42, typeof(int)).Build())
+            using (var outer = new ContainerBuilder().AddSingleton(42, typeof(int)).Build())
             {
-                using (var inner = outer.Scope(""))
+                using (var inner = outer.Scope())
                 {
                     inner.Single<int>().Should().Be(42);
                 }
@@ -49,8 +49,8 @@ namespace Reflex.Tests
         [Test]
         public void ParentWithScopedContainer_ParentShouldNotBeAbleToResolveDependencyFromChild()
         {
-            var outer = new ContainerBuilder("").Build();
-            var inner = outer.Scope("", builder => builder.AddSingleton(42, typeof(int)));
+            var outer = new ContainerBuilder().Build();
+            var inner = outer.Scope(builder => builder.AddSingleton(42, typeof(int)));
             Action resolve = () => outer.Single<int>();
             resolve.Should().ThrowExactly<UnknownContractException>();
         }
@@ -58,9 +58,9 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_WhenDisposed_ShouldNotDisposeDependencyFromParentContainer()
         {
-            using (var outer = new ContainerBuilder("").AddSingleton(typeof(Disposable), typeof(Disposable)).Build())
+            using (var outer = new ContainerBuilder().AddSingleton(typeof(Disposable), typeof(Disposable)).Build())
             {
-                using (var inner = outer.Scope(""))
+                using (var inner = outer.Scope())
                 {
                     var disposable = inner.Single<Disposable>();
                     disposable.Should().NotBeNull();
@@ -73,9 +73,9 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_Scoped_ShouldParentAsParent()
         {
-            using (var outer = new ContainerBuilder("").Build())
+            using (var outer = new ContainerBuilder().Build())
             {
-                using (var inner = outer.Scope(""))
+                using (var inner = outer.Scope())
                 {
                     inner.Parent.Should().Be(outer);
                 }
@@ -85,9 +85,9 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_Parent_ShouldHaveScopedAsChild()
         {
-            using (var outer = new ContainerBuilder("").Build())
+            using (var outer = new ContainerBuilder().Build())
             {
-                using (var inner = outer.Scope(""))
+                using (var inner = outer.Scope())
                 {
                     outer.Children.Contains(inner).Should().BeTrue();
                 }
@@ -97,8 +97,8 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_AfterParentDisposal_ShouldBeUnParented()
         {
-            var outer = new ContainerBuilder("").Build();
-            var inner = outer.Scope("");
+            var outer = new ContainerBuilder().Build();
+            var inner = outer.Scope();
 
             inner.Parent.Should().Be(outer);
             outer.Children.Contains(inner).Should().BeTrue();
@@ -112,14 +112,14 @@ namespace Reflex.Tests
         {
             var disposalOrder = new List<string>();
 
-            var a = new ContainerBuilder("")
+            var a = new ContainerBuilder()
                 .AddSingleton(new DisposeHook(() => { disposalOrder.Add("a"); }))
                 .Build();
 
-            var b = a.Scope("", builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("b"); })));
-            var c = b.Scope("", builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("c"); })));
-            var d = c.Scope("", builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("d"); })));
-            var e = d.Scope("", builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("e"); })));
+            var b = a.Scope(builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("b"); })));
+            var c = b.Scope(builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("c"); })));
+            var d = c.Scope(builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("d"); })));
+            var e = d.Scope(builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("e"); })));
             
             a.Dispose();
             
@@ -131,11 +131,11 @@ namespace Reflex.Tests
         {
             var disposalOrder = new List<string>();
 
-            var a = new ContainerBuilder("")
+            var a = new ContainerBuilder()
                 .AddSingleton(new DisposeHook(() => { disposalOrder.Add("a"); }))
                 .Build();
 
-            var b = a.Scope("", builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("b"); })));
+            var b = a.Scope(builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("b"); })));
             
             a.Dispose();
             
@@ -145,9 +145,9 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_ResolvingContainerFromInnerScope_ShouldResolveInner()
         {
-            using (var outer = new ContainerBuilder("").Build())
+            using (var outer = new ContainerBuilder().Build())
             {
-                using (var inner = outer.Scope(""))
+                using (var inner = outer.Scope())
                 {
                     inner.Single<Container>().Should().Be(inner);
                 }
@@ -157,8 +157,8 @@ namespace Reflex.Tests
         [Test]
         public void ScopedContainer_ResolvingContainerFromOuterScope_ShouldResolveOuter()
         {
-            using var outer = new ContainerBuilder("").Build();
-            using var inner = outer.Scope(""); 
+            using var outer = new ContainerBuilder().Build();
+            using var inner = outer.Scope(); 
             var temp = inner.Single<Container>();
             outer.Single<Container>().Should().Be(outer);
         }

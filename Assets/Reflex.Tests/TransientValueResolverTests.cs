@@ -10,7 +10,7 @@ namespace Reflex.Tests
         [Test]
         public void AddTransientFromValue_FirstResolve_ShouldReturnValue()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddTransient(42)
                 .Build();
 
@@ -20,7 +20,7 @@ namespace Reflex.Tests
         [Test]
         public void AddValueType_AsTransientFromValue_SecondResolve_ShouldThrow()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddTransient(42)
                 .Build();
 
@@ -33,7 +33,7 @@ namespace Reflex.Tests
         [Test]
         public void AddReferenceType_AsTransientFromValue_SecondResolve_ShouldThrow()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddTransient(string.Empty)
                 .Build();
 

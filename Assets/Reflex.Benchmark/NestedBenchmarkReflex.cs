@@ -10,7 +10,7 @@ namespace Reflex.Benchmark
 
         private void Start()
         {
-            _container = new ContainerBuilder("")
+            _container = new ContainerBuilder()
                 .AddTransient(typeof(A), typeof(IA))
                 .AddTransient(typeof(B), typeof(IB))
                 .AddTransient(typeof(C), typeof(IC))

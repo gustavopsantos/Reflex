@@ -11,31 +11,36 @@ namespace Reflex.Core
 {
     public class ContainerBuilder
     {
-        private string _name;
         private Container _parent;
         private List<ResolverDescriptor> _descriptors = new();
+        public string Name { get; private set; }
         public event Action<Container> OnContainerBuilt;
 
-        public ContainerBuilder(string name, Container parent = null)
+        public ContainerBuilder(Container parent = null)
         {
-            _name = name;
             _parent = parent;
         }
 
         public Container Build()
         {
             Build(out var disposables, out var resolversByContract);
-            var container = new Container(_name, resolversByContract, disposables);
+            var container = new Container(Name, resolversByContract, disposables);
             container.SetParent(_parent);
             Diagnosis.RegisterBuildCallSite(container);
 
             // Clear references
-            _name = null;
+            Name = null;
             _parent = null;
             _descriptors = null;
 
             OnContainerBuilt?.Invoke(container);
             return container;
+        }
+
+        public ContainerBuilder SetName(string name)
+        {
+            Name = name;
+            return this;
         }
 
         public ContainerBuilder AddSingleton(Type concrete, params Type[] contracts)

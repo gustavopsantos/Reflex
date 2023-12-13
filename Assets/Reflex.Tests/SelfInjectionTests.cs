@@ -9,7 +9,7 @@ namespace Reflex.Tests
         [Test]
         public void Container_ShouldBeAbleToResolveItself()
         {
-            var container = new ContainerBuilder("").Build();
+            var container = new ContainerBuilder().Build();
             container.Single<Container>().Should().Be(container);
         }
     }

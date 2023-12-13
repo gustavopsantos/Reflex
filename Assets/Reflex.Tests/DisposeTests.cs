@@ -20,7 +20,7 @@ namespace Reflex.Tests
         [Test]
         public void SingletonFromType_ShouldBeDisposed_WhenOwnerIsDisposed()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddSingleton(typeof(Service), typeof(Service))
                 .Build();
             
@@ -33,7 +33,7 @@ namespace Reflex.Tests
         public void SingletonFromValue_ShouldBeDisposed_WhenOwnerIsDisposed()
         {
             var service = new Service();
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddSingleton(service, typeof(Service))
                 .Build();
             
@@ -49,7 +49,7 @@ namespace Reflex.Tests
                 return new Service();
             }
             
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddSingleton(Factory, typeof(Service))
                 .Build();
 
@@ -61,7 +61,7 @@ namespace Reflex.Tests
         [Test]
         public void TransientFromType_ShouldBeDisposed_WhenOwnerIsDisposed()
         {
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddTransient(typeof(Service), typeof(Service))
                 .Build();
             
@@ -78,7 +78,7 @@ namespace Reflex.Tests
                 return new Service();
             }
             
-            var container = new ContainerBuilder("")
+            var container = new ContainerBuilder()
                 .AddTransient(Factory, typeof(Service))
                 .Build();
             
