@@ -9,9 +9,9 @@ namespace Reflex.Core
 {
     public class ContainerBuilder
     {
-        private readonly List<Binding> _bindings = new();
         public string Name { get; private set; }
         public Container Parent { get; private set; }
+        public List<Binding> Bindings { get; } = new();
         public event Action<Container> OnContainerBuilt;
 
         public Container Build()
@@ -29,7 +29,7 @@ namespace Reflex.Core
             }
 
             // Owned Resolvers
-            foreach (var binding in _bindings)
+            foreach (var binding in Bindings)
             {
                 disposables.Add(binding.Resolver);
 
@@ -132,13 +132,13 @@ namespace Reflex.Core
 
         public bool HasBinding(Type type)
         {
-            return _bindings.Any(binding => binding.Contracts.Contains(type));
+            return Bindings.Any(binding => binding.Contracts.Contains(type));
         }
 
         private ContainerBuilder Add(Type concrete, Type[] contracts, IResolver resolver)
         {
             var binding = Binding.Validated(resolver, concrete, contracts);
-            _bindings.Add(binding);
+            Bindings.Add(binding);
             return this;
         }
     }

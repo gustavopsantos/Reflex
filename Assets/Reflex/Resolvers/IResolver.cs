@@ -4,7 +4,7 @@ using Reflex.Enums;
 
 namespace Reflex.Resolvers
 {
-    internal interface IResolver : IDisposable
+    public interface IResolver : IDisposable
     {
         Lifetime Lifetime { get; }
         object Resolve(Container container);

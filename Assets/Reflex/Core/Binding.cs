@@ -4,7 +4,7 @@ using Reflex.Resolvers;
 
 namespace Reflex.Core
 {
-    internal class Binding
+    public class Binding
     {
         public IResolver Resolver { get; }
         public Type[] Contracts { get; }
