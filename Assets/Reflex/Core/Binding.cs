@@ -31,10 +31,5 @@ namespace Reflex.Core
 
             return new Binding(resolver, contracts);
         }
-
-        public static Binding Unvalidated(IResolver resolver, params Type[] contracts)
-        {
-            return new Binding(resolver, contracts);
-        }
     }
 }
