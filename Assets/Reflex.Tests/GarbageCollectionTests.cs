@@ -19,7 +19,7 @@ namespace Reflex.Tests
         {
             if (GarbageCollector.isIncremental) // Incremental GC can mess a bit with finalizer queue
             {
-                Assert.Inconclusive();
+                //Assert.Inconclusive();
             }
         }
 
