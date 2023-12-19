@@ -1,4 +1,6 @@
-﻿using UnityEngine.SceneManagement;
+﻿using UnityEngine;
+using UnityEngine.Pool;
+using UnityEngine.SceneManagement;
 
 namespace Reflex.Extensions
 {
@@ -6,9 +8,12 @@ namespace Reflex.Extensions
     {
         internal static bool TryFindAtRoot<T>(this Scene scene, out T finding)
         {
-            foreach (var gameObject in scene.GetRootGameObjects())
+            using var pooledObject = ListPool<GameObject>.Get(out var rootGameObjects);
+            scene.GetRootGameObjects(rootGameObjects);
+
+            for (var i = 0; i < rootGameObjects.Count; i++)
             {
-                if (gameObject.TryGetComponent<T>(out finding))
+                if (rootGameObjects[i].TryGetComponent<T>(out finding))
                 {
                     return true;
                 }
