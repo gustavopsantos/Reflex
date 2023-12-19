@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Reflex.Attributes;
 using Reflex.Core;
-using Reflex.Extensions;
+using Reflex.Injectors;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -39,7 +39,8 @@ namespace Reflex.Tests
             using (var container = new ContainerBuilder().Build())
             {
                 var prefab = new GameObject("Prefab").AddComponent<MonoEventHook>();
-                var instance = container.Instantiate(prefab);
+                var instance = Object.Instantiate(prefab);
+                GameObjectInjector.InjectRecursive(instance.gameObject, container);
                 yield return null;
                 string.Join(",", instance.ExecutionOrder).Should().Be("Awake,Inject,Start");
             }
