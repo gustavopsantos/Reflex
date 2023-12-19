@@ -5,20 +5,20 @@ using UnityEngine;
 
 namespace Reflex.Extensions
 {
-    internal static class ComponentExtensions
+    internal static class GameObjectExtensions
     {
-        internal static void GetInjectables(this Component component, MonoInjectionMode injectionMode, List<MonoBehaviour> result)
+        internal static void GetInjectables(this GameObject gameObject, MonoInjectionMode injectionMode, List<MonoBehaviour> result)
         {
             switch (injectionMode)
             {
                 case MonoInjectionMode.Single:
-                    result.Add(component.GetComponent<MonoBehaviour>());
+                    result.Add(gameObject.GetComponent<MonoBehaviour>());
                     break;
                 case MonoInjectionMode.Object:
-                    component.GetComponents<MonoBehaviour>(result);
+                    gameObject.GetComponents<MonoBehaviour>(result);
                     break;
                 case MonoInjectionMode.Recursive:
-                    component.GetComponentsInChildren<MonoBehaviour>(true, result);
+                    gameObject.GetComponentsInChildren<MonoBehaviour>(true, result);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(injectionMode), injectionMode, null);
