@@ -147,7 +147,7 @@ namespace Reflex.Editor.DebuggingWindow
                 foreach (var (instance, callsite) in pair.Item1.GetDebugProperties().Instances)
                 {
                     var instanceTreeElement = new MyTreeElement(
-                        instance.GetType().Name,
+                        instance.GetType().GetName(),
                         resolverTreeElement.Depth + 1,
                         ++_id,
                         InstanceIcon,

@@ -30,7 +30,7 @@ namespace Reflex.Extensions
             if (type.IsGenericType)
             {
                 var outerTypeName = type.Name!.Split('`').First();
-                var innerTypeNames = string.Join(", ", type.GenericTypeArguments.Select(GetFullName));
+                var innerTypeNames = string.Join(", ", type.GenericTypeArguments.Select(GetName));
                 return $"{outerTypeName}<{innerTypeNames}>";
             }
 
