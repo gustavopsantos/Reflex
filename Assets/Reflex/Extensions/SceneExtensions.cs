@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine.SceneManagement;
 
 namespace Reflex.Extensions
 {
@@ -18,14 +16,6 @@ namespace Reflex.Extensions
 
             finding = default;
             return false;
-        }
-        
-        internal static IEnumerable<T> All<T>(this Scene scene)
-        {
-            return scene
-                .GetRootGameObjects()
-                .SelectMany(gameObject => gameObject.GetComponentsInChildren<T>(true))
-                .Where(m => m != null); // Skip missing scripts
         }
     }
 }
