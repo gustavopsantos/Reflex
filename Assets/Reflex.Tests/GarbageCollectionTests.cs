@@ -5,7 +5,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
 using UnityEngine;
-using UnityEngine.Scripting;
 
 namespace Reflex.Tests
 {
@@ -13,14 +12,6 @@ namespace Reflex.Tests
     {
         private class Service
         {
-        }
-
-        private static void AssertIncrementalGarbageCollectionIsDisabled()
-        {
-            if (GarbageCollector.isIncremental) // Incremental GC can mess a bit with finalizer queue
-            {
-                //Assert.Inconclusive();
-            }
         }
 
         private static void ForceGarbageCollection()
@@ -33,9 +24,8 @@ namespace Reflex.Tests
         [Test]
         public void Singleton_ShouldBeFinalized_WhenOwnerIsDisposed()
         {
-            AssertIncrementalGarbageCollectionIsDisabled();
             var references = new List<WeakReference>();
-            
+
             void Act()
             {
                 var container = new ContainerBuilder().AddSingleton(typeof(Service), typeof(Service)).Build();
@@ -52,7 +42,6 @@ namespace Reflex.Tests
         [Test]
         public void DisposedScopedContainer_ShouldHaveNoReferencesToItself_AndShouldBeCollectedAndFinalized()
         {
-            AssertIncrementalGarbageCollectionIsDisabled();
             var references = new List<WeakReference>();
             var parent = new ContainerBuilder().Build();
 
@@ -71,7 +60,6 @@ namespace Reflex.Tests
         [Test]
         public void Construct_ContainerShouldNotControlConstructedObjectLifeCycle_ByNotKeepingReferenceToIt()
         {
-            AssertIncrementalGarbageCollectionIsDisabled();
             var references = new List<WeakReference>();
             var container = new ContainerBuilder().Build();
 
