@@ -4,6 +4,7 @@ using Reflex.Enums;
 using Reflex.Injectors;
 using Reflex.Logging;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace Reflex.Extensions
 {
@@ -16,14 +17,16 @@ namespace Reflex.Extensions
             return _containerDebugProperties.GetOrCreateValue(container);
         }
         
-        public static T Instantiate<T>(this Container container, T original,
-            MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
+        public static T Instantiate<T>(this Container container, T original, MonoInjectionMode injectionMode = MonoInjectionMode.Recursive) where T : Component
         {
             var instance = Object.Instantiate(original);
 
-            foreach (var injectable in instance.GetInjectables(injectionMode))
+            using var pooledObject = ListPool<MonoBehaviour>.Get(out var monoBehaviours);
+            instance.GetInjectables(injectionMode, monoBehaviours);
+
+            for (var i = 0; i < monoBehaviours.Count; i++)
             {
-                AttributeInjector.Inject(injectable, container);
+                AttributeInjector.Inject(monoBehaviours[i], container);
             }
 
             return instance;
