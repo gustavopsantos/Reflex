@@ -7,7 +7,7 @@ using Reflex.Resolvers;
 
 namespace Reflex.Core
 {
-    public class ContainerBuilder
+    public sealed class ContainerBuilder
     {
         public string Name { get; private set; }
         public Container Parent { get; private set; }

@@ -2,7 +2,7 @@
 
 namespace Reflex.Logging
 {
-    public class ContainerDebugProperties
+    public sealed class ContainerDebugProperties
     {
         public List<CallSite> BuildCallsite { get; } = new();
     }

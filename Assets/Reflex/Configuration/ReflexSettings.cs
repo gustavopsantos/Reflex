@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Reflex.Configuration
 {
-    internal class ReflexSettings : ScriptableObject
+    internal sealed class ReflexSettings : ScriptableObject
     {
         [field: SerializeField] public LogLevel LogLevel { get; private set; }
 
