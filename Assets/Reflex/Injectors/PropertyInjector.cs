@@ -7,15 +7,7 @@ namespace Reflex.Injectors
 {
     internal static class PropertyInjector
     {
-        public static void InjectMany(PropertyInfo[] properties, object instance, Container container)
-        {
-            for (var i = 0; i < properties.Length; i++)
-            {
-                Inject(properties[i], instance, container);
-            }
-        }
-        
-        private static void Inject(PropertyInfo property, object instance, Container container)
+        internal static void Inject(PropertyInfo property, object instance, Container container)
         {
             try
             {

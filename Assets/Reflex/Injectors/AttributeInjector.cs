@@ -8,9 +8,21 @@ namespace Reflex.Injectors
         public static void Inject(object obj, Container container)
         {
             var info = TypeAttributeInfoCache.Get(obj.GetType());
-            FieldInjector.InjectMany(info.InjectableFields, obj, container);
-            PropertyInjector.InjectMany(info.InjectableProperties, obj, container);
-            MethodInjector.InjectMany(info.InjectableMethods, obj, container);
+
+            for (int i = 0; i < info.InjectableFields.Length; i++)
+            {
+                FieldInjector.Inject(info.InjectableFields[i], obj, container);
+            }
+            
+            for (int i = 0; i < info.InjectableProperties.Length; i++)
+            {
+                PropertyInjector.Inject(info.InjectableProperties[i], obj, container);
+            }
+
+            for (int i = 0; i < info.InjectableMethods.Length; i++)
+            {
+                MethodInjector.Inject(info.InjectableMethods[i], obj, container);
+            }
         }
     }
 }
