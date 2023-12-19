@@ -37,8 +37,7 @@ namespace Reflex.Injectors
             void DisposeScene(Scene scene)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) unloaded", LogLevel.Development);
-                var sceneContainer = containersByScene[scene];
-                containersByScene.Remove(scene);
+                containersByScene.Remove(scene, out var sceneContainer);
                 sceneContainer.Dispose();
             }
             
@@ -86,9 +85,8 @@ namespace Reflex.Injectors
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
                 
-                if (ScenePreInstaller.TryGetValue(scene, out var preInstaller))
+                if (ScenePreInstaller.Remove(scene, out var preInstaller))
                 {
-                    ScenePreInstaller.Remove(scene);                    
                     preInstaller.Invoke(builder);
                 }
                 
