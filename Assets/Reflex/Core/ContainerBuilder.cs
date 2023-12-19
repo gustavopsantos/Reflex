@@ -39,9 +39,7 @@ namespace Reflex.Core
                 }
             }
 
-            var container = new Container(Name, resolversByContract, disposables);
-            container.SetParent(Parent);
-
+            var container = new Container(Name, Parent, resolversByContract, disposables);
             OnContainerBuilt?.Invoke(container);
             return container;
         }

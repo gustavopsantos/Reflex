@@ -95,16 +95,15 @@ namespace Reflex.Tests
         }
 
         [Test]
-        public void ScopedContainer_AfterParentDisposal_ShouldBeUnParented()
+        public void ScopedContainer_AfterDisposal_ShouldBeRemoveAsParentChild()
         {
-            var outer = new ContainerBuilder().Build();
-            var inner = outer.Scope();
+            var parent = new ContainerBuilder().Build();
+            var child = parent.Scope();
 
-            inner.Parent.Should().Be(outer);
-            outer.Children.Contains(inner).Should().BeTrue();
-            outer.Dispose();
-            inner.Parent.Should().BeNull();
-            outer.Children.Contains(inner).Should().BeFalse();
+            child.Parent.Should().Be(parent);
+            parent.Children.Contains(child).Should().BeTrue();
+            child.Dispose();
+            parent.Children.Should().BeEmpty();
         }
 
         [Test]

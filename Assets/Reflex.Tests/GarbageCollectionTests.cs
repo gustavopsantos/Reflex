@@ -43,10 +43,10 @@ namespace Reflex.Tests
         public void DisposedScopedContainer_ShouldHaveNoReferencesToItself_AndShouldBeCollectedAndFinalized()
         {
             var references = new List<WeakReference>();
-            var parent = new ContainerBuilder().Build();
 
             void Act()
             {
+                var parent = new ContainerBuilder().Build();
                 var scoped = parent.Scope();
                 references.Add(new WeakReference(scoped));
                 scoped.Dispose();

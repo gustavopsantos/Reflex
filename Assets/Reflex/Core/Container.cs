@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using Reflex.Exceptions;
 using Reflex.Extensions;
 using Reflex.Generics;
@@ -16,14 +15,16 @@ namespace Reflex.Core
         private readonly DisposableCollection _disposables;
 
         public string Name { get; }
-        internal Container Parent { get; private set; }
+        internal Container Parent { get; }
         internal List<Container> Children { get; } = new();
         internal Dictionary<Type, List<IResolver>> ResolversByContract { get; }
         
-        internal Container(string name, Dictionary<Type, List<IResolver>> resolversByContract, DisposableCollection disposables)
+        internal Container(string name, Container parent, Dictionary<Type, List<IResolver>> resolversByContract, DisposableCollection disposables)
         {
             Diagnosis.RegisterBuildCallSite(this);
             Name = name;
+            Parent = parent;
+            Parent?.Children.Add(this);
             ResolversByContract = resolversByContract;
             _disposables = disposables;
             OverrideSelfInjection();
@@ -45,8 +46,8 @@ namespace Reflex.Core
             {
                 child.Dispose();
             }
-            
-            SetParent(null);
+
+            Parent?.Children.Remove(this);
             ResolversByContract.Clear();
             _disposables.Dispose();
             ReflexLogger.Log($"Container {Name} disposed", LogLevel.Info);
@@ -126,21 +127,6 @@ namespace Reflex.Core
         private void OverrideSelfInjection()
         {
             ResolversByContract[typeof(Container)] = new List<IResolver> { new SingletonValueResolver(this) };
-        }
-
-        internal void SetParent([CanBeNull] Container parent)
-        {
-            if (Parent != null)
-            {
-                Parent.Children.Remove(this);
-                Parent = null;
-            }
-
-            if (parent != null)
-            {
-                Parent = parent;
-                parent.Children.Add(this);
-            }
         }
     }
 }
