@@ -1,5 +1,6 @@
 using Reflex.Logging;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace Reflex.Core
 {
@@ -7,12 +8,15 @@ namespace Reflex.Core
     {
         public void InstallBindings(ContainerBuilder containerBuilder)
         {
-            foreach (var nestedInstaller in GetComponentsInChildren<IInstaller>())
+            using var pooledObject = ListPool<IInstaller>.Get(out var installers);
+            GetComponentsInChildren<IInstaller>(installers);
+            
+            for (var i = 0; i < installers.Count; i++)
             {
-                nestedInstaller.InstallBindings(containerBuilder);
+                installers[i].InstallBindings(containerBuilder);
             }
 
-            ReflexLogger.Log($"{nameof(ProjectScope)} Bindings Installed", LogLevel.Info, gameObject);
+            ReflexLogger.Log("ProjectScope Bindings Installed", LogLevel.Info, gameObject);
         }
     }
 }
