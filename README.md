@@ -203,7 +203,7 @@ SceneScope instance will be disposed once scene is unloaded.
 
 ### Manual Scoping
 ```csharp
-using var scopedContainer = parentContainer.Scope("Scoped", builder =>  
+using var scopedContainer = parentContainer.Scope(builder =>  
 {  
   // Extend your scoped container by adding extra registrations here  
 });
