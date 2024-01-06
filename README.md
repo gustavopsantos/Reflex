@@ -94,9 +94,9 @@ using UnityEngine;
 
 public class ProjectInstaller : MonoBehaviour, IInstaller
 {
-    public void InstallBindings(ContainerDescriptor descriptor)
+    public void InstallBindings(ContainerBuilder builder)
     {
-        descriptor.AddSingleton("Hello");
+        builder.AddSingleton("Hello");
     }
 }
 ```
@@ -134,10 +134,10 @@ using UnityEngine;
 
 public class GreetInstaller : MonoBehaviour, IInstaller
 {
-    public void InstallBindings(ContainerDescriptor descriptor)
+    public void InstallBindings(ContainerBuilder builder)
     {
-        descriptor.AddSingleton("World");
-        descriptor.AddSingleton(typeof(Greeter), typeof(IStartable)); // IStartable will force it to be constructed on container build
+        builder.AddSingleton("World");
+        builder.AddSingleton(typeof(Greeter), typeof(IStartable)); // IStartable will force it to be constructed on container build
     }
 }
 ```
@@ -156,12 +156,12 @@ public class Loader : MonoBehaviour
     {
 	// If you are loading scenes without addressables
 	var scene = SceneManager.LoadScene("Greet", new LoadSceneParameters(LoadSceneMode.Single));
-	ReflexSceneManager.PreInstallScene(scene, descriptor => descriptor.AddSingleton("beautiful"));
+	ReflexSceneManager.PreInstallScene(scene, builder => builder.AddSingleton("beautiful"));
 
 	// If you are loading scenes with addressables
 	Addressables.LoadSceneAsync("Greet", activateOnLoad: false).Completed += handle =>
 	{
-		ReflexSceneManager.PreInstallScene(handle.Result.Scene, descriptor => descriptor.AddSingleton("beautiful"));
+		ReflexSceneManager.PreInstallScene(handle.Result.Scene, builder => builder.AddSingleton("beautiful"));
 		handle.Result.ActivateAsync();
 	};
     }
@@ -203,7 +203,7 @@ SceneScope instance will be disposed once scene is unloaded.
 
 ### Manual Scoping
 ```csharp
-using var scopedContainer = parentContainer.Scope("Scoped", descriptor =>  
+using var scopedContainer = parentContainer.Scope("Scoped", builder =>  
 {  
   // Extend your scoped container by adding extra registrations here  
 });
@@ -213,7 +213,7 @@ using var scopedContainer = parentContainer.Scope("Scoped", descriptor =>
 
 ### AddSingleton (From Type)
 ```csharp
-ContainerDescriptor::AddSingleton(Type concrete, params Type[] contracts)
+ContainerBuilder::AddSingleton(Type concrete, params Type[] contracts)
 ```
 Adds a defered object creation based on the type to be constructed and its contracts.
 The object will be constructed lazyli, once first request to resolve any of its contracts is called.
@@ -224,7 +224,7 @@ Theres no need to pass `IDisposable` as contract to have your object disposed, h
 
 ### AddSingleton (From Value)
 ```csharp
-ContainerDescriptor::AddSingleton(object instance, params Type[] contracts)
+ContainerBuilder::AddSingleton(object instance, params Type[] contracts)
 ```
 Adds an object already contructed by the user to the container as a singleton, everytime the contracts given is asked to be resolved, the same object will be returned.
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
@@ -232,7 +232,7 @@ Theres no need to pass `IDisposable` as contract to have your object disposed, h
 
 ### AddSingleton (From Factory)
 ```csharp
-ContainerDescriptor::AddSingleton<T>(Func<Container, T> factory, params Type[] contracts)
+ContainerBuilder::AddSingleton<T>(Func<Container, T> factory, params Type[] contracts)
 ```
 Adds a defered object creation based on the given factory and its contracts.
 The object will be constructed lazyli, once first request to resolve any of its contracts is called.
@@ -243,7 +243,7 @@ Theres no need to pass `IDisposable` as contract to have your object disposed, h
 
 ### AddTransient (From Type)
 ```csharp
-ContainerDescriptor::AddTransient(Type concrete, params Type[] contracts)
+ContainerBuilder::AddTransient(Type concrete, params Type[] contracts)
 ```
 Adds a defered object creation based on the type to be constructed and its contracts.
 The object will be constructed lazyli, once first request to resolve any of its contracts is called.
@@ -254,7 +254,7 @@ Theres no need to pass `IDisposable` as contract to have your object disposed, h
 
 ### AddTransient (From Value)
 ```csharp
-ContainerDescriptor::AddTransient(object instance, params Type[] contracts)
+ContainerBuilder::AddTransient(object instance, params Type[] contracts)
 ```
 Adds an object already contructed by the user to the container as a transient.
 Its gonna be returned only on first time it gets resolved, second time an exception will be throw.
@@ -263,7 +263,7 @@ Theres no need to pass `IDisposable` as contract to have your object disposed, h
 
 ### AddTransient (From Factory)
 ```csharp
-ContainerDescriptor::AddTransient(Func<Container, T> factory, params Type[] contracts)
+ContainerBuilder::AddTransient(Func<Container, T> factory, params Type[] contracts)
 ```
 Adds a defered object creation based on the given factory and its contracts.
 The object will be constructed lazyli, once first request to resolve any of its contracts is called.
@@ -323,7 +323,7 @@ Example:
 ```csharp
 private void Documentation_Bindings()  
 {  
-	var container = new ContainerDescriptor("")  
+	var container = new ContainerBuilder("")  
 		.AddSingleton(1)  
 		.AddSingleton(2)  
 		.AddSingleton(3)  
@@ -336,8 +336,8 @@ private void Documentation_Bindings()
 ---
 
 ## 🪝 Callbacks
-### `ContainerDescriptor::OnContainerBuilt`
-OnContainerBuilt is a instance callback of ContainerDescriptor, its called once the container is fully built and initialized properly. 
+### `ContainerBuilder::OnContainerBuilt`
+OnContainerBuilt is a instance callback of ContainerBuilder, its called once the container is fully built and initialized properly. 
 
 ---
 
