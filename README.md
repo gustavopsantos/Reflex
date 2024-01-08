@@ -66,7 +66,7 @@ You can install Reflex using any of the following methods:
 
 ### Unity Package Manager
 ```
-https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#6.0.0
+https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#7.0.0
 ```
 
 1. In Unity, open **Window** → **Package Manager**.
@@ -86,7 +86,7 @@ openupm install com.gustavopsantos.reflex
 ---
 
 ## 🚀 Getting Started
-1. [Install Reflex](#installation)
+1. [Install Reflex](#-installation)
 2. Create `ProjectInstaller.cs` with 
 ```csharp
 using Reflex.Core;
@@ -168,7 +168,7 @@ public class Loader : MonoBehaviour
 19. Assign it to any gameobject at `Boot` scene
 20. Thats it, hit play while on `Boot` scene
 21. When Greet scene is loaded, there should be 3 instances implementing string contract
-22. So when Geeter is loaded, you should see the following log in the unity console: `Hello Beautiful world`
+22. So when Greeter::Start is called, you should see the following log in the unity console: `Hello Beautiful world`
 
 ---
 
@@ -185,7 +185,7 @@ Theres a menu item to ease the process: Assets > Create > Reflex > ProjectScope
 Remember to have a single ProjectScope to avoid undesired behaviour.
 Note that ProjectScope prefab is not required, in case Reflex do not found ProjectScope, an empty root will be created.
 ProjectScope instance will be disposed once app closes/app quits.
-> Note that unity does not call OnDestroy deterministically, so rule of thum is do not rely on injected dependencies on OnDestroy event functions.
+> Note that unity does not call OnDestroy deterministically, so rule of thumb is do not rely on injected dependencies on OnDestroy event functions.
 
 ### Scene Scope
 It is scoped from ProjectScope, so it contains everything that ProjectScope do.
@@ -197,7 +197,7 @@ Theres a menu item to ease the process: GameObject > Reflex > Scene Context
 Remember to have a single SceneScope to avoid undesired behaviour.
 Note that SceneScope gameobject is not required, in case Reflex do not found SceneScope, an empty one will be created.
 SceneScope instance will be disposed once scene is unloaded.
-> Note that unity does not call OnDestroy deterministically, so rule of thum is do not rely on injected dependencies on OnDestroy event functions. 
+> Note that unity does not call OnDestroy deterministically, so rule of thumb is do not rely on injected dependencies on OnDestroy event functions. 
 
 ### Manual Scoping
 ```csharp
@@ -213,62 +213,58 @@ using var scopedContainer = parentContainer.Scope(builder =>
 ```csharp
 ContainerBuilder::AddSingleton(Type concrete, params Type[] contracts)
 ```
-Adds a defered object creation based on the type to be constructed and its contracts.
+Adds a deferred object creation based on the type to be constructed and its contracts.
 The object will be constructed lazyli, once first request to resolve any of its contracts is called.
 Then **same** object will always be returned.
-If you want your singleton to be constructed just after container build (non-lazyli), add `typeof(IStartable)` as one of your contracts.
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ### AddSingleton (From Value)
 ```csharp
 ContainerBuilder::AddSingleton(object instance, params Type[] contracts)
 ```
-Adds an object already contructed by the user to the container as a singleton, everytime the contracts given is asked to be resolved, the same object will be returned.
+Adds an object already constructed by the user to the container as a singleton, everytime the contracts given is asked to be resolved, the same object will be returned.
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ### AddSingleton (From Factory)
 ```csharp
 ContainerBuilder::AddSingleton<T>(Func<Container, T> factory, params Type[] contracts)
 ```
-Adds a defered object creation based on the given factory and its contracts.
+Adds a deferred object creation based on the given factory and its contracts.
 The object will be constructed lazyli, once first request to resolve any of its contracts is called.
 The factory will be ran once, and then the **same** object will always be returned.
-If you want your singleton to be constructed just after container build (non-lazyli), add `typeof(IStartable)` as one of your contracts.
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ### AddTransient (From Type)
 ```csharp
 ContainerBuilder::AddTransient(Type concrete, params Type[] contracts)
 ```
-Adds a defered object creation based on the type to be constructed and its contracts.
+Adds a deferred object creation based on the type to be constructed and its contracts.
 The object will be constructed lazyli, once first request to resolve any of its contracts is called.
 Then for any request of any contract, a new object will be created, use this carefully.
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
-> Note that `IStartable` also works for **Transients** but pay attention that any resolve API will create a new instance
+Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ### AddTransient (From Value)
 ```csharp
 ContainerBuilder::AddTransient(object instance, params Type[] contracts)
 ```
-Adds an object already contructed by the user to the container as a transient.
+Adds an object already constructed by the user to the container as a transient.
 Its gonna be returned only on first time it gets resolved, second time an exception will be throw.
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ### AddTransient (From Factory)
 ```csharp
 ContainerBuilder::AddTransient(Func<Container, T> factory, params Type[] contracts)
 ```
-Adds a defered object creation based on the given factory and its contracts.
+Adds a deferred object creation based on the given factory and its contracts.
 The object will be constructed lazyli, once first request to resolve any of its contracts is called.
 Then for any request of any contract, a new object will be created, use this carefully.
 If object created by factory implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, howerver, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
-> Note that `IStartable` also works for **Transients** but pay attention that any resolve API will create a new instance
+Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ## 🔍 Resolving
 ### Constructor
