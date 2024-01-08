@@ -111,23 +111,22 @@ public class ProjectInstaller : MonoBehaviour, IInstaller
 12. Create `Greeter.cs` with
 ```csharp
 using UnityEngine;
-using Reflex.Core;
 using System.Collections.Generic;
+using Reflex.Attributes;
 
-public class Greeter : IStartable // IStartable will force it to be constructed on container build
+public class Greeter : MonoBehaviour
 {
-    public Greeter(IEnumerable<string> strings)
-    {
-        Debug.Log(string.Join(" ", strings));
-    }
+    [Inject] private readonly IEnumerable<string> _strings;
 
-    public void Start()
+    private void Start()
     {
+        Debug.Log(string.Join(" ", _strings));
     }
 }
 ```
-12. Inside Greet scene, create a new empty gameobject named `SceneScope` and attach `SceneScope` component
-13. Create `GreetInstaller.cs` with
+12. Add `Greeter.cs` to any gameobject in `Greet` scene
+13. Inside Greet scene, create a new empty gameobject named `SceneScope` and attach `SceneScope` component
+14. Create `GreetInstaller.cs` with
 ```csharp
 using Reflex.Core;
 using UnityEngine;
@@ -137,14 +136,13 @@ public class GreetInstaller : MonoBehaviour, IInstaller
     public void InstallBindings(ContainerBuilder builder)
     {
         builder.AddSingleton("World");
-        builder.AddSingleton(typeof(Greeter), typeof(IStartable)); // IStartable will force it to be constructed on container build
     }
 }
 ```
-14. Add `GreetInstaller.cs` to `Greet.unity` `SceneScope`
-15. Create new scene `Boot`
-16. Add `Boot` to `Build Settings` → `Scenes In Build`
-17. Create `Loader.cs` with
+15. Add `GreetInstaller.cs` to `Greet.unity` `SceneScope`
+16. Create new scene `Boot`
+17. Add `Boot` to `Build Settings` → `Scenes In Build`
+18. Create `Loader.cs` with
 ```csharp
 using Reflex.Core;
 using UnityEngine;
@@ -156,21 +154,21 @@ public class Loader : MonoBehaviour
     {
 	// If you are loading scenes without addressables
 	var scene = SceneManager.LoadScene("Greet", new LoadSceneParameters(LoadSceneMode.Single));
-	ReflexSceneManager.PreInstallScene(scene, builder => builder.AddSingleton("beautiful"));
+	ReflexSceneManager.PreInstallScene(scene, builder => builder.AddSingleton("Beautiful"));
 
 	// If you are loading scenes with addressables
 	Addressables.LoadSceneAsync("Greet", activateOnLoad: false).Completed += handle =>
 	{
-		ReflexSceneManager.PreInstallScene(handle.Result.Scene, builder => builder.AddSingleton("beautiful"));
+		ReflexSceneManager.PreInstallScene(handle.Result.Scene, builder => builder.AddSingleton("Beautiful"));
 		handle.Result.ActivateAsync();
 	};
     }
 }
 ```
-18. Assign it to any gameobject at `Boot` scene
-19. Thats it, hit play while on `Boot` scene
-20. When Greet scene is loaded, there should be 3 instances implementing string contract
-21. So when Geeter is constructed, you should see log: `Hello beautiful world`
+19. Assign it to any gameobject at `Boot` scene
+20. Thats it, hit play while on `Boot` scene
+21. When Greet scene is loaded, there should be 3 instances implementing string contract
+22. So when Geeter is loaded, you should see the following log in the unity console: `Hello Beautiful world`
 
 ---
 
