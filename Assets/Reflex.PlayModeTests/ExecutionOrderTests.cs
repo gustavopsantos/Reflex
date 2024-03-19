@@ -16,7 +16,7 @@ namespace Reflex.PlayModeTests
         public IEnumerator Setup()
         {
             yield return SceneManager.LoadSceneAsync("ExecutionOrderTestsScene", LoadSceneMode.Single);
-            yield return null; // Wait until Start is called, takes one frame
+            yield return WaitFrame(); // Wait until Start is called, takes one frame
         }
         
         [Test]
@@ -32,8 +32,23 @@ namespace Reflex.PlayModeTests
             var prefab = new GameObject("Prefab").AddComponent<InjectedGameObject>();
             var injectedObject = Object.Instantiate(prefab);
             GameObjectInjector.InjectRecursive(injectedObject.gameObject, injectedObject.gameObject.scene.GetSceneContainer());
-            yield return null; // Wait until Start is called, takes one frame
+            yield return WaitFrame(); // Wait until Start is called, takes one frame
             string.Join(",", injectedObject.ExecutionOrder).Should().Be("Awake,Inject,Start");
+        }
+        
+        /// <summary>
+        /// yield return new WaitForEndOfFrame() does not work when running tests on cli, it hangs
+        /// See https://docs.unity3d.com/2022.3/Documentation/Manual/CLIBatchmodeCoroutines.html
+        /// </summary>
+        /// <returns></returns>
+        private static IEnumerator WaitFrame()
+        {
+            var current = Time.frameCount;
+ 
+            while (current == Time.frameCount)
+            {
+                yield return null;
+            }
         }
     }
 }
