@@ -20,20 +20,22 @@ namespace Reflex.PlayModeTests
         }
         
         [Test]
-        public void ExecutionOrderOf_PreInstantiated_InjectedObject_ShouldBe_AwakeInjectStart()
+        public void ExecutionOrderOf_PreInstantiated_InjectedObject_ShouldBe_InjectAwakeStart()
         {
             var injectedObject = Object.FindObjectsOfType<InjectedGameObject>().Single();
-            string.Join(",", injectedObject.ExecutionOrder).Should().Be("Awake,Inject,Start");
+            string.Join(",", injectedObject.ExecutionOrder).Should().Be("Inject,Awake,Start");
         }
         
         [UnityTest]
-        public IEnumerator ExecutionOrderOf_RuntimeInstantiated_InjectedObject_ShouldBe_AwakeInjectStart()
+        public IEnumerator ExecutionOrderOf_RuntimeInstantiated_InjectedObject_ShouldBe_InjectAwakeStart()
         {
             var prefab = new GameObject("Prefab").AddComponent<InjectedGameObject>();
+            prefab.gameObject.SetActive(false);
             var injectedObject = Object.Instantiate(prefab);
             GameObjectInjector.InjectRecursive(injectedObject.gameObject, injectedObject.gameObject.scene.GetSceneContainer());
+            injectedObject.gameObject.SetActive(true);
             yield return WaitFrame(); // Wait until Start is called, takes one frame
-            string.Join(",", injectedObject.ExecutionOrder).Should().Be("Awake,Inject,Start");
+            string.Join(",", injectedObject.ExecutionOrder).Should().Be("Inject,Awake,Start");
         }
         
         /// <summary>

@@ -27,7 +27,7 @@ namespace Reflex.Injectors
             var projectContainer = CreateProjectContainer();
             ContainersPerScene.Clear();
 
-            void InjectScene(Scene scene, LoadSceneMode mode = default)
+            void InjectScene(Scene scene)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
                 var sceneContainer = CreateSceneContainer(scene, projectContainer);
@@ -38,8 +38,11 @@ namespace Reflex.Injectors
             void DisposeScene(Scene scene)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) unloaded", LogLevel.Development);
-                ContainersPerScene.Remove(scene, out var sceneContainer);
-                sceneContainer.Dispose();
+
+                if (ContainersPerScene.Remove(scene, out var sceneContainer)) // Not all scenes has containers
+                {
+                    sceneContainer.Dispose();
+                }
             }
             
             void DisposeProject()
@@ -48,21 +51,13 @@ namespace Reflex.Injectors
                 projectContainer.Dispose();
                 
                 // Unsubscribe from static events ensuring that Reflex works with domain reloading set to false
-                SceneManager.sceneLoaded -= InjectScene;
-                SceneManager.sceneUnloaded -= DisposeScene;
+                Callbacks.OnSceneLoaded -= InjectScene;
+                Callbacks.OnSceneUnloaded -= DisposeScene;
                 Application.quitting -= DisposeProject;
             }
             
-#if UNITY_EDITOR
-            if (UnityEditor.EditorSettings.enterPlayModeOptionsEnabled &&
-                UnityEditor.EditorSettings.enterPlayModeOptions.HasFlag(UnityEditor.EnterPlayModeOptions.DisableSceneReload))
-            {
-                InjectScene(SceneManager.GetActiveScene());
-            }
-#endif
-
-            SceneManager.sceneLoaded += InjectScene;
-            SceneManager.sceneUnloaded += DisposeScene;
+            Callbacks.OnSceneLoaded += InjectScene;
+            Callbacks.OnSceneUnloaded += DisposeScene;
             Application.quitting += DisposeProject;
         }
 
