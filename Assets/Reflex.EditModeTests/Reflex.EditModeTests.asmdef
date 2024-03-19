@@ -1,5 +1,5 @@
 {
-    "name": "Reflex.Tests",
+    "name": "Reflex.EditModeTests",
     "rootNamespace": "",
     "references": [
         "Reflex",
