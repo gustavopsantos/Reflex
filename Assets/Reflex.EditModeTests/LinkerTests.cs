@@ -2,7 +2,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Reflex.Tests
+namespace Reflex.EditModeTests
 {
     public class LinkerTests
     {

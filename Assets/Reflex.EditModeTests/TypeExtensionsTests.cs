@@ -3,7 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Extensions;
 
-namespace Reflex.Tests
+namespace Reflex.EditModeTests
 {
     internal class TypeExtensionsTests
     {

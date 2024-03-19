@@ -1,9 +1,9 @@
 using System;
 using FluentAssertions;
-using Reflex.Core;
 using NUnit.Framework;
+using Reflex.Core;
 
-namespace Reflex.Tests
+namespace Reflex.EditModeTests
 {
     internal class DisposeTests
     {

@@ -6,7 +6,7 @@ using NUnit.Framework;
 using Reflex.Core;
 using UnityEngine;
 
-namespace Reflex.Tests
+namespace Reflex.EditModeTests
 {
     internal class GarbageCollectionTests
     {

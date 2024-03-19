@@ -3,7 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
 
-namespace Reflex.Tests
+namespace Reflex.EditModeTests
 {
     public class TransientValueResolverTests
     {

@@ -17,9 +17,11 @@ jobs:
       uses: actions/checkout@v2
     - name: Activate Unity
       run: echo "$UNITY_LICENSE" > Unity_lic.ulf && (/opt/unity/Editor/Unity -nographics -batchmode -manualLicenseFile Unity_lic.ulf || true)
-    - name: Run Tests
-      run: /opt/unity/Editor/Unity -projectPath . -batchmode -nographics -runTests -testResults test-results.xml
-    - name: Publish Results
-      uses: actions/upload-artifact@v2
-      with:
-        path: test-results.xml
+    - name: Edit Mode Tests
+      run: /opt/unity/Editor/Unity -projectPath . -batchmode -nographics -runTests -testPlatform EditMode -retry 4
+    - name: Play Mode Tests
+      run: /opt/unity/Editor/Unity -projectPath . -batchmode -nographics -runTests -testPlatform PlayMode -retry 4
+#    - name: Publish Results
+#      uses: actions/upload-artifact@v2
+#      with:
+#        path: test-results.xml

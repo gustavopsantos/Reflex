@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using FluentAssertions;
-using Reflex.Extensions;
 using NUnit.Framework;
+using Reflex.Extensions;
 
-namespace Reflex.Tests
+namespace Reflex.EditModeTests
 {
     public class EnumerableExtensionsTests
     {

@@ -1,11 +1,11 @@
 ﻿using System;
 using FluentAssertions;
+using NUnit.Framework;
 using Reflex.Core;
 using Reflex.Exceptions;
-using NUnit.Framework;
 using UnityEngine;
 
-namespace Reflex.Tests
+namespace Reflex.EditModeTests
 {
     internal class ContainerBuilderTests
     {

@@ -1,6 +1,8 @@
-    using System;
-    using FluentAssertions;
+using System;
+using FluentAssertions;
 
+namespace Reflex.EditModeTests
+{
     public class CallbackAssertion
     {
         private int _calls;
@@ -30,3 +32,4 @@
             _calls.Should().Be(times);
         }
     }
+}

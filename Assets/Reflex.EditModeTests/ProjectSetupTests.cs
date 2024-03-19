@@ -1,9 +1,9 @@
+using NUnit.Framework;
 using Reflex.Configuration;
 using Reflex.Core;
-using NUnit.Framework;
 using UnityEngine;
 
-namespace Reflex.Tests
+namespace Reflex.EditModeTests
 {
     public class ProjectSetupTests
     {

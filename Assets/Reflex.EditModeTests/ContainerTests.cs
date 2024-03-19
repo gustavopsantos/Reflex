@@ -1,10 +1,10 @@
 using System;
 using FluentAssertions;
+using NUnit.Framework;
 using Reflex.Core;
 using Reflex.Exceptions;
-using NUnit.Framework;
 
-namespace Reflex.Tests
+namespace Reflex.EditModeTests
 {
     internal class ContainerTests
     {

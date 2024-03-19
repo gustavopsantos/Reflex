@@ -1,9 +1,9 @@
 using FluentAssertions;
+using NUnit.Framework;
 using Reflex.Attributes;
 using Reflex.Core;
-using NUnit.Framework;
 
-namespace Reflex.Tests
+namespace Reflex.EditModeTests
 {
     internal class AttributeInjectorTests
     {

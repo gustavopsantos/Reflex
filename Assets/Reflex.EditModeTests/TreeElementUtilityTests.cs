@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Reflex.Editor.DebuggingWindow;
 
-namespace Reflex.Tests
+namespace Reflex.EditModeTests
 {
     public class TreeElementUtilityTests
     {
