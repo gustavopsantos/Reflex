@@ -1,21 +1,18 @@
 {
-    "name": "Reflex.EditModeTests",
+    "name": "Reflex.PlayModeTests",
     "rootNamespace": "",
     "references": [
         "Reflex",
-        "Reflex.Editor",
         "UnityEditor.TestRunner",
         "UnityEngine.TestRunner"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "FluentAssertions.dll",
-        "nunit.framework.dll"
+        "nunit.framework.dll",
+        "FluentAssertions.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [
