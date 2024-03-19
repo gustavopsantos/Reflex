@@ -390,18 +390,28 @@ var foo = gameObject.scene.GetSceneContainer().Resolve<IFoo>();
 ---
 
 ## 🐛 Debugger
-![Preview](Graphics/reflex-debugger.png)  
-It can be accessed by menu item  Reflex → Debugger.  
+
+It can be accessed from menu item  Reflex → Debugger.  
 To enable reflex debug mode you must go to Edit → Project Settings → Player, then in the Other Settings panel, scroll down to Script Compilation → Scripting Define Symbols and add `REFLEX_DEBUG`. This can be easily achieved by clicking on the bug button at bottom right corner inside Reflex Debugger Window.
 > Note that debug mode reduces performance and increases memory pressure, so use it wisely.  
 
-And from there you can check:
+![Preview](Graphics/reflex-debugger.png)  
+
+### Legend
+
+| Icon                                                                                                    | Name                                                                                                                                                                                            | Description                                                                                                                                                                          |
+|---------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| <img style='vertical-align:middle;' src='Graphics\icon-container.png' alt="Container Icon" width="24">  | Name taken from `Name` property of a `Container` instance. Scene containers uses `scene.name` + `scene.GetHashCode()`, so you can differentiate between two instances of the same opened scene. | Represents a container, containers has a collection of bindings                                                                                                                      |
+| <img style='vertical-align:middle;' src='Graphics\icon-resolver.png' alt="Container Icon" width="24">   | Name created from the array of contracts you described your binding.                                                                                                                            | Represents a binding, bindings has a collection of instances, singleton will have only one instance, transients can have many instances and factories depends on your implementation |
+| <img style='vertical-align:middle;' src='Graphics\icon-instance.png' alt="Container Icon" width="24">   | Name taken from `Name` property of the `Type` of the concrete object.                                                                                                                           | Represents a instance, its the concrete object that were created by the parent binding and its being injected to consumers                                                           |
+
+Debugger window allows you to inspect the following:
 - Hierarchy of Containers, Bindings and Instances
 - Binding Contracts, Kind and Lifetime
-- Resolution Count
-- Container call stack (who created the container)
-- Binding call stack (who created the binding)
-- Instance call stack (who resolved the binding making selected instance to be instantiated)
+- Binding Resolution Count
+- Container construction call stack (who created the container)
+- Binding construction call stack (who created the binding)
+- Instance construction call stack (who resolved the binding making selected instance to be instantiated)
 
 ---
 
