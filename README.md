@@ -377,7 +377,7 @@ GameObjectInjector::void InjectRecursiveMany(List<GameObject> gameObject, Contai
 
 ## 🧩 Extensions
 ```csharp
-// Allows you to get a scene container, allowing you to resolve/inject dependencies if a different way during runtime
+// Allows you to get a scene container, allowing you to resolve/inject dependencies in a different way during runtime
 SceneExtensions::GetSceneContainer(this Scene scene)
 {
     return UnityInjector.ContainersPerScene[scene];
