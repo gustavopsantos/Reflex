@@ -9,6 +9,7 @@ jobs:
   EditModeTestRunner:
     name: Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 4
     container:
       image: "unityci/editor:ubuntu-2021.3.10f1-base-2.0.0"
     steps:
