@@ -1,11 +1,18 @@
-﻿using UnityEngine;
+﻿using Reflex.Core;
+using Reflex.Injectors;
+using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
 
 namespace Reflex.Extensions
 {
-    internal static class SceneExtensions
+    public static class SceneExtensions
     {
+        public static Container GetSceneContainer(this Scene scene)
+        {
+            return UnityInjector.ContainersPerScene[scene];
+        }
+
         internal static bool TryFindAtRoot<T>(this Scene scene, out T finding)
         {
             using var pooledObject = ListPool<GameObject>.Get(out var rootGameObjects);
