@@ -17,27 +17,28 @@ namespace Reflex.Injectors
     internal static class UnityInjector
     {
         internal static Dictionary<Scene, Action<ContainerBuilder>> ScenePreInstaller { get; } = new();
-
+        internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
+        
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeAwakeOfFirstSceneOnly()
         {
             ReportReflexDebuggerStatus();
             
             var projectContainer = CreateProjectContainer();
-            var containersByScene = new Dictionary<Scene, Container>();
+            ContainersPerScene.Clear();
 
             void InjectScene(Scene scene, LoadSceneMode mode = default)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
                 var sceneContainer = CreateSceneContainer(scene, projectContainer);
-                containersByScene.Add(scene, sceneContainer);
+                ContainersPerScene.Add(scene, sceneContainer);
                 SceneInjector.Inject(scene, sceneContainer);
             }
             
             void DisposeScene(Scene scene)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) unloaded", LogLevel.Development);
-                containersByScene.Remove(scene, out var sceneContainer);
+                ContainersPerScene.Remove(scene, out var sceneContainer);
                 sceneContainer.Dispose();
             }
             
