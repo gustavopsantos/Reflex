@@ -43,13 +43,21 @@ namespace Reflex.PlayModeTests
 
         private void ReportStatus(TestStatus status)
         {
+            var dict = new Dictionary<TestStatus, string>
+            {
+                { TestStatus.Passed, "✅" },
+                { TestStatus.Failed, "❌" },
+                { TestStatus.Skipped, "⏭️" },
+                { TestStatus.Inconclusive, "⭕" },
+            };
+            
             var report = _results
                 .Where(r => r.TestStatus == status)
                 .Select(r => r.Name)
                 .OrderBy(r => r.Length)
                 .ToList();
 
-            report.Insert(0, $"[{status.ToString().ToUpper()} {report.Count}/{_results.Count}]");
+            report.Insert(0, $"{dict[status]} [{status.ToString().ToUpper()} {report.Count}/{_results.Count}]");
 
             Debug.Log(string.Join(Environment.NewLine, report));
         }
