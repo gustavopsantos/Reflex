@@ -32,6 +32,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - [Bindings](#-bindings)
 - [Resolving](#-resolving)
 - [Callbacks](#-callbacks)
+- [Manual Injection](#-manual-injection)
 - [Debugger](#-debugger)
 - [Settings](#-settings)
 - [Performance](#-performance)
@@ -332,6 +333,44 @@ private void Documentation_Bindings()
 ## 🪝 Callbacks
 ### `ContainerBuilder::OnContainerBuilt`
 OnContainerBuilt is a instance callback of ContainerBuilder, its called once the container is fully built and initialized properly. 
+
+---
+
+## 💉 Manual Injection
+
+```csharp
+AttributeInjector::void Inject(object obj, Container container)
+// Injects given object fields, properties and methods that was annotated with Inject attribute
+```
+
+```csharp
+ConstructorInjector::object Construct(Type concrete, Container container)
+// construct object of given type, using the constructor with most parameters, using given container to pull the constructor arguments
+```
+
+```csharp
+GameObjectInjector::void InjectSingle(GameObject gameObject, Container container)
+// Optmized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
+// This option injects only the first MonoBehaviour found on the given GameObject
+```
+
+```csharp
+GameObjectInjector::void InjectObject(GameObject gameObject, Container container)
+// Optmized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
+// This option injects all MonoBehaviours found on the given GameObject (not recursively, so it does not account for children) 
+```
+
+```csharp
+GameObjectInjector::void InjectRecursive(GameObject gameObject, Container container)
+// Optmized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
+// This option injects all MonoBehaviours found on the given GameObject and its childrens recursively 
+```
+
+```csharp
+GameObjectInjector::void InjectRecursiveMany(List<GameObject> gameObject, Container container)
+// Optmized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
+// This option injects all MonoBehaviours found on the given list of GameObject and its childrens recursively 
+```
 
 ---
 
