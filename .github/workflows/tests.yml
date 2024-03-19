@@ -6,10 +6,10 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
-  EditModeTestRunner:
+  TestRunner:
     name: Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 3
     container:
       image: "unityci/editor:ubuntu-2021.3.10f1-base-2.0.0"
     steps:
@@ -17,7 +17,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Activate Unity
       run: echo "$UNITY_LICENSE" > Unity_lic.ulf && (/opt/unity/Editor/Unity -nographics -batchmode -manualLicenseFile Unity_lic.ulf || true)
-    - name: Run Edit Mode Tests
+    - name: Run Tests
       run: /opt/unity/Editor/Unity -projectPath . -batchmode -nographics -runTests -testResults test-results.xml
     - name: Publish Results
       uses: actions/upload-artifact@v2

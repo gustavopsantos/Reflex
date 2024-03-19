@@ -16,7 +16,7 @@ namespace Reflex.PlayModeTests
         public IEnumerator Setup()
         {
             yield return SceneManager.LoadSceneAsync("ExecutionOrderTestsScene", LoadSceneMode.Single);
-            yield return new WaitForEndOfFrame(); // Wait until Start is called, takes one frame
+            yield return null; // Wait until Start is called, takes one frame
         }
         
         [Test]
@@ -32,7 +32,7 @@ namespace Reflex.PlayModeTests
             var prefab = new GameObject("Prefab").AddComponent<InjectedGameObject>();
             var injectedObject = Object.Instantiate(prefab);
             GameObjectInjector.InjectRecursive(injectedObject.gameObject, injectedObject.gameObject.scene.GetSceneContainer());
-            yield return new WaitForEndOfFrame(); // Wait until Start is called, takes one frame
+            yield return null; // Wait until Start is called, takes one frame
             string.Join(",", injectedObject.ExecutionOrder).Should().Be("Awake,Inject,Start");
         }
     }
