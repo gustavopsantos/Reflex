@@ -33,6 +33,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - [Resolving](#-resolving)
 - [Callbacks](#-callbacks)
 - [Manual Injection](#-manual-injection)
+- [Extensions](#-extensions)
 - [Debugger](#-debugger)
 - [Settings](#-settings)
 - [Performance](#-performance)
@@ -370,6 +371,20 @@ GameObjectInjector::void InjectRecursive(GameObject gameObject, Container contai
 GameObjectInjector::void InjectRecursiveMany(List<GameObject> gameObject, Container container)
 // Optmized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
 // This option injects all MonoBehaviours found on the given list of GameObject and its childrens recursively 
+```
+
+---
+
+## 🧩 Extensions
+```csharp
+// Allows you to get a scene container, allowing you to resolve/inject dependencies if a different way during runtime
+SceneExtensions::GetSceneContainer(this Scene scene)
+{
+    return UnityInjector.ContainersPerScene[scene];
+}
+
+// Usage example:
+var foo = gameObject.scene.GetSceneContainer().Resolve<IFoo>();
 ```
 
 ---
