@@ -26,12 +26,12 @@ namespace Reflex.Injectors
             ReportReflexDebuggerStatus();
             
             ContainersPerScene.Clear();
-            var projectContainer = CreateProjectContainer();
+            ProjectContainer = CreateProjectContainer();
 
             void InjectScene(Scene scene)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
-                var sceneContainer = CreateSceneContainer(scene, projectContainer);
+                var sceneContainer = CreateSceneContainer(scene, ProjectContainer);
                 ContainersPerScene.Add(scene, sceneContainer);
                 SceneInjector.Inject(scene, sceneContainer);
             }
@@ -48,7 +48,7 @@ namespace Reflex.Injectors
             
             void DisposeProject()
             {
-                ProjectContainer?.Dispose();
+                ProjectContainer.Dispose();
                 ProjectContainer = null;
                 
                 // Unsubscribe from static events ensuring that Reflex works with domain reloading set to false
