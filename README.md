@@ -29,6 +29,8 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
   - [Open Unity Package Manager](#open-unity-package-manager)
   - [Unity Package](#unity-package)
 - [Getting Started](#-getting-started)
+- [Execution Order](#-execution-order)
+- [Injection Strategy](#-injection-strategy)
 - [Scopes](#-scopes)
 - [Bindings](#-bindings)
 - [Resolving](#-resolving)
@@ -175,6 +177,17 @@ public class Loader : MonoBehaviour
 
 ---
 
+## 🎬 Execution Order
+![Preview](Graphics/execution-order.png)
+
+---
+
+## 🎯 Injection Strategy
+Beginning from version 8.0.0, Reflex stops injecting all scenes automatically on Start, to start injecting only scenes with a SceneScope on Awake.
+This allows users to consume injected dependencies on callbacks such as Awake and OnEnable while giving more granular control on which scenes must be injected or not.
+
+---
+
 ## 📦 Scopes
 Container scoping refers to the ability of being able to create a container inheriting the registrations of its parent container while also being able to extend it.
 
@@ -186,19 +199,19 @@ Then, create your installer as MonoBehaviour and implement IInstaller interface.
 Remember to attach your installer to the ProjectScope prefab, as ProjectScope searches for every child implementing IInstaller when its time to create the ProjectScope container.
 Theres a menu item to ease the process: Assets > Create > Reflex > ProjectScope
 Remember to have a single ProjectScope to avoid undesired behaviour.
-Note that ProjectScope prefab is not required, in case Reflex do not found ProjectScope, an empty root will be created.
+Note that ProjectScope prefab is not required, in case Reflex does not found ProjectScope, an empty root will be created.
 ProjectScope instance will be disposed once app closes/app quits.
 > Note that unity does not call OnDestroy deterministically, so rule of thumb is do not rely on injected dependencies on OnDestroy event functions.
 
 ### Scene Scope
-It is scoped from ProjectScope, so it contains everything that ProjectScope do.
-It is created and injected after Awake, and before Start. 
+It is scoped from ProjectScope, inheriting all bindings from ProjectScope.
+It is created and injected before Awake. 
 To register bindings to it, create a gameobject on desired scene, name it "SceneScope", put it as root game object, and attach a "SceneScope" component to it.
 Then, create your installer as MonoBehaviour and implement IInstaller interface.
 Remember to attach your installer to your SceneScope gameobject, as SceneScope searches for every child implementing IInstaller when its time to create the SceneScope container.
 Theres a menu item to ease the process: GameObject > Reflex > Scene Context
 Remember to have a single SceneScope to avoid undesired behaviour.
-Note that SceneScope gameobject is not required, in case Reflex do not found SceneScope, an empty one will be created.
+Note that SceneScope gameobject is required only if you want its scene to be injected, in case Reflex do not find SceneScope, the scene injection will be skipped for that specific scene missing SceneScope.
 SceneScope instance will be disposed once scene is unloaded.
 > Note that unity does not call OnDestroy deterministically, so rule of thumb is do not rely on injected dependencies on OnDestroy event functions. 
 
