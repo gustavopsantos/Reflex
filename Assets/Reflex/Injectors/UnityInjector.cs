@@ -15,7 +15,7 @@ namespace Reflex.Injectors
 {
     internal static class UnityInjector
     {
-        internal static Action<Scene> OnSceneLoaded;
+        internal static Action<Scene, SceneScope> OnSceneLoaded;
         internal static Container ProjectContainer { get; private set; }
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
         internal static Dictionary<Scene, Action<ContainerBuilder>> ScenePreInstaller { get; } = new();
@@ -28,10 +28,10 @@ namespace Reflex.Injectors
             ContainersPerScene.Clear();
             ProjectContainer = CreateProjectContainer();
 
-            void InjectScene(Scene scene)
+            void InjectScene(Scene scene, SceneScope sceneScope)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
-                var sceneContainer = CreateSceneContainer(scene, ProjectContainer);
+                var sceneContainer = CreateSceneContainer(scene, ProjectContainer, sceneScope);
                 ContainersPerScene.Add(scene, sceneContainer);
                 SceneInjector.Inject(scene, sceneContainer);
             }
@@ -74,21 +74,18 @@ namespace Reflex.Injectors
             return builder.Build();
         }
 
-        private static Container CreateSceneContainer(Scene scene, Container projectContainer)
+        private static Container CreateSceneContainer(Scene scene, Container projectContainer, SceneScope sceneScope)
         {
             return projectContainer.Scope(builder =>
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
-                
+
                 if (ScenePreInstaller.Remove(scene, out var preInstaller))
                 {
                     preInstaller.Invoke(builder);
                 }
-                
-                if (scene.TryFindAtRoot<SceneScope>(out var sceneScope))
-                {
-                    sceneScope.InstallBindings(builder);
-                }
+
+                sceneScope.InstallBindings(builder);
             });
         }
 

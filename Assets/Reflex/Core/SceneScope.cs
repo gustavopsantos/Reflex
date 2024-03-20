@@ -10,7 +10,7 @@ namespace Reflex.Core
     {
         private void Awake()
         {
-            UnityInjector.OnSceneLoaded.Invoke(gameObject.scene);
+            UnityInjector.OnSceneLoaded.Invoke(gameObject.scene, this);
         }
 
         public void InstallBindings(ContainerBuilder containerBuilder)
