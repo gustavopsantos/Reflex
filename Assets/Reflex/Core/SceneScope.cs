@@ -1,5 +1,5 @@
+using Reflex.Injectors;
 using Reflex.Logging;
-using Reflex.Utilities;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -10,7 +10,7 @@ namespace Reflex.Core
     {
         private void Awake()
         {
-            Callbacks.RaiseOnSceneLoaded(gameObject.scene);
+            UnityInjector.OnSceneLoaded.Invoke(gameObject.scene);
         }
 
         public void InstallBindings(ContainerBuilder containerBuilder)

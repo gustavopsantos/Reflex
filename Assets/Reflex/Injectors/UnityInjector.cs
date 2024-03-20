@@ -15,6 +15,7 @@ namespace Reflex.Injectors
 {
     internal static class UnityInjector
     {
+        internal static Action<Scene> OnSceneLoaded;
         internal static Container ProjectContainer { get; private set; }
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
         internal static Dictionary<Scene, Action<ContainerBuilder>> ScenePreInstaller { get; } = new();
@@ -51,13 +52,13 @@ namespace Reflex.Injectors
                 ProjectContainer = null;
                 
                 // Unsubscribe from static events ensuring that Reflex works with domain reloading set to false
-                Callbacks.OnSceneLoaded -= InjectScene;
-                Callbacks.OnSceneUnloaded -= DisposeScene;
+                OnSceneLoaded -= InjectScene;
+                SceneManager.sceneUnloaded -= DisposeScene;
                 Application.quitting -= DisposeProject;
             }
             
-            Callbacks.OnSceneLoaded += InjectScene;
-            Callbacks.OnSceneUnloaded += DisposeScene;
+            OnSceneLoaded += InjectScene;
+            SceneManager.sceneUnloaded += DisposeScene;
             Application.quitting += DisposeProject;
         }
 
