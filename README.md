@@ -178,7 +178,9 @@ public class Loader : MonoBehaviour
 ---
 
 ## 🎬 Execution Order
-![Preview](Graphics/execution-order.png)
+<p align="center">
+  <img src="Graphics/execution-order.png" />
+</p>
 
 ---
 
