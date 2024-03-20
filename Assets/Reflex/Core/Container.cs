@@ -103,14 +103,14 @@ namespace Reflex.Core
         public IEnumerable<object> All(Type contract)
         {
             return ResolversByContract.TryGetValue(contract, out var resolvers)
-                ? resolvers.Select(resolver => resolver.Resolve(this))
+                ? resolvers.Select(resolver => resolver.Resolve(this)).ToArray()
                 : Enumerable.Empty<object>();
         }
 
         public IEnumerable<TContract> All<TContract>()
         {
             return ResolversByContract.TryGetValue(typeof(TContract), out var resolvers)
-                ? resolvers.Select(resolver => (TContract) resolver.Resolve(this))
+                ? resolvers.Select(resolver => (TContract) resolver.Resolve(this)).ToArray()
                 : Enumerable.Empty<TContract>();
         }
 
