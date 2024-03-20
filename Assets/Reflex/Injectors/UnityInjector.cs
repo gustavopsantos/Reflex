@@ -47,7 +47,7 @@ namespace Reflex.Injectors
             
             void DisposeProject()
             {
-                ProjectContainer.Dispose();
+                ProjectContainer?.Dispose();
                 ProjectContainer = null;
                 
                 // Unsubscribe from static events ensuring that Reflex works with domain reloading set to false
