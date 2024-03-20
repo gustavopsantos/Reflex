@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Reflex.Core;
 using Reflex.Extensions;
 using Reflex.Generics;
+using Reflex.Injectors;
 using Reflex.Resolvers;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
@@ -173,7 +174,7 @@ namespace Reflex.Editor.DebuggingWindow
         private IList<MyTreeElement> GetData()
         {
             var root = new MyTreeElement("Root", -1, ++_id, ContainerIcon, () => string.Empty, Array.Empty<string>(), string.Empty, null, string.Empty);
-            BuildDataRecursively(root, Tree<Container>.Root);
+            BuildDataRecursively(root, UnityInjector.ProjectContainer);
 
             var list = new List<MyTreeElement>();
             TreeElementUtility.TreeToList(root, list);

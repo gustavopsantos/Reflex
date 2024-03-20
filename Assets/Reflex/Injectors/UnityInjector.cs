@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Reflex.Core;
 using Reflex.Extensions;
-using Reflex.Generics;
 using Reflex.Logging;
 using Reflex.Utilities;
 using UnityEngine;
@@ -16,16 +15,17 @@ namespace Reflex.Injectors
 {
     internal static class UnityInjector
     {
-        internal static Dictionary<Scene, Action<ContainerBuilder>> ScenePreInstaller { get; } = new();
+        internal static Container ProjectContainer { get; private set; }
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
+        internal static Dictionary<Scene, Action<ContainerBuilder>> ScenePreInstaller { get; } = new();
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeAwakeOfFirstSceneOnly()
         {
             ReportReflexDebuggerStatus();
             
-            var projectContainer = CreateProjectContainer();
             ContainersPerScene.Clear();
+            var projectContainer = CreateProjectContainer();
 
             void InjectScene(Scene scene)
             {
@@ -47,8 +47,8 @@ namespace Reflex.Injectors
             
             void DisposeProject()
             {
-                Tree<Container>.Root = null;
-                projectContainer.Dispose();
+                ProjectContainer.Dispose();
+                ProjectContainer = null;
                 
                 // Unsubscribe from static events ensuring that Reflex works with domain reloading set to false
                 Callbacks.OnSceneLoaded -= InjectScene;
@@ -70,9 +70,7 @@ namespace Reflex.Injectors
                 projectScope.InstallBindings(builder);
             }
             
-            var container = Tree<Container>.Root = builder.Build();
-
-            return container;
+            return builder.Build();
         }
 
         private static Container CreateSceneContainer(Scene scene, Container projectContainer)
