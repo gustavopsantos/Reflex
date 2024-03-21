@@ -51,7 +51,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 ## 👀 Overview
 - **Fast:** ~3x faster than VContainer, ~7x faster than Zenject.
 - **GC Friendly:** ~2x less allocations than VContainer, ~9x less allocations than Zenject.
-- **AOT Support:** Basically theres no runtime Emit, so it works fine on IL2CPP builds. [<sup>[*]</sup>](#-scripting-restrictions)
+- **AOT Support:** Basically there's no runtime Emit, so it works fine on IL2CPP builds. [<sup>[*]</sup>](#-scripting-restrictions)
 - **Contract Table:** Allows usages of APIs like `container.All<IDisposable>`
 - **Immutable Container**: Performant thread safety free of lock plus predictable behavior.
 
@@ -198,8 +198,8 @@ It is root scope.
 It is created just before first scene opens by relying on `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]`
 To register bindings to it, create a prefab, name it "ProjectScope", put it inside any Resources folder, and attach a "ProjectScope" component to it.
 Then, create your installer as MonoBehaviour and implement IInstaller interface.
-Remember to attach your installer to the ProjectScope prefab, as ProjectScope searches for every child implementing IInstaller when its time to create the ProjectScope container.
-Theres a menu item to ease the process: Assets > Create > Reflex > ProjectScope
+Remember to attach your installer to the ProjectScope prefab, as ProjectScope searches for every child implementing IInstaller when it's time to create the ProjectScope container.
+There's a menu item to ease the process: Assets > Create > Reflex > ProjectScope
 Remember to have a single ProjectScope to avoid undesired behaviour.
 Note that ProjectScope prefab is not required, in case Reflex does not found ProjectScope, an empty root will be created.
 ProjectScope instance will be disposed once app closes/app quits.
@@ -210,8 +210,8 @@ It is scoped from ProjectScope, inheriting all bindings from ProjectScope.
 It is created and injected before Awake. 
 To register bindings to it, create a gameobject on desired scene, name it "SceneScope", put it as root game object, and attach a "SceneScope" component to it.
 Then, create your installer as MonoBehaviour and implement IInstaller interface.
-Remember to attach your installer to your SceneScope gameobject, as SceneScope searches for every child implementing IInstaller when its time to create the SceneScope container.
-Theres a menu item to ease the process: GameObject > Reflex > Scene Context
+Remember to attach your installer to your SceneScope gameobject, as SceneScope searches for every child implementing IInstaller when it's time to create the SceneScope container.
+There's a menu item to ease the process: GameObject > Reflex > Scene Context
 Remember to have a single SceneScope to avoid undesired behaviour.
 Note that SceneScope gameobject is required only if you want its scene to be injected, in case Reflex do not find SceneScope, the scene injection will be skipped for that specific scene missing SceneScope.
 SceneScope instance will be disposed once scene is unloaded.
@@ -232,10 +232,10 @@ using var scopedContainer = parentContainer.Scope(builder =>
 ContainerBuilder::AddSingleton(Type concrete, params Type[] contracts)
 ```
 Adds a deferred object creation based on the type to be constructed and its contracts.
-The object will be constructed lazyli, once first request to resolve any of its contracts is called.
+The object will be constructed lazily, once first request to resolve any of its contracts is called.
 Then **same** object will always be returned.
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ### AddSingleton (From Value)
 ```csharp
@@ -243,51 +243,51 @@ ContainerBuilder::AddSingleton(object instance, params Type[] contracts)
 ```
 Adds an object already constructed by the user to the container as a singleton, everytime the contracts given is asked to be resolved, the same object will be returned.
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ### AddSingleton (From Factory)
 ```csharp
 ContainerBuilder::AddSingleton<T>(Func<Container, T> factory, params Type[] contracts)
 ```
 Adds a deferred object creation based on the given factory and its contracts.
-The object will be constructed lazyli, once first request to resolve any of its contracts is called.
+The object will be constructed lazily, once first request to resolve any of its contracts is called.
 The factory will be ran once, and then the **same** object will always be returned.
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ### AddTransient (From Type)
 ```csharp
 ContainerBuilder::AddTransient(Type concrete, params Type[] contracts)
 ```
 Adds a deferred object creation based on the type to be constructed and its contracts.
-The object will be constructed lazyli, once first request to resolve any of its contracts is called.
+The object will be constructed lazily, once first request to resolve any of its contracts is called.
 Then for any request of any contract, a new object will be created, use this carefully.
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ### AddTransient (From Value)
 ```csharp
 ContainerBuilder::AddTransient(object instance, params Type[] contracts)
 ```
 Adds an object already constructed by the user to the container as a transient.
-Its gonna be returned only on first time it gets resolved, second time an exception will be throw.
+It's gonna be returned only on first time it gets resolved, second time an exception will be throw.
 If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ### AddTransient (From Factory)
 ```csharp
 ContainerBuilder::AddTransient(Func<Container, T> factory, params Type[] contracts)
 ```
 Adds a deferred object creation based on the given factory and its contracts.
-The object will be constructed lazyli, once first request to resolve any of its contracts is called.
+The object will be constructed lazily, once first request to resolve any of its contracts is called.
 Then for any request of any contract, a new object will be created, use this carefully.
 If object created by factory implements `IDisposable` it will be disposed when its parent Container are disposed.
-Theres no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ## 🔍 Resolving
 ### Constructor
-If your type is non-mono, and its gonna be created by the container, then the most recommended way to inject dependencies into it its by constructor injection.
-Its simply as just requesting the contracts you need as following example:
+If your type is non-mono, and it's going to be created by the container, then the most recommended way to inject dependencies into it its by constructor injection.
+It's simply as just requesting the contracts you need as following example:
 ```csharp
 private class Foo
 {  
@@ -300,7 +300,7 @@ private class Foo
 }
 ```
 
-> Note that constructor injection relies on `Resolve<TContract>` API, so in case theres theres two objects with `IInputManager` contract, the last one will be injected. 
+> Note that constructor injection relies on `Resolve<TContract>` API, so in case there's two objects with `IInputManager` contract, the last one will be injected. 
 
 ### Attribute
 Attribute injection is the way to go for **MonoBehaviours**.
@@ -320,12 +320,12 @@ class Foo : MonoBehaviour
 ```
 > Note that attribute injection also works on non-mono classes.
 ### Single
-`Container::Single<TContract>` actually validates that theres a single binding implementing given contract, and returns it.
-If theres more than one the following exception will be thrown.
+`Container::Single<TContract>` actually validates that there's a single binding implementing given contract, and returns it.
+If there's more than one the following exception will be thrown.
 ```
 InvalidOperationException: Sequence contains more than one element
 ```
-Its recommended for every binding that you know that there should be a single binding implementing the contract.
+It's recommended for every binding that you know that there should be a single binding implementing the contract.
 ### Resolve
 `Container::Single<TContract>` runs no validations, and return the last valid object implementing given contract.
 
@@ -349,7 +349,7 @@ private void Documentation_Bindings()
 
 ## 🪝 Callbacks
 ### `ContainerBuilder::OnContainerBuilt`
-OnContainerBuilt is a instance callback of ContainerBuilder, its called once the container is fully built and initialized properly. 
+OnContainerBuilt is a instance callback of ContainerBuilder, it is called once the container is fully built and initialized properly. 
 
 ---
 
@@ -367,25 +367,25 @@ ConstructorInjector::object Construct(Type concrete, Container container)
 
 ```csharp
 GameObjectInjector::void InjectSingle(GameObject gameObject, Container container)
-// Optmized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
+// Optimized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
 // This option injects only the first MonoBehaviour found on the given GameObject
 ```
 
 ```csharp
 GameObjectInjector::void InjectObject(GameObject gameObject, Container container)
-// Optmized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
+// Optimized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
 // This option injects all MonoBehaviours found on the given GameObject (not recursively, so it does not account for children) 
 ```
 
 ```csharp
 GameObjectInjector::void InjectRecursive(GameObject gameObject, Container container)
-// Optmized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
+// Optimized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
 // This option injects all MonoBehaviours found on the given GameObject and its childrens recursively 
 ```
 
 ```csharp
 GameObjectInjector::void InjectRecursiveMany(List<GameObject> gameObject, Container container)
-// Optmized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
+// Optimized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
 // This option injects all MonoBehaviours found on the given list of GameObject and its childrens recursively 
 ```
 
@@ -419,7 +419,7 @@ To enable reflex debug mode you must go to Edit → Project Settings → Player,
 |---------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | <img style='vertical-align:middle;' src='Graphics\icon-container.png' alt="Container Icon" width="24">  | Name taken from `Name` property of a `Container` instance. Scene containers uses `scene.name` + `scene.GetHashCode()`, so you can differentiate between two instances of the same opened scene. | Represents a container, containers has a collection of bindings                                                                                                                      |
 | <img style='vertical-align:middle;' src='Graphics\icon-resolver.png' alt="Container Icon" width="24">   | Name created from the array of contracts you described your binding.                                                                                                                            | Represents a binding, bindings has a collection of instances, singleton will have only one instance, transients can have many instances and factories depends on your implementation |
-| <img style='vertical-align:middle;' src='Graphics\icon-instance.png' alt="Container Icon" width="24">   | Name taken from `Name` property of the `Type` of the concrete object.                                                                                                                           | Represents a instance, its the concrete object that were created by the parent binding and its being injected to consumers                                                           |
+| <img style='vertical-align:middle;' src='Graphics\icon-instance.png' alt="Container Icon" width="24">   | Name taken from `Name` property of the `Type` of the concrete object.                                                                                                                           | Represents a instance, it's the concrete object that were created by the parent binding and it's being injected to consumers                                                           |
 
 Debugger window allows you to inspect the following:
 - Hierarchy of Containers, Bindings and Instances
@@ -432,12 +432,12 @@ Debugger window allows you to inspect the following:
 ---
 
 ## 🪛 Settings
-Its a  `ReflexSettings` scriptable object instance, named `ReflexSettings` that should live inside a `Resources` folder.
+It's a  `ReflexSettings` scriptable object instance, named `ReflexSettings` that should live inside a `Resources` folder.
 It can be created by asset menu item Assets → Create → Reflex → Settings.
 
 Currently, logging verbosity is configured in this file, and default value is set to `Info`
 
-> Non-Obligatory to have but projects without it will fallback using default settings
+> Non-obligatory to have but projects without it will fallback using default settings
 
 ---
 
@@ -480,7 +480,7 @@ System.ExecutionEngineException: Attempting to call method 'System.Linq.Enumerab
 ```
 
 This happens because compiler does not know at compile time that a specific `System.Linq.Enumerable::Cast<T>` should be included. And currently Reflex does not implement any type of assembly weaving.
-> Reflex 4.0.0 had and assembly weaver that was relying on unity UnityEditor.Compilation.CompilationPipeline events and Mono.Cecil. But it was causing conflicts with projects using Burst. So its being removed temporarly until a definitive solution is found.
+> Reflex 4.0.0 had and assembly weaver that was relying on unity UnityEditor.Compilation.CompilationPipeline events and Mono.Cecil. But it was causing conflicts with projects using Burst. So it's being removed temporarly until a definitive solution is found.
 > Most probably we are going to weave assemblies the same way unity is doing for Burst as well.
 
 Temporary workaround example:
