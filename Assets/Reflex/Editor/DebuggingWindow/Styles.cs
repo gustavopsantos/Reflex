@@ -1,78 +1,81 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-public static class Styles
+namespace Reflex.Editor.DebuggingWindow
 {
-    private static GUIStyle _stackTrace;
-    public static GUIStyle StackTrace
+    public static class Styles
     {
-        get
+        private static GUIStyle _stackTrace;
+        public static GUIStyle StackTrace
         {
-            if (_stackTrace == null)
+            get
             {
-                _stackTrace = new GUIStyle("CN Message");
-                _stackTrace.wordWrap = false;
-            }
+                if (_stackTrace == null)
+                {
+                    _stackTrace = new GUIStyle("CN Message");
+                    _stackTrace.wordWrap = false;
+                }
 
-            return _stackTrace;
+                return _stackTrace;
+            }
         }
-    }
     
-    private static GUIStyle _labelHorizontallyCentered;
-    public static GUIStyle LabelHorizontallyCentered
-    {
-        get
+        private static GUIStyle _labelHorizontallyCentered;
+        public static GUIStyle LabelHorizontallyCentered
         {
-            if (_labelHorizontallyCentered == null)
+            get
             {
-                _labelHorizontallyCentered = new GUIStyle("Label");
-                _labelHorizontallyCentered.alignment = TextAnchor.MiddleCenter;
-            }
+                if (_labelHorizontallyCentered == null)
+                {
+                    _labelHorizontallyCentered = new GUIStyle("Label");
+                    _labelHorizontallyCentered.alignment = TextAnchor.MiddleCenter;
+                }
 
-            return _labelHorizontallyCentered;
+                return _labelHorizontallyCentered;
+            }
         }
-    }
     
-    private static GUIStyle _appToolbar;
-    public static GUIStyle AppToolbar
-    {
-        get
+        private static GUIStyle _appToolbar;
+        public static GUIStyle AppToolbar
         {
-            if (_appToolbar == null)
+            get
             {
-                _appToolbar = new GUIStyle("AppToolbar");
-            }
+                if (_appToolbar == null)
+                {
+                    _appToolbar = new GUIStyle("AppToolbar");
+                }
 
-            return _appToolbar;
+                return _appToolbar;
+            }
         }
-    }
     
-    private static GUIStyle _statusBarIcon;
-    public static GUIStyle StatusBarIcon
-    {
-        get
+        private static GUIStyle _statusBarIcon;
+        public static GUIStyle StatusBarIcon
         {
-            if (_statusBarIcon == null)
+            get
             {
-                _statusBarIcon = new GUIStyle("StatusBarIcon");
-            }
+                if (_statusBarIcon == null)
+                {
+                    _statusBarIcon = new GUIStyle("StatusBarIcon");
+                }
 
-            return _statusBarIcon;
+                return _statusBarIcon;
+            }
         }
-    }
     
-    private static GUIStyle _hyperlink;
-    public static GUIStyle Hyperlink
-    {
-        get
+        private static GUIStyle _hyperlink;
+        public static GUIStyle Hyperlink
         {
-            if (_hyperlink == null)
+            get
             {
-                _hyperlink = new GUIStyle(EditorStyles.linkLabel);
-                _hyperlink.wordWrap = false;
-            }
+                if (_hyperlink == null)
+                {
+                    _hyperlink = new GUIStyle(EditorStyles.linkLabel);
+                    _hyperlink.wordWrap = false;
+                }
 
-            return _hyperlink;
+                return _hyperlink;
+            }
         }
     }
 }
