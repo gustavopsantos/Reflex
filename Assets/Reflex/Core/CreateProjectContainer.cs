@@ -1,4 +1,4 @@
-﻿using Reflex.Utilities;
+﻿using UnityEngine;
 
 namespace Reflex.Core
 {
@@ -7,12 +7,13 @@ namespace Reflex.Core
         public static Container Create()
         {
             var builder = new ContainerBuilder().SetName("ProjectContainer");
-            
-            if (ResourcesUtilities.TryLoad<ProjectScope>(nameof(ProjectScope), out var projectScope))
+            var projectScopes = Resources.LoadAll<ProjectScope>(string.Empty);
+
+            foreach (var projectScope in projectScopes)
             {
                 projectScope.InstallBindings(builder);
             }
-            
+
             return builder.Build();
         }
     }
