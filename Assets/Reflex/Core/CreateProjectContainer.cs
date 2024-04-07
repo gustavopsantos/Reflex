@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace Reflex.Core
 {
@@ -8,8 +9,9 @@ namespace Reflex.Core
         {
             var builder = new ContainerBuilder().SetName("ProjectContainer");
             var projectScopes = Resources.LoadAll<ProjectScope>(string.Empty);
+            var activeProjectScopes = projectScopes.Where(s => s.gameObject.activeSelf);
 
-            foreach (var projectScope in projectScopes)
+            foreach (var projectScope in activeProjectScopes)
             {
                 projectScope.InstallBindings(builder);
             }

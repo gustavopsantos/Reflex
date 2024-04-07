@@ -77,6 +77,26 @@ namespace Reflex.EditModeTests
             strings.Count(s => s == "A").Should().Be(3);
         }
         
+        [Test]
+        public void Create_ShouldInstallOnly_ActiveProjectScopes()
+        {
+            using var disposable1 = CreateProjectScopePrefabWithInstaller(p => p.AddComponent<MockedInstallerA>());
+            using var disposable2 = CreateProjectScopePrefabWithInstaller(p =>
+            {
+                p.AddComponent<MockedInstallerB>();
+                p.SetActive(false);
+            });
+            using var disposable3 = CreateProjectScopePrefabWithInstaller(p => p.AddComponent<MockedInstallerC>());
+            var projectScopes = Resources.LoadAll<ProjectScope>(string.Empty);
+            projectScopes.Length.Should().Be(3);
+            var projectContainer = CreateProjectContainer.Create();
+            projectContainer.Should().NotBeNull();
+            var strings = projectContainer.All<string>().ToList();
+            strings.Count(s => s == "A").Should().Be(1);
+            strings.Count(s => s == "B").Should().Be(0);
+            strings.Count(s => s == "C").Should().Be(1);
+        }
+        
         private static IDisposable CreateProjectScopePrefabWithInstaller(Action<GameObject> extend)
         {
             var gameObject = new GameObject("ProjectScope");
