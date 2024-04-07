@@ -196,12 +196,12 @@ Container scoping refers to the ability of being able to create a container inhe
 ### Project Scope
 It is root scope.
 It is created just before first scene opens by relying on `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]`
-To register bindings to it, create a prefab, name it "ProjectScope", put it inside any Resources folder, and attach a "ProjectScope" component to it.
+To register bindings to it, create a prefab, name it how you wish, the name is not used as a identifier, put it inside any Resources folder, and attach a "ProjectScope" component to it.
 Then, create your installer as MonoBehaviour and implement IInstaller interface.
 Remember to attach your installer to the ProjectScope prefab, as ProjectScope searches for every child implementing IInstaller when it's time to create the ProjectScope container.
 There's a menu item to ease the process: Assets > Create > Reflex > ProjectScope
-Remember to have a single ProjectScope to avoid undesired behaviour.
-Note that ProjectScope prefab is not required, in case Reflex does not found ProjectScope, an empty root will be created.
+You can create multiple ProjectScope in many different Resources folders across the project, and when its time to create the project container, all active ProjectScope prefabs will be merged, this allow a better separation of concerns if required.
+Note that ProjectScope prefab is not required, in case Reflex does not find any ProjectScope, an empty root will be created.
 ProjectScope instance will be disposed once app closes/app quits.
 > Note that unity does not call OnDestroy deterministically, so rule of thumb is do not rely on injected dependencies on OnDestroy event functions.
 
