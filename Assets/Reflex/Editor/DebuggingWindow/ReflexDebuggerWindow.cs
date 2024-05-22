@@ -100,7 +100,28 @@ namespace Reflex.Editor.DebuggingWindow
 
         private static List<(IResolver, Type[])> BuildMatrix(Container container)
         {
-            var resolvers = container.ResolversByContract.Values.SelectMany(r => r).Distinct();
+            var resolvers = container.ResolversByContract.Values
+                .SelectMany(r => r)
+                .ToHashSet();
+
+            if (ReflexEditorSettings.ShowInternalBindings == false)
+            {
+                var containerResolver = container.ResolversByContract[typeof(Container)].Single();
+                resolvers.Remove(containerResolver);
+            }
+
+            if (ReflexEditorSettings.ShowInheritedBindings == false && container.Parent != null)
+            {
+                var parentResolvers = container.Parent.ResolversByContract.Values
+                    .SelectMany(r => r)
+                    .Distinct();
+
+                foreach (var parentResolver in parentResolvers)
+                {
+                    resolvers.Remove(parentResolver);
+                }
+            }
+            
             return resolvers.Select(resolver => (resolver, GetContracts(resolver, container))).ToList();
         }
         
@@ -247,13 +268,25 @@ namespace Reflex.Editor.DebuggingWindow
                 GUILayout.Space(16);
             }
         }
+
+        private void PresentHierarchyFilters()
+        {
+            EditorGUI.BeginChangeCheck();
+            ReflexEditorSettings.ShowInternalBindings = GUILayout.Toggle(ReflexEditorSettings.ShowInternalBindings, "Show Internal Bindings ");
+            ReflexEditorSettings.ShowInheritedBindings = GUILayout.Toggle(ReflexEditorSettings.ShowInheritedBindings, "Show Inherited Bindings ");
+            if (EditorGUI.EndChangeCheck())
+            {
+                Refresh();
+            }
+        }
         
         private void PresentStatusBar()
         {
             using (new EditorGUILayout.HorizontalScope(Styles.AppToolbar))
             {
                 GUILayout.FlexibleSpace();
-
+                PresentHierarchyFilters();
+                
                 var refreshIcon = EditorGUIUtility.IconContent("d_TreeEditor.Refresh");
                 refreshIcon.tooltip = "Forces Tree View to Refresh";
                 
