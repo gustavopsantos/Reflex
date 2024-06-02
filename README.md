@@ -355,6 +355,8 @@ OnContainerBuilt is a instance callback of ContainerBuilder, it is called once t
 
 ## 💉 Manual Injection
 
+If objects (plain old c# objects or unity objects) are created during runtime, theres no way reflex can detect this creation to auto inject the object, this needs to be done manually using one of the following methods:
+
 ```csharp
 AttributeInjector::void Inject(object obj, Container container)
 // Injects given object fields, properties and methods that was annotated with Inject attribute
