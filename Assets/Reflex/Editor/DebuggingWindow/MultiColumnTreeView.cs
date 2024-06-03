@@ -102,7 +102,7 @@ namespace Reflex.Editor.DebuggingWindow
 
             var style = new GUIStyle("CN CountBadge") // CN CountBadge, AssetLabel, AssetLabel Partial
             {
-                wordWrap = true,
+                wordWrap = false,
                 stretchWidth = false,
                 stretchHeight = false,
                 fontStyle = FontStyle.Bold,
