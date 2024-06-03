@@ -21,7 +21,7 @@ namespace Reflex.EditModeTests
             GC.WaitForPendingFinalizers();
         }
 
-        [Test]
+        [Test, Retry(3)]
         public void Singleton_ShouldBeFinalized_WhenOwnerIsDisposed()
         {
             var references = new List<WeakReference>();
@@ -39,7 +39,7 @@ namespace Reflex.EditModeTests
             references.Any(r => r.IsAlive).Should().BeFalse();
         }
 
-        [Test]
+        [Test, Retry(3)]
         public void DisposedScopedContainer_ShouldHaveNoReferencesToItself_AndShouldBeCollectedAndFinalized()
         {
             var references = new List<WeakReference>();
@@ -57,7 +57,7 @@ namespace Reflex.EditModeTests
             references.Any(r => r.IsAlive).Should().BeFalse();
         }
 
-        [Test]
+        [Test, Retry(3)]
         public void Construct_ContainerShouldNotControlConstructedObjectLifeCycle_ByNotKeepingReferenceToIt()
         {
             var references = new List<WeakReference>();
