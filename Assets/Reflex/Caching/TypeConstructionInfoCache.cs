@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Reflex.Attributes;
 using Reflex.Extensions;
 using Reflex.Reflectors;
 
@@ -25,7 +26,13 @@ namespace Reflex.Caching
         {
             if (type.TryGetConstructors(out var constructors))
             {
-                var constructor = constructors.MaxBy(ctor => ctor.GetParameters().Length);
+                var constructor = constructors.FirstOrDefault(c => Attribute.IsDefined(c, typeof(ReflexConstructorAttribute))); // Try to get a constructor that defines ReflexConstructor
+
+                if (constructor == null)
+                {
+                    constructor = constructors.MaxBy(ctor => ctor.GetParameters().Length); // Gets the constructor with most arguments
+                }
+                
                 var parameters = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
                 return new TypeConstructionInfo(ActivatorFactoryManager.Factory.GenerateActivator(type, constructor, parameters), parameters);
             }
