@@ -35,6 +35,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - [Bindings](#-bindings)
 - [Resolving](#-resolving)
 - [Callbacks](#-callbacks)
+- [Attributes](#-attributes)
 - [Manual Injection](#-manual-injection)
 - [Extensions](#-extensions)
 - [Debugger](#-debugger)
@@ -350,6 +351,31 @@ private void Documentation_Bindings()
 ## 🪝 Callbacks
 ### `ContainerBuilder::OnContainerBuilt`
 OnContainerBuilt is a instance callback of ContainerBuilder, it is called once the container is fully built and initialized properly. 
+
+---
+
+## 🔖 Attributes
+### InjectAttribute
+Should be used to inject fields, writeable properties and methods like following:
+```csharp
+class Foo : MonoBehaviour  
+{  
+	[Inject] private readonly IInputManager _inputManager;  
+	[Inject] public IEnumerable<IManager> Managers { get; private set; }  
+  
+	[Inject]  
+	private void Inject(IEnumerable<int> numbers) // Method name here does not matter  
+	{  
+	  ...
+	}  
+}
+```
+> Note that `InjectAttribute` also works on non-mono classes.
+
+### ReflexConstructorAttribute
+Can be placed on constructors, telling reflex which constructor to use when instantiating an object.
+By default its not required, as usually injected classes have a single constructor, so by default reflex tries to find the constructor with most arguments.
+But sometimes this can be required if you need more granular control on which construtor reflex should use.
 
 ---
 
