@@ -458,6 +458,10 @@ GameObjectInjector::void InjectRecursiveMany(List<GameObject> gameObject, Contai
 // Optimized code meant to find injectables (MonoBehaviours) from a given GameObject, to then, inject using AttributeInjector
 // This option injects all MonoBehaviours found on the given list of GameObject and its childrens recursively 
 ```
+### Components
+Currently there is AutoSceneInjectComponent, which you can attach to a prefab for resolving its dependencies at runtime.
+From component you can select which type of injection you can select: Single, Object, and Recursive. It calls corresponding
+GameObjectInjector method.
 
 ---
 
