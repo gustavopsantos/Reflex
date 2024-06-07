@@ -31,6 +31,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - [Getting Started](#-getting-started)
 - [Execution Order](#-execution-order)
 - [Injection Strategy](#-injection-strategy)
+- [Container Hierarrchy](#-container-hierarchy)
 - [Scopes](#-scopes)
 - [Bindings](#-bindings)
 - [Resolving](#-resolving)
@@ -188,6 +189,47 @@ public class Loader : MonoBehaviour
 ## 🎯 Injection Strategy
 Beginning from version 8.0.0, Reflex stops injecting all scenes automatically on Start, to start injecting only scenes with a SceneScope on Awake.
 This allows users to consume injected dependencies on callbacks such as Awake and OnEnable while giving more granular control on which scenes must be injected or not.
+
+---
+
+## 🌱 Container Hierarchy
+### Default Behaviour
+Reflex's default strategy for creating containers involves initially generating a root project container. For each newly loaded scene, an additional container is created, which always inherits from the root project container. This container hierarchy mirrors the flat hierarchy of Unity scenes. You can see how the structure looks like below:
+
+```mermaid
+graph
+ProjectContainer --> BootScene
+ProjectContainer --> LobbyScene
+ProjectContainer --> GameModeOneScene
+ProjectContainer --> GameModeTwoScene
+```
+
+### Scene Parent Override
+
+If you want a scene to inherit services from another scene, you can use the `ReflexSceneManager::OverrideSceneParentContainer` method. This feature provides developers with more granular control over which parent container is used for each newly loaded scene.
+
+```csharp
+// Sample
+var bootScene = SceneManager.GetSceneByName("Boot");  
+var sessionScene = SceneManager.LoadScene("Session", new LoadSceneParameters(LoadSceneMode.Additive));  
+ReflexSceneManager.OverrideSceneParentContainer(scene: sessionScene, parent: bootScene.GetSceneContainer());
+```  
+
+By utilizing this API, you can create hierarchical structures such as the one shown below:
+
+```mermaid
+graph
+ProjectContainer-->BootScene
+BootScene-->LobbyScene
+LobbyScene-->GameModeOneScene
+LobbyScene-->GameModeTwoScene
+```
+
+
+>1. Please note that it is not possible to override the parent container for the initial scene loaded by Unity.
+>2. Exercise caution when managing the scene lifecycle with this type of hierarchy. For example, unloading a parent scene before its child scenes can lead to unexpected behavior, as the parent container will be disposed while the child scenes are still active. As a general rule, always unload the scene hierarchy from the bottom up, starting with the child scenes and progressing to the parent scenes.
+
+
 
 ---
 
