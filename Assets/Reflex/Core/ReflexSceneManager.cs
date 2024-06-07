@@ -12,5 +12,11 @@ namespace Reflex.Core
         {
             UnityInjector.ScenePreInstaller.Add(scene, builder);
         }
+        
+        [PublicAPI]
+        public static void OverrideSceneParentContainer(Scene scene, Container parent)
+        {
+            UnityInjector.SceneContainerParentOverride.Add(scene, parent);
+        }
     }
 }

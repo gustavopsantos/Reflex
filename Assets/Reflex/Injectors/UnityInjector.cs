@@ -16,6 +16,7 @@ namespace Reflex.Injectors
         internal static Action<Scene, SceneScope> OnSceneLoaded;
         internal static Container ProjectContainer { get; private set; }
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
+        internal static Dictionary<Scene, Container> SceneContainerParentOverride { get; } = new();
         internal static Dictionary<Scene, Action<ContainerBuilder>> ScenePreInstaller { get; } = new();
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -62,7 +63,11 @@ namespace Reflex.Injectors
 
         private static Container CreateSceneContainer(Scene scene, Container projectContainer, SceneScope sceneScope)
         {
-            return projectContainer.Scope(builder =>
+            var sceneParentContainer = SceneContainerParentOverride.Remove(scene, out var container)
+                ? container
+                : projectContainer;
+            
+            return sceneParentContainer.Scope(builder =>
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
 
