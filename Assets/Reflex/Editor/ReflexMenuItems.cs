@@ -4,13 +4,14 @@ using UnityEngine;
 using Reflex.Core;
 using Reflex.Configuration;
 using Reflex.Editor.DebuggingWindow;
+using UnityEditor.SceneManagement;
 
 namespace Reflex.Editor
 {
     internal static class ReflexMenuItems
     {
         [MenuItem("Reflex/Debugger %e")]
-        public static void OpenReflexDebuggingWindow()
+        private static void OpenReflexDebuggingWindow()
         {
             EditorWindow.GetWindow<ReflexDebuggerWindow>(false, "Reflex Debugger", true);
         }
@@ -42,6 +43,7 @@ namespace Reflex.Editor
         {
             var sceneScope = new GameObject(nameof(SceneScope)).AddComponent<SceneScope>();
             Selection.activeObject = sceneScope.gameObject;
+            EditorSceneManager.MarkSceneDirty(sceneScope.gameObject.scene);
         }
     }
 }
