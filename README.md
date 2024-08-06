@@ -209,18 +209,15 @@ ProjectContainer --> GameModeTwoScene
 If you want a scene to inherit services from another scene, you can use the `ReflexSceneManager::OverrideSceneParentContainer` method. This feature provides developers with more granular control over which parent container is used for each newly loaded scene.
 
 ```csharp
-// Sample
+// Scene Manager Sample
 var bootScene = SceneManager.GetSceneByName("Boot");  
 var sessionScene = SceneManager.LoadScene("Session", new LoadSceneParameters(LoadSceneMode.Additive));  
 ReflexSceneManager.OverrideSceneParentContainer(scene: sessionScene, parent: bootScene.GetSceneContainer());
 
 // Addessable Sample
-// If you are loading an addressable scene, you need to load it with activeOnLoad parameter set to false
-AsyncOperationHandle<SceneInstance> handle = Addressables.LoadSceneAsync("Session", LoadSceneMode.Additive, false);
-await handle;
-
-// after loading and setting the scene override then you should activate it
-var bootScene = SceneManager.GetSceneByName("RootScene");
+var handle = Addressables.LoadSceneAsync("Session", LoadSceneMode.Additive, activateOnLoad: false);
+await handle.Task;
+var bootScene = SceneManager.GetSceneByName("Boot");
 ReflexSceneManager.OverrideSceneParentContainer(scene: handle.Result.Scene, parent: bootScene.GetSceneContainer());
 handle.Result.ActivateAsync();
 ```  
