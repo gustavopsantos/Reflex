@@ -71,7 +71,7 @@ namespace Reflex.Editor.DebuggingWindow
                     {
                         DrawName(item, cellRect, item.Data.Name);
                     }
-                    
+
                     break;
                 case Column.Calls:
                     GUI.Label(cellRect, item.Data.Resolutions.Invoke());
@@ -108,23 +108,44 @@ namespace Reflex.Editor.DebuggingWindow
                 fontStyle = FontStyle.Bold,
                 fontSize = 11
             };
-            
+
             rect.xMin += GetContentIndent(item);
 
-            foreach (var contract in contracts)
+            // Clipping group
+            GUI.BeginGroup(rect);
             {
-                var content = new GUIContent($"{contract}");
-                rect.width = style.CalcSize(content).x;
-                GUI.Label(rect, content, style);
-                rect.xMin += rect.width + 4;
+                foreach (var contract in contracts)
+                {
+                    var content = new GUIContent($"{contract}");
+                    var labelWidth = style.CalcSize(content).x;
+
+                    // Draw the label within the bounds of the rect
+                    Rect labelRect = new Rect(0, 0, labelWidth, rect.height);
+                    GUI.Label(labelRect, content, style);
+
+                    // Move the rect for the next contract
+                    rect.xMin += labelWidth + 4;
+
+                    // Stop drawing if the labels go beyond the column's width
+                    if (rect.xMin > rect.width)
+                        break;
+                }
             }
+            GUI.EndGroup();
         }
 
         private void DrawItemIcon(Rect area, TreeViewItem<MyTreeElement> item)
         {
             area.xMin += GetContentIndent(item);
-            area.width = 16;
-            GUI.DrawTexture(area, item.Data.Icon, ScaleMode.ScaleToFit);
+
+            // Clipping group
+            GUI.BeginGroup(area);
+            {
+                // Draw the icon within the bounds of the area
+                Rect iconRect = new Rect(0, 0, 16, area.height);
+                GUI.DrawTexture(iconRect, item.Data.Icon, ScaleMode.ScaleToFit);
+            }
+            GUI.EndGroup();
         }
 
         private void DrawItemNameColumn(Rect area, TreeViewItem<MyTreeElement> item, ref RowGUIArgs args)
