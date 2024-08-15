@@ -384,13 +384,13 @@ It's recommended for every binding that you know that there should be a single b
 Example:
 ```csharp
 private void Documentation_Bindings()  
-{  
-	var container = new ContainerBuilder("")  
-		.AddSingleton(1)  
-		.AddSingleton(2)  
-		.AddSingleton(3)  
-		.Build();  
-  
+{
+	var container = new ContainerBuilder()
+		.AddSingleton(1)
+		.AddSingleton(2)
+		.AddSingleton(3)
+		.Build();
+
 	Debug.Log(string.Join(", ", container.All<int>())); // Prints: 1, 2, 3
 }
 ```
