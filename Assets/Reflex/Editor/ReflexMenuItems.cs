@@ -16,7 +16,7 @@ namespace Reflex.Editor
             EditorWindow.GetWindow<ReflexDebuggerWindow>(false, "Reflex Debugger", true);
         }
 
-        [MenuItem("Assets/Create/Reflex/Settings", false, priority = 0)]
+        [MenuItem("Assets/Create/Reflex/Settings")]
         private static void CreateReflexSettings()
         {
             var directory = UnityEditorUtility.GetSelectedPathInProjectWindow();
@@ -24,7 +24,7 @@ namespace Reflex.Editor
             UnityEditorUtility.CreateScriptableObject<ReflexSettings>(desiredAssetPath);
         }
 
-        [MenuItem("Assets/Create/Reflex/ProjectScope", false, priority = 0)]
+        [MenuItem("Assets/Create/Reflex/ProjectScope")]
         private static void CreateReflexProjectScope()
         {
             var directory = UnityEditorUtility.GetSelectedPathInProjectWindow();
