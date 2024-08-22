@@ -10,7 +10,7 @@ namespace Reflex.Editor
 {
     internal static class ReflexMenuItems
     {
-        [MenuItem("Reflex/Debugger %e")]
+        [MenuItem("Window/Analysis/Reflex Debugger %e")]
         private static void OpenReflexDebuggingWindow()
         {
             EditorWindow.GetWindow<ReflexDebuggerWindow>(false, "Reflex Debugger", true);
