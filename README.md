@@ -486,7 +486,7 @@ var foo = gameObject.scene.GetSceneContainer().Resolve<IFoo>();
 
 ## 🐛 Debugger
 
-It can be accessed from menu item  Reflex → Debugger.  
+It can be accessed from menu item  Window → Analysis → Reflex Debugger, or from shortcut CTRL + E.  
 To enable reflex debug mode you must go to Edit → Project Settings → Player, then in the Other Settings panel, scroll down to Script Compilation → Scripting Define Symbols and add `REFLEX_DEBUG`. This can be easily achieved by clicking on the bug button at bottom right corner inside Reflex Debugger Window.
 > Note that debug mode reduces performance and increases memory pressure, so use it wisely.  
 
