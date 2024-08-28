@@ -14,7 +14,7 @@ namespace Reflex.EditModeTests
         {
         }
 
-        private static void ForceGarbageCollection()
+        public static void ForceGarbageCollection()
         {
             Resources.UnloadUnusedAssets();
             GC.Collect();

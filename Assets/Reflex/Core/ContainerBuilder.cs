@@ -19,7 +19,7 @@ namespace Reflex.Core
             var disposables = new DisposableCollection();
             var resolversByContract = new Dictionary<Type, List<IResolver>>();
 
-            // Inherit parent resolvers
+            // Inherited resolvers
             if (Parent != null)
             {
                 foreach (var kvp in Parent.ResolversByContract)
@@ -28,7 +28,7 @@ namespace Reflex.Core
                 }
             }
 
-            // Owned Resolvers
+            // Owned resolvers
             foreach (var binding in Bindings)
             {
                 disposables.Add(binding.Resolver);

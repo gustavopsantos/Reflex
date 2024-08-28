@@ -12,12 +12,12 @@ namespace Reflex.Core
 {
     public sealed class Container : IDisposable
     {
-        private readonly DisposableCollection _disposables;
 
         public string Name { get; }
         internal Container Parent { get; }
         internal List<Container> Children { get; } = new();
         internal Dictionary<Type, List<IResolver>> ResolversByContract { get; }
+        internal DisposableCollection Disposables { get; }
         
         internal Container(string name, Container parent, Dictionary<Type, List<IResolver>> resolversByContract, DisposableCollection disposables)
         {
@@ -26,7 +26,7 @@ namespace Reflex.Core
             Parent = parent;
             Parent?.Children.Add(this);
             ResolversByContract = resolversByContract;
-            _disposables = disposables;
+            Disposables = disposables;
             OverrideSelfInjection();
         }
 
@@ -49,7 +49,7 @@ namespace Reflex.Core
 
             Parent?.Children.Remove(this);
             ResolversByContract.Clear();
-            _disposables.Dispose();
+            Disposables.Dispose();
             ReflexLogger.Log($"Container {Name} disposed", LogLevel.Info);
         }
 
