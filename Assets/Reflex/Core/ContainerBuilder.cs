@@ -102,16 +102,6 @@ namespace Reflex.Core
             return AddTransient(concrete, concrete);
         }
 
-        public ContainerBuilder AddTransient(object instance, params Type[] contracts)
-        {
-            return Add(instance.GetType(), contracts, new TransientValueResolver(instance));
-        }
-
-        public ContainerBuilder AddTransient(object instance)
-        {
-            return AddTransient(instance, instance.GetType());
-        }
-
         public ContainerBuilder AddTransient<T>(Func<Container, T> factory, params Type[] contracts)
         {
             var resolver = new TransientFactoryResolver(Proxy);
