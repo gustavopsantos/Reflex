@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
@@ -19,6 +20,12 @@ namespace Reflex.EditModeTests
             Resources.UnloadUnusedAssets();
             GC.Collect();
             GC.WaitForPendingFinalizers();
+        }
+
+        [Conditional("REFLEX_DEBUG")]
+        public static void MarkAsInconclusiveWhenReflexDebugIsEnabled()
+        {
+            Assert.Inconclusive("Disable REFLEX_DEBUG symbol when running garbage collection tests!");
         }
 
         [Test, Retry(3)]

@@ -50,6 +50,8 @@ namespace Reflex.EditModeTests
         [Test, Retry(3)]
         public void TransientFromType_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
         {
+            GarbageCollectionTests.MarkAsInconclusiveWhenReflexDebugIsEnabled();
+            
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
             var parentContainer = new ContainerBuilder().AddTransient(typeof(Service)).Build();
@@ -72,6 +74,8 @@ namespace Reflex.EditModeTests
         [Test, Retry(3)]
         public void TransientFromFactory_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
         {
+            GarbageCollectionTests.MarkAsInconclusiveWhenReflexDebugIsEnabled();
+            
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
             var parentContainer = new ContainerBuilder().AddTransient(c => new Service()).Build();

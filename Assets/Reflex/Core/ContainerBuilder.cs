@@ -117,6 +117,34 @@ namespace Reflex.Core
         {
             return AddTransient(factory, typeof(T));
         }
+        
+        // Scoped
+        
+        public ContainerBuilder AddScoped(Type concrete, params Type[] contracts)
+        {
+            return Add(concrete, contracts, new ScopedTypeResolver(concrete));
+        }
+
+        public ContainerBuilder AddScoped(Type concrete)
+        {
+            return AddScoped(concrete, concrete);
+        }
+
+        public ContainerBuilder AddScoped<T>(Func<Container, T> factory, params Type[] contracts)
+        {
+            var resolver = new ScopedFactoryResolver(Proxy);
+            return Add(typeof(T), contracts, resolver);
+
+            object Proxy(Container container)
+            {
+                return factory.Invoke(container);
+            }
+        }
+
+        public ContainerBuilder AddScoped<T>(Func<Container, T> factory)
+        {
+            return AddScoped(factory, typeof(T));
+        }
 
         public bool HasBinding(Type type)
         {
