@@ -162,13 +162,13 @@ namespace Reflex.Editor.DebuggingWindow
                     pair.Item2.Select(x => x.GetName()).OrderBy(x => x).ToArray(),
                     pair.Item1.Lifetime.ToString(),
                     pair.Item1.GetDebugProperties().BindingCallsite,
-                    kind: pair.Item1.GetType().Name.Replace("Singleton", string.Empty).Replace("Transient", string.Empty).Replace("Resolver", string.Empty)
+                    kind: pair.Item1.GetType().Name.Replace("Singleton", string.Empty).Replace("Transient", string.Empty).Replace("Scoped", string.Empty).Replace("Resolver", string.Empty)
                 );
 
                 foreach (var (instance, callsite) in pair.Item1.GetDebugProperties().Instances)
                 {
                     var instanceTreeElement = new MyTreeElement(
-                        instance.GetType().GetName(),
+                        $"{instance.GetType().GetName()} <b><color=#3D99ED>({SHA1.ShortHash(instance.GetHashCode())})</color></b>",
                         resolverTreeElement.Depth + 1,
                         ++_id,
                         InstanceIcon,

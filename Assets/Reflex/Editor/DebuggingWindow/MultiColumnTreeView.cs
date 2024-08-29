@@ -88,7 +88,7 @@ namespace Reflex.Editor.DebuggingWindow
         private void DrawName(TreeViewItem item, Rect area, string name)
         {
             area.xMin += GetContentIndent(item);
-            GUI.Label(area, name);
+            GUI.Label(area, name, Styles.RichTextLabel);
         }
 
         private void DrawContracts(TreeViewItem<MyTreeElement> item, Rect rect, string[] contracts)

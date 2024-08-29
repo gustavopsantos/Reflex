@@ -5,6 +5,23 @@ namespace Reflex.Editor.DebuggingWindow
 {
     public static class Styles
     {
+        private static GUIStyle _richTextLabel;
+        public static GUIStyle RichTextLabel
+        {
+            get
+            {
+                if (_richTextLabel == null)
+                {
+                    _richTextLabel = new GUIStyle(EditorStyles.label)
+                    {
+                        richText = true
+                    };
+                }
+
+                return _richTextLabel;
+            }
+        }
+        
         private static GUIStyle _stackTrace;
         public static GUIStyle StackTrace
         {
