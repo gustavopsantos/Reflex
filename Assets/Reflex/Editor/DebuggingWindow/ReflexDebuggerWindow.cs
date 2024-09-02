@@ -165,10 +165,10 @@ namespace Reflex.Editor.DebuggingWindow
                     kind: pair.Item1.GetType().Name.Replace("Singleton", string.Empty).Replace("Transient", string.Empty).Replace("Scoped", string.Empty).Replace("Resolver", string.Empty)
                 );
 
-                foreach (var (instance, callsite) in pair.Item1.GetDebugProperties().Instances)
+                foreach (var (instance, callsite) in pair.Item1.GetDebugProperties().Instances.Where(tuple => tuple.Item1.IsAlive).Select(tuple => (tuple.Item1.Target, tuple.Item2)))
                 {
                     var instanceTreeElement = new MyTreeElement(
-                        $"{instance.GetType().GetName()} <b><color=#3D99ED>({SHA1.ShortHash(instance.GetHashCode())})</color></b>",
+                        $"{instance.GetType().GetName()} <color=#3D99ED>({SHA1.ShortHash(instance.GetHashCode())})</color>",
                         resolverTreeElement.Depth + 1,
                         ++_id,
                         InstanceIcon,

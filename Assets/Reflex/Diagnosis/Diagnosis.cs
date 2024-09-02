@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Reflex.Core;
@@ -19,7 +20,7 @@ namespace Reflex
         [Conditional("REFLEX_DEBUG")]
         internal static void RegisterInstance(IResolver resolver, object instance)
         {
-            resolver.GetDebugProperties().Instances.Add((instance, GetCallSite(3)));
+            resolver.GetDebugProperties().Instances.Add((new WeakReference(instance), GetCallSite(3)));
         }
         
         [Conditional("REFLEX_DEBUG")]

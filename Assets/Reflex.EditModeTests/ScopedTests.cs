@@ -96,8 +96,6 @@ namespace Reflex.EditModeTests
         [Test, Retry(3)]
         public void ScopedFromType_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
         {
-            GarbageCollectionTests.MarkAsInconclusiveWhenReflexDebugIsEnabled();
-            
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
             var parentContainer = new ContainerBuilder().AddScoped(typeof(Service)).Build();
@@ -120,8 +118,6 @@ namespace Reflex.EditModeTests
         [Test, Retry(3)]
         public void ScopedFromFactory_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
         {
-            GarbageCollectionTests.MarkAsInconclusiveWhenReflexDebugIsEnabled();
-            
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
             var parentContainer = new ContainerBuilder().AddScoped(_ => new Service()).Build();
