@@ -312,16 +312,7 @@ ContainerBuilder::AddTransient(Type concrete, params Type[] contracts)
 Adds a deferred object creation based on the type to be constructed and its contracts.
 The object will be constructed lazily, once first request to resolve any of its contracts is called.
 Then for any request of any contract, a new object will be created, use this carefully.
-If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
-
-### AddTransient (From Value)
-```csharp
-ContainerBuilder::AddTransient(object instance, params Type[] contracts)
-```
-Adds an object already constructed by the user to the container as a transient.
-It's gonna be returned only on first time it gets resolved, second time an exception will be throw.
-If object implements `IDisposable` it will be disposed when its parent Container are disposed.
+If object implements `IDisposable` it will be disposed when the container who constructed the instance are disposed, and eventually collected when GC kicks in.
 There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ### AddTransient (From Factory)
@@ -331,7 +322,23 @@ ContainerBuilder::AddTransient(Func<Container, T> factory, params Type[] contrac
 Adds a deferred object creation based on the given factory and its contracts.
 The object will be constructed lazily, once first request to resolve any of its contracts is called.
 Then for any request of any contract, a new object will be created, use this carefully.
-If object created by factory implements `IDisposable` it will be disposed when its parent Container are disposed.
+If object implements `IDisposable` it will be disposed when the container who constructed the instance are disposed, and eventually collected when GC kicks in.
+There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+
+### AddScoped (From Type)
+```csharp
+ContainerBuilder::AddScoped(Type concrete, params Type[] contracts)
+```
+Very similar to AddSingleton API, however, instead of having a single global instance, AddScoped creates one object instance per container.
+If object implements `IDisposable` it will be disposed when the container who constructed the instance are disposed, and eventually collected when GC kicks in.
+There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+
+### AddScoped (From Factory)
+```csharp
+ContainerBuilder::AddScoped(Func<Container, T> factory, params Type[] contracts)
+```
+Very similar to AddSingleton API, however, instead of having a single global instance, AddScoped creates one object instance per container.
+If object implements `IDisposable` it will be disposed when the container who constructed the instance are disposed, and eventually collected when GC kicks in.
 There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
 
 ## 🔍 Resolving
