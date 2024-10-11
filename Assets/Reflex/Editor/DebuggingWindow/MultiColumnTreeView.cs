@@ -114,20 +114,21 @@ namespace Reflex.Editor.DebuggingWindow
             // Clipping group
             GUI.BeginGroup(rect);
             {
+                float labelXOffset = 0.0f;
                 foreach (var contract in contracts)
                 {
                     var content = new GUIContent($"{contract}");
                     var labelWidth = style.CalcSize(content).x;
 
                     // Draw the label within the bounds of the rect
-                    Rect labelRect = new Rect(0, 0, labelWidth, rect.height);
+                    Rect labelRect = new Rect(labelXOffset, 0, labelWidth, rect.height);
                     GUI.Label(labelRect, content, style);
 
                     // Move the rect for the next contract
-                    rect.xMin += labelWidth + 4;
+                    labelXOffset += labelWidth + 4;
 
                     // Stop drawing if the labels go beyond the column's width
-                    if (rect.xMin > rect.width)
+                    if (labelXOffset > rect.width)
                         break;
                 }
             }
