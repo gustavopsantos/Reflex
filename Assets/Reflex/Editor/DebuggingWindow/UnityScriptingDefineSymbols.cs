@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Build;
 
 public static class UnityScriptingDefineSymbols
 {
@@ -26,12 +27,12 @@ public static class UnityScriptingDefineSymbols
     
     private static HashSet<string> GetSymbols(BuildTargetGroup platform)
     {
-        return new HashSet<string>(PlayerSettings.GetScriptingDefineSymbolsForGroup(platform).Split(';'));
+        return new HashSet<string>(PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform)).Split(';'));
     }
     
     private static void SetSymbols(HashSet<string> symbols, BuildTargetGroup platform)
     {
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(platform, string.Join(";", symbols));
+        PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(platform), string.Join(";", symbols));
     }
 
     public static void Toggle(string symbol, BuildTargetGroup platform)
