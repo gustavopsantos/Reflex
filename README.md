@@ -384,7 +384,7 @@ InvalidOperationException: Sequence contains more than one element
 ```
 It's recommended for every binding that you know that there should be a single binding implementing the contract.
 ### Resolve
-`Container::Single<TContract>` runs no validations, and return the last valid object implementing given contract.
+`Container::Resolve<TContract>` runs no validations, and return the last valid object implementing given contract.
 
 ### All
 `Container::All<TContract>` returns all objects implementing given contract.
