@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Reflex.Extensions;
 using Reflex.Injectors;
 using UnityEngine;
@@ -13,21 +14,14 @@ namespace Reflex.Components
         private void Awake()
         {
             var sceneContainer = gameObject.scene.GetSceneContainer();
-
-            switch (_injectionStrategy)
+            var injectionActions = new Dictionary<InjectionStrategy, Action>
             {
-                case InjectionStrategy.Single:
-                    GameObjectInjector.InjectSingle(gameObject, sceneContainer);
-                    break;
-                case InjectionStrategy.Object:
-                    GameObjectInjector.InjectObject(gameObject, sceneContainer);
-                    break;
-                case InjectionStrategy.Recursive:
-                    GameObjectInjector.InjectRecursive(gameObject, sceneContainer);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(_injectionStrategy.ToString());
-            }
+                { InjectionStrategy.Single, () => GameObjectInjector.InjectSingle(gameObject, sceneContainer) },
+                { InjectionStrategy.Object, () => GameObjectInjector.InjectObject(gameObject, sceneContainer) },
+                { InjectionStrategy.Recursive, () => GameObjectInjector.InjectRecursive(gameObject, sceneContainer) }
+            };
+            
+            injectionActions[_injectionStrategy]();
         }
 
         private enum InjectionStrategy
