@@ -13,18 +13,18 @@ namespace Reflex.Injectors
             var info = TypeConstructionInfoCache.Get(concrete);
             var arguments = ExactArrayPool<object>.Shared.Rent(info.ConstructorParameters.Length);
 
-            for (var i = 0; i < info.ConstructorParameters.Length; i++)
-            {
-                arguments[i] = container.Resolve(info.ConstructorParameters[i]);
-            }
-
             try
             {
+                for (var i = 0; i < info.ConstructorParameters.Length; i++)
+                {
+                    arguments[i] = container.Resolve(info.ConstructorParameters[i]);
+                }
+
                 return info.ObjectActivator.Invoke(arguments);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                throw new ConstructorInjectorException(concrete, e);
+                throw new ConstructorInjectorException(concrete, exception, info.ConstructorParameters);
             }
             finally
             {
@@ -40,9 +40,9 @@ namespace Reflex.Injectors
             {
                 return info.ObjectActivator.Invoke(arguments);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                throw new ConstructorInjectorException(concrete, e);
+                throw new ConstructorInjectorException(concrete, exception, info.ConstructorParameters);
             }
         }
     }

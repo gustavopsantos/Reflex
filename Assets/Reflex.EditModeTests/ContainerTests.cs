@@ -123,25 +123,25 @@ namespace Reflex.EditModeTests
         }
 
         [Test]
-        public void Resolve_KnownDependencyAsTransientWithUnknownDependency_ShouldThrowUnknownContractException()
+        public void Resolve_KnownDependencyAsTransientWithUnknownDependency_ShouldThrowConstructorInjectorException()
         {
             var container = new ContainerBuilder()
                 .AddTransient(typeof(ClassWithDependency), typeof(IClassWithDependency))
                 .Build();
             
             Action resolve = () => container.Single<IClassWithDependency>();
-            resolve.Should().Throw<UnknownContractException>();
+            resolve.Should().Throw<ConstructorInjectorException>();
         }
 
         [Test]
-        public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowUnknownContractException()
+        public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowConstructorInjectorException()
         {
             var container = new ContainerBuilder()
                 .AddSingleton(typeof(ClassWithDependency), typeof(IClassWithDependency))
                 .Build();
             
             Action resolve = () => container.Single<IClassWithDependency>();
-            resolve.Should().Throw<UnknownContractException>();
+            resolve.Should().Throw<ConstructorInjectorException>();
         }
 
         [Test]
