@@ -23,8 +23,7 @@ namespace Reflex.Injectors
         private static void BeforeAwakeOfFirstSceneOnly()
         {
             ReportReflexDebuggerStatus();
-            
-            ContainersPerScene.Clear();
+            ResetStaticState();
             ProjectContainer = CreateProjectContainer.Create();
 
             void InjectScene(Scene scene, SceneScope sceneScope)
@@ -78,6 +77,20 @@ namespace Reflex.Injectors
 
                 sceneScope.InstallBindings(builder);
             });
+        }
+
+        /// <summary>
+        /// Ensure static state is reset.
+        /// This is only required when playing from editor when ProjectSettings > Editor > Reload Domain is set to false. 
+        /// </summary>
+        [Conditional("UNITY_EDITOR")]
+        private static void ResetStaticState()
+        {
+            OnSceneLoaded = null;
+            ProjectContainer = null;
+            ContainersPerScene.Clear();
+            SceneContainerParentOverride.Clear();
+            ScenePreInstaller.Clear();
         }
 
         [Conditional("REFLEX_DEBUG")]
