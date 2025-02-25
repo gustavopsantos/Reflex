@@ -13,13 +13,7 @@ namespace Reflex.Caching
 
         internal static TypeConstructionInfo Get(Type type)
         {
-            if (!_dictionary.TryGetValue(type, out var info))
-            {
-                info = Generate(type);
-                _dictionary.Add(type, info);
-            }
-        
-            return info;
+            return _dictionary.GetOrAdd(type, Generate);
         }
         
         private static TypeConstructionInfo Generate(Type type)

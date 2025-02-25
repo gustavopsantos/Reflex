@@ -35,7 +35,8 @@ namespace Reflex.Core
 
                 foreach (var contract in binding.Contracts)
                 {
-                    resolversByContract.GetOrAdd(contract, _ => new List<IResolver>()).Add(binding.Resolver);
+                    var resolvers = resolversByContract.GetOrAdd(contract, _ => new List<IResolver>());
+                    resolvers.Add(binding.Resolver);
                 }
             }
 
