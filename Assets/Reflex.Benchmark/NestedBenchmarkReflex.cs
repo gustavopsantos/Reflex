@@ -23,7 +23,7 @@ namespace Reflex.Benchmark
 
         protected override void Sample()
         {
-            _container.Single<IA>();
+            _container.Resolve<IA>();
         }
     }
 }
