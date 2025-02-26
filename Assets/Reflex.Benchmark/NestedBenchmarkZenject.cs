@@ -6,9 +6,7 @@ namespace Reflex.Benchmark
 {
     internal class NestedBenchmarkZenject : MonoProfiler
     {
-        private readonly DiContainer _container = new DiContainer();
-
-        protected override int Order => 1;
+        private readonly DiContainer _container = new();
         
         private void Start()
         {

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Profiling;
+using UnityEngine.UI;
 
 namespace Reflex.Benchmark.Utilities
 {
@@ -11,46 +13,42 @@ namespace Reflex.Benchmark.Utilities
 		
 		[SerializeField] public string _identifier;
 		[SerializeField, Min(1)] public int _iterations;
-		
-		private Rect _area;
-		private readonly Stopwatch _stopwatch = new Stopwatch();
-		private readonly RingBuffer<long> _samples = new RingBuffer<long>(SampleCount);
-		private readonly Lazy<GUIStyle> _style = new Lazy<GUIStyle>(() => new GUIStyle("label")
-		{
-			fontSize = 48,
-			alignment = TextAnchor.MiddleCenter
-		});
-
-		protected abstract int Order { get; }
+		[SerializeField] public Text _resultOutput;
+		private readonly RingBuffer<long> _samples = new(SampleCount);
+		private readonly Dictionary<long, string> _stringPool = new();
 
 		protected abstract void Sample();
 
-		private void Awake()
-		{
-			var height = (float) Screen.height / 3;
-			_area = new Rect(0, Order * height, Screen.width, height);
-		}
-
 		private void Update()
 		{
-			_stopwatch.Restart();
+			// Sample and measure
+			var before = Stopwatch.GetTimestamp();
 			Profiler.BeginSample(_identifier);
-			for (int i = 0; i < _iterations; i++) Sample();
+			for (var i = 0; i < _iterations; i++)
+			{
+				Sample();
+			}
 			Profiler.EndSample();
-			_stopwatch.Stop();
-			_samples.Push(_stopwatch.ElapsedMilliseconds);
-		}
-
-		private void OnGUI()
-		{
-			GUI.Label(_area, $"{_identifier}: {Average(_samples)}", _style.Value);
+			var after = Stopwatch.GetTimestamp();
+			var elapsedMilliseconds = (after - before) / TimeSpan.TicksPerMillisecond;
+			_samples.Push(elapsedMilliseconds);
+			
+			// Present result
+			var average = Average(_samples);
+			if (!_stringPool.TryGetValue(average, out var output))
+			{
+				output = $"{_identifier}: {average}";
+				_stringPool.Add(average, output);
+			}
+			
+			_resultOutput.text = output;
 		}
 
 		private static long Average(RingBuffer<long> buffer)
 		{
 			long total = 0;
 
-			for (int i = 0; i < buffer.Length; i++)
+			for (var i = 0; i < buffer.Length; i++)
 			{
 				total += buffer[i];
 			}

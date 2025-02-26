@@ -19,8 +19,6 @@ namespace Reflex.Benchmark
                 .Build();
         }
 
-        protected override int Order => 0;
-
         protected override void Sample()
         {
             _container.Resolve<IA>();

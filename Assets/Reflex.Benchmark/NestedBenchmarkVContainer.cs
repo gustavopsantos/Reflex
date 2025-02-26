@@ -6,10 +6,8 @@ namespace Reflex.Benchmark
 {
     internal class NestedBenchmarkVContainer : MonoProfiler
     {
-        private readonly ContainerBuilder _containerBuilder = new ContainerBuilder();
+        private readonly ContainerBuilder _containerBuilder = new();
         private IObjectResolver _objectResolver;
-
-        protected override int Order => 2;
 
         private void Start()
         {
