@@ -2,7 +2,7 @@
   "dependencies": {
     "com.svermeulen.extenject": "https://github.com/modesttree/Zenject.git?path=/UnityProject/Assets/Plugins/Zenject/#9.2.1",
     "jp.hadashikick.vcontainer": "https://github.com/hadashiA/VContainer.git?path=/VContainer/Assets/VContainer/#1.13.2",
-    "com.unity.ide.rider": "3.0.28",
+    "com.unity.ide.rider": "3.0.34",
     "com.unity.nuget.newtonsoft-json": "3.0.2",
     "com.unity.test-framework": "2.0.1-exp.2",
     "com.unity.ugui": "1.0.0",
