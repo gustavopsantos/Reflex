@@ -400,7 +400,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 968908746}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 628f8370ee633b145b7aa89a755ebc6e, type: 3}
   m_Name: 
@@ -421,7 +421,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _identifier: VContainer
-  _iterations: 10000
+  _iterations: 1000
   _resultOutput: {fileID: 947312789}
 --- !u!114 &968908754
 MonoBehaviour:
@@ -436,7 +436,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _identifier: Reflex
-  _iterations: 10000
+  _iterations: 1000
   _resultOutput: {fileID: 1560327401}
 --- !u!1 &1560327399
 GameObject:

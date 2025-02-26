@@ -15,7 +15,7 @@ namespace Reflex.Extensions
                 return true;
             }
 
-            elementType = default;
+            elementType = null;
             return false;
         }
         

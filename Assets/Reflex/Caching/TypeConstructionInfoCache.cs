@@ -9,14 +9,15 @@ namespace Reflex.Caching
 {
     internal static class TypeConstructionInfoCache
     {
-        private static readonly Dictionary<Type, TypeConstructionInfo> _dictionary = new();
+        private static readonly Dictionary<IntPtr, TypeConstructionInfo> _dictionary = new();
 
         internal static TypeConstructionInfo Get(Type type)
         {
-            if (!_dictionary.TryGetValue(type, out var info))
+            var key = type.TypeHandle.Value;
+            if (!_dictionary.TryGetValue(key, out var info))
             {
                 info = Generate(type);
-                _dictionary.Add(type, info);
+                _dictionary.Add(key, info);
             }
         
             return info;

@@ -9,19 +9,25 @@ namespace Reflex.Injectors
         {
             var info = TypeInfoCache.Get(obj.GetType());
 
-            for (int i = 0; i < info.InjectableFields.Length; i++)
+            var fields = info.InjectableFields;
+            var fieldCount = fields.Length;
+            for (var i = 0; i < fieldCount; i++)
             {
-                FieldInjector.Inject(info.InjectableFields[i], obj, container);
-            }
-            
-            for (int i = 0; i < info.InjectableProperties.Length; i++)
-            {
-                PropertyInjector.Inject(info.InjectableProperties[i], obj, container);
+                FieldInjector.Inject(fields[i], obj, container);
             }
 
-            for (int i = 0; i < info.InjectableMethods.Length; i++)
+            var properties = info.InjectableProperties;
+            var propertyCount = properties.Length;
+            for (var i = 0; i < propertyCount; i++)
             {
-                MethodInjector.Inject(info.InjectableMethods[i], obj, container);
+                PropertyInjector.Inject(properties[i], obj, container);
+            }
+
+            var methods = info.InjectableMethods;
+            var methodCount = methods.Length;
+            for (var i = 0; i < methodCount; i++)
+            {
+                MethodInjector.Inject(methods[i], obj, container);
             }
         }
     }

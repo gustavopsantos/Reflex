@@ -9,7 +9,7 @@ namespace Reflex.Benchmark.Utilities
 {
 	public abstract class MonoProfiler : MonoBehaviour
 	{
-		private const int SampleCount = 32;
+		private const int SampleCount = 64;
 		
 		[SerializeField] public string _identifier;
 		[SerializeField, Min(1)] public int _iterations;

@@ -20,7 +20,7 @@ namespace Reflex.Injectors
             using var pooledObject = ListPool<MonoBehaviour>.Get(out var monoBehaviours);
             gameObject.GetComponents<MonoBehaviour>(monoBehaviours);
 
-            for (int i = 0; i < monoBehaviours.Count; i++)
+            for (var i = 0; i < monoBehaviours.Count; i++)
             {
                 var monoBehaviour = monoBehaviours[i];
 
@@ -36,7 +36,7 @@ namespace Reflex.Injectors
             using var pooledObject = ListPool<MonoBehaviour>.Get(out var monoBehaviours);
             gameObject.GetComponentsInChildren<MonoBehaviour>(true, monoBehaviours);
 
-            for (int i = 0; i < monoBehaviours.Count; i++)
+            for (var i = 0; i < monoBehaviours.Count; i++)
             {
                 var monoBehaviour = monoBehaviours[i];
 
@@ -51,11 +51,11 @@ namespace Reflex.Injectors
         {
             using var pooledObject = ListPool<MonoBehaviour>.Get(out var monoBehaviours);
 
-            for (int i = 0; i < gameObject.Count; i++)
+            for (var i = 0; i < gameObject.Count; i++)
             {
                 gameObject[i].GetComponentsInChildren<MonoBehaviour>(true, monoBehaviours);
 
-                for (int j = 0; j < monoBehaviours.Count; j++)
+                for (var j = 0; j < monoBehaviours.Count; j++)
                 {
                     var monoBehaviour = monoBehaviours[j];
 
