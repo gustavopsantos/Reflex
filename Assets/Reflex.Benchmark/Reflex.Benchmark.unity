@@ -229,7 +229,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 968908750}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -288,8 +288,8 @@ GameObject:
   m_Component:
   - component: {fileID: 968908750}
   - component: {fileID: 968908754}
-  - component: {fileID: 968908753}
   - component: {fileID: 968908752}
+  - component: {fileID: 968908753}
   - component: {fileID: 968908749}
   - component: {fileID: 968908748}
   - component: {fileID: 968908751}
@@ -357,8 +357,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1560327400}
-  - {fileID: 947312788}
   - {fileID: 1932425335}
+  - {fileID: 947312788}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -549,7 +549,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 968908750}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
