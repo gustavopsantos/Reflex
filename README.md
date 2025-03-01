@@ -51,8 +51,8 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 ---
 
 ## 👀 Overview
-- **Fast:** ~3x faster than VContainer, ~7x faster than Zenject.
-- **GC Friendly:** ~2x less allocations than VContainer, ~9x less allocations than Zenject.
+- **Fast:** up to 414% faster than VContainer, up to 800% faster than Zenject.
+- **GC Friendly:** up to 28% less allocations than VContainer, up to 921% less allocations than Zenject.
 - **AOT Support:** Basically there's no runtime Emit, so it works fine on IL2CPP builds. [<sup>[*]</sup>](#-scripting-restrictions)
 - **Contract Table:** Allows usages of APIs like `container.All<IDisposable>`
 - **Immutable Container**: Performant thread safety free of lock plus predictable behavior.
@@ -531,32 +531,32 @@ Currently, logging verbosity is configured in this file, and default value is se
 > Resolving ten thousand times a transient dependency with four levels of chained dependencies. See [NestedBenchmarkReflex.cs](Assets/Reflex.Benchmark/NestedBenchmarkReflex.cs).
 
 ### Android + Mono
-|           | GC       | Time    | GC Ratio | Time Ratio |
-|-----------|---------:|--------:|---------:|-----------:|
-| Reflex    | 54.7 KB  | 500ns   | 100%     | 100%       |
-| Zenject   | 503.9 KB | 3200ns  | 921%     | 640%       |
-| VContainer| 70.3 KB  | 1950ns  | 128%     | 390%       |
+|            |       GC |     Time | GC Ratio | Time Ratio |
+|------------|---------:|---------:|---------:|-----------:|
+| Reflex     |  54.7 KB |    4.9ms |     100% |       100% |
+| Zenject    | 503.9 KB |   34.4ms |     921% |       702% |
+| VContainer |  70.3 KB |   20.3ms |     128% |       414% |
 
 ### Android + IL2CPP
-|           | GC       | Time   | GC Ratio | Time Ratio |
-|-----------|---------:|-------:|---------:|-----------:|
-| Reflex    | 140.6 KB | 470ns  | 100%     | 100%       |
-| Zenject   | 1000 KB  | 1950ns | 711%     | 414%       |
-| VContainer| 140.6 KB | 500ns  | 100%     | 106%       |
+|           |        GC |   Time | GC Ratio | Time Ratio |
+|-----------|----------:|-------:|---------:|-----------:|
+| Reflex    |  140.6 KB |  4.0ms |     100% |       100% |
+| Zenject   |   1000 KB | 15.8ms |     711% |       395% |
+| VContainer|  140.6 KB |  4.2ms |     100% |       105% |
 
 ### Windows + Mono
-|           | GC       | Time   | GC Ratio | Time Ratio |
-|-----------|---------:|-------:|---------:|-----------:|
-| Reflex    | 140.6 KB | 70ns   | 100%     | 100%       |
-| Zenject   | 1000 KB  | 540ns  | 711%     | 771%       |
-| VContainer| 140.6 KB | 180ns  | 100%     | 257%       |
+|           |         GC |   Time | GC Ratio | Time Ratio |
+|-----------|-----------:|-------:|---------:|-----------:|
+| Reflex    |   140.6 KB |  0.7ms |     100% |       100% |
+| Zenject   |    1000 KB |  5.6ms |     711% |       800% |
+| VContainer|   140.6 KB |  1.9ms |     100% |       271% |
 
 ### Windows + IL2CPP
-|           | GC       | Time   | GC Ratio | Time Ratio |
+|           |       GC |   Time | GC Ratio | Time Ratio |
 |-----------|---------:|-------:|---------:|-----------:|
-| Reflex    | 140.6 KB | 140ns  | 100%     | 100%       |
-| Zenject   | 1000 KB  | 600ns  | 711%     | 428%       |
-| VContainer| 140.6 KB | 310ns  | 100%     | 221%       |
+| Reflex    | 140.6 KB |  1.4ms |     100% |       100% |
+| Zenject   |  1000 KB |  6.2ms |     711% |       442% |
+| VContainer| 140.6 KB |  3.0ms |     100% |       214% |
 
 ## 🚫 Scripting Restrictions
 If you are taking advantage of reflex to inject `IEnumerable<T>` in your constructors **AND** your are building for **IL2CPP**, you will probably get some exceptions like following:
