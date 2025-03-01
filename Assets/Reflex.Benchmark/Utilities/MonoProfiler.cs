@@ -31,7 +31,8 @@ namespace Reflex.Benchmark.Utilities
 			Profiler.EndSample();
 			var after = Stopwatch.GetTimestamp();
 			var elapsedTicks = after - before;
-			_samples.Push(elapsedTicks);
+			var elapsedMilliseconds = elapsedTicks / TimeSpan.TicksPerMillisecond;
+			_samples.Push(elapsedMilliseconds);
 			
 			// Present result
 			var average = Average(_samples);
