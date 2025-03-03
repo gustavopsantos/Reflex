@@ -255,6 +255,8 @@ Note that ProjectScope prefab is not required, in case Reflex does not find any 
 ProjectScope instance will be disposed once app closes/app quits.
 > Note that unity does not call OnDestroy deterministically, so rule of thumb is do not rely on injected dependencies on OnDestroy event functions.
 
+> Note that you can use `LoadAllProjectScopes` setting in `ReflexSettings` to restrict loading only one ProjectScope that sits at `Resources/ProjectScope.prefab`.
+
 ### Scene Scope
 It is scoped from ProjectScope, inheriting all bindings from ProjectScope.
 It is created and injected before Awake. 
