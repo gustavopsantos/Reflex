@@ -1,4 +1,3 @@
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using Reflex.Configuration;
@@ -17,11 +16,11 @@ namespace Reflex.Core
                 : true;
 
             var builder = new ContainerBuilder().SetName("ProjectContainer");
-            var activeProjectScopes = loadAllProjectScopes
+            var projectScopes = loadAllProjectScopes
                 ? LoadAllProjectScopes()
                 : LoadSingleProjectScope();
 
-            foreach (var projectScope in activeProjectScopes)
+            foreach (var projectScope in projectScopes.Where(ps => ps.gameObject.activeSelf))
             {
                 projectScope.InstallBindings(builder);
             }
@@ -31,15 +30,13 @@ namespace Reflex.Core
 
         private static IEnumerable<ProjectScope> LoadAllProjectScopes()
         {
-            var projectScopes = Resources.LoadAll<ProjectScope>(string.Empty);
-            var activeProjectScopes = projectScopes;
-            return activeProjectScopes;
+            return Resources.LoadAll<ProjectScope>(string.Empty);
         }
 
         private static IEnumerable<ProjectScope> LoadSingleProjectScope()
         {
             var projectScope = Resources.Load<ProjectScope>("ProjectScope");
-            if (projectScope != null && projectScope.gameObject.activeSelf)
+            if (projectScope != null)
             {
                 yield return projectScope;
             }
