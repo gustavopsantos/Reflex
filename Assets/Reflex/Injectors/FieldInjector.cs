@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Reflex.Attributes;
 using Reflex.Core;
 using Reflex.Exceptions;
 
@@ -11,7 +12,7 @@ namespace Reflex.Injectors
         {
             try
             {
-                field.SetValue(instance, container.Resolve(field.FieldType));
+                field.SetValue(instance, container.Resolve(field.FieldType, field.GetCustomAttribute<InjectAttribute>()));
             }
             catch (Exception e)
             {
