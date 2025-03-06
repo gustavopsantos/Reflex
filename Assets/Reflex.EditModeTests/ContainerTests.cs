@@ -43,11 +43,34 @@ namespace Reflex.EditModeTests
         }
 
         [Test]
+        public void Resolve_SingletonById_ShouldReturn42AndAddedToAll()
+        {
+            string id = "AnswerToEverything";
+            var container = new ContainerBuilder()
+                .AddSingleton(24, typeof(int)) //Add something before int with identifier
+                .AddSingleton(42, id)
+                .AddSingleton(12, typeof(int)) //Override "last" to test if the correct value is returned by using id
+                .Build();
+            
+            container.All<int>().Should().HaveCount(3);
+            container.All<int>().Should().ContainInOrder(24, 42, 12);
+            container.Single<int>(id).Should().Be(42);
+        }
+
+        [Test]
         public void Resolve_UninstalledValueType_ShouldThrowUnknownContractException()
         {
             var container = new ContainerBuilder().Build();
             Action resolve = () => container.Single<int>();
             resolve.Should().Throw<UnknownContractException>();
+        }
+
+        [Test]
+        public void Resolve_UninstalledIdentifier_ShouldThrowUnknownIdException()
+        {
+            var container = new ContainerBuilder().Build();
+            Action resolve = () => container.Single<int>("identifier");
+            resolve.Should().Throw<UnknownIdentifierException>();
         }
 
         [Test]
@@ -280,6 +303,21 @@ namespace Reflex.EditModeTests
         {
             var container = new ContainerBuilder().AddSingleton(42).Build();
             container.HasBinding<int>().Should().BeTrue();
+        }
+        
+        [Test]
+        public void HasBindingByIdReturnFalseWhenBindingIsNotDefined()
+        {
+            var container = new ContainerBuilder().Build();
+            container.HasBinding("AnswerToEverything").Should().BeFalse();
+        }
+        
+        [Test]
+        public void HasBindingByIdReturnTrueWhenBindingIsDefined()
+        {
+            string id = "AnswerToEverything";
+            var container = new ContainerBuilder().AddSingleton(42, id).Build();
+            container.HasBinding(id).Should().BeTrue();
         }
     }
 }
