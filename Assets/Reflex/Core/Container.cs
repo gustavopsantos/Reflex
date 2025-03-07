@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Reflex.Attributes;
 using Reflex.Exceptions;
 using Reflex.Extensions;
 using Reflex.Generics;
@@ -16,15 +17,17 @@ namespace Reflex.Core
         internal Container Parent { get; }
         internal List<Container> Children { get; } = new();
         internal Dictionary<Type, List<IResolver>> ResolversByContract { get; }
+        internal Dictionary<string, List<IResolver>> ResolversById { get; }
         internal DisposableCollection Disposables { get; }
         
-        internal Container(string name, Container parent, Dictionary<Type, List<IResolver>> resolversByContract, DisposableCollection disposables)
+        internal Container(string name, Container parent, Dictionary<Type, List<IResolver>> resolversByContract, Dictionary<string, List<IResolver>> resolversById, DisposableCollection disposables)
         {
             Diagnosis.RegisterBuildCallSite(this);
             Name = name;
             Parent = parent;
             Parent?.Children.Add(this);
             ResolversByContract = resolversByContract;
+            ResolversById = resolversById;
             Disposables = disposables;
             OverrideSelfInjection();
         }
@@ -37,6 +40,11 @@ namespace Reflex.Core
         public bool HasBinding(Type type)
         {
             return ResolversByContract.ContainsKey(type);
+        }
+        
+        public bool HasBinding(string identifier)
+        {
+            return ResolversById.ContainsKey(identifier);
         }
 
         public void Dispose()
@@ -83,6 +91,23 @@ namespace Reflex.Core
             var resolved = lastResolver.Resolve(this);
             return resolved;
         }
+        
+        public object Resolve(Type type, InjectAttribute injectAttribute)
+        {
+            if (!injectAttribute.HasIdentifier)
+                return Resolve(type);
+            
+            var identifier = injectAttribute.Identifier;
+            if (type.IsEnumerable(out var elementType))
+            {
+                return All(identifier).CastDynamic(elementType);
+            }
+
+            var resolvers = GetResolvers(identifier);
+            var lastResolver = resolvers.Last();
+            var resolved = lastResolver.Resolve(this);
+            return resolved;
+        }
 
         public TContract Resolve<TContract>()
         {
@@ -92,6 +117,11 @@ namespace Reflex.Core
         public object Single(Type type)
         {
             return GetResolvers(type).Single().Resolve(this);
+        }
+        
+        public TOutput Single<TOutput>(string identifier)
+        {
+            return (TOutput)GetResolvers(identifier).Single().Resolve(this);
         }
 
         public TContract Single<TContract>()
@@ -112,6 +142,13 @@ namespace Reflex.Core
                 ? resolvers.Select(resolver => (TContract) resolver.Resolve(this)).ToArray()
                 : Enumerable.Empty<TContract>();
         }
+        
+        public IEnumerable<object> All(string identifier)
+        {
+            return ResolversById.TryGetValue(identifier, out var resolvers)
+                ? resolvers.Select(resolver => resolver.Resolve(this)).ToArray()
+                : Enumerable.Empty<object>();
+        }
 
         private IEnumerable<IResolver> GetResolvers(Type contract)
         {
@@ -121,6 +158,16 @@ namespace Reflex.Core
             }
 
             throw new UnknownContractException(contract);
+        }
+        
+        private IEnumerable<IResolver> GetResolvers(string identifier)
+        {
+            if (ResolversById.TryGetValue(identifier, out var resolvers))
+            {
+                return resolvers;
+            }
+
+            throw new UnknownIdentifierException(identifier);
         }
         
         private void OverrideSelfInjection()

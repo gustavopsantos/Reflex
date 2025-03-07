@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using Reflex.Core;
 using Reflex.Exceptions;
+using Reflex.Attributes;
 
 namespace Reflex.Injectors
 {
@@ -11,7 +12,7 @@ namespace Reflex.Injectors
         {
             try
             {
-                property.SetValue(instance, container.Resolve(property.PropertyType));
+                property.SetValue(instance, container.Resolve(property.PropertyType, property.GetCustomAttribute<InjectAttribute>()));
             }
             catch (Exception e)
             {

@@ -18,6 +18,7 @@ namespace Reflex.Core
         {
             var disposables = new DisposableCollection();
             var resolversByContract = new Dictionary<Type, List<IResolver>>();
+            var resolversById = new Dictionary<string, List<IResolver>>();
 
             // Inherited resolvers
             if (Parent != null)
@@ -25,6 +26,10 @@ namespace Reflex.Core
                 foreach (var kvp in Parent.ResolversByContract)
                 {
                     resolversByContract[kvp.Key] = kvp.Value.ToList();
+                }
+                foreach (var kvp in Parent.ResolversById)
+                {
+                    resolversById[kvp.Key] = kvp.Value.ToList();
                 }
             }
 
@@ -43,9 +48,20 @@ namespace Reflex.Core
 
                     resolvers.Add(binding.Resolver);
                 }
+
+                if (string.IsNullOrEmpty(binding.Identifier)) continue;
+                
+                if (!resolversById.TryGetValue(binding.Identifier, out var idResolvers))
+                {
+                    idResolvers = new List<IResolver>();
+                    resolversById.Add(binding.Identifier, idResolvers);
+                }
+
+                idResolvers.Add(binding.Resolver);
+                
             }
 
-            var container = new Container(Name, Parent, resolversByContract, disposables);
+            var container = new Container(Name, Parent, resolversByContract, resolversById, disposables);
             OnContainerBuilt?.Invoke(container);
             return container;
         }
@@ -76,10 +92,20 @@ namespace Reflex.Core
         {
             return Add(instance.GetType(), contracts, new SingletonValueResolver(instance));
         }
+        
+        public ContainerBuilder AddSingleton(object instance, string identifier, params Type[] contracts)
+        {
+            return Add(instance.GetType(), contracts, identifier, new SingletonValueResolver(instance));
+        }
 
         public ContainerBuilder AddSingleton(object instance)
         {
             return AddSingleton(instance, instance.GetType());
+        }
+
+        public ContainerBuilder AddSingleton(object instance, string identifier)
+        {
+            return AddSingleton(instance, identifier, instance.GetType());
         }
 
         public ContainerBuilder AddSingleton<T>(Func<Container, T> factory, params Type[] contracts)
@@ -156,10 +182,22 @@ namespace Reflex.Core
         {
             return Bindings.Any(binding => binding.Contracts.Contains(type));
         }
+        
+        public bool HasBinding(string identifier)
+        {
+            return Bindings.Any(binding => binding.Identifier == identifier);
+        }
 
         private ContainerBuilder Add(Type concrete, Type[] contracts, IResolver resolver)
         {
             var binding = Binding.Validated(resolver, concrete, contracts);
+            Bindings.Add(binding);
+            return this;
+        }
+
+        private ContainerBuilder Add(Type concrete, Type[] contracts, string identifier, IResolver resolver)
+        {
+            var binding = Binding.Validated(resolver, concrete, identifier, contracts);
             Bindings.Add(binding);
             return this;
         }
