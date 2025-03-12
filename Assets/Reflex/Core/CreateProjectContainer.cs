@@ -9,14 +9,9 @@ namespace Reflex.Core
     {
         public static Container Create()
         {
-            var reflexSettings = Resources.Load<ReflexSettings>(nameof(ReflexSettings));
-
-            var loadAllProjectScopes = reflexSettings != null
-                ? reflexSettings.LoadAllProjectScopes
-                : true;
-
+            var reflexSettings = ReflexSettings.Instance;
             var builder = new ContainerBuilder().SetName("ProjectContainer");
-            var projectScopes = loadAllProjectScopes
+            var projectScopes = reflexSettings.LoadAllProjectScopes
                 ? LoadAllProjectScopes()
                 : LoadSingleProjectScope();
 
