@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ReflexSettings
   m_EditorClassIdentifier: 
   <LogLevel>k__BackingField: 0
-  <LoadAllProjectScopes>k__BackingField: 1
+  <ProjectScopes>k__BackingField: []

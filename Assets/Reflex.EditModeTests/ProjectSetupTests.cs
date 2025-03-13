@@ -7,17 +7,15 @@ namespace Reflex.EditModeTests
     public class ProjectSetupTests
     {
         [Test]
-        public void ProjectCanHaveNoneOrSingleReflexSettings()
+        public void ProjectShouldHaveReflexSettings()
         {
-            var assets = Resources.LoadAll<ReflexSettings>(string.Empty);
-
-            if (assets.Length is 0 or 1)
+            if (ReflexSettings.Instance != null)
             {
                 Assert.Pass();
             }
             else
             {
-                Assert.Fail($"You can have none or a single ReflexSettings, currently you have {assets.Length}");
+                Assert.Fail($"Project is missing ReflexSettings scriptable object at Resources folder.");
             }
         }
     }

@@ -11,30 +11,16 @@ namespace Reflex.Core
         {
             var reflexSettings = ReflexSettings.Instance;
             var builder = new ContainerBuilder().SetName("ProjectContainer");
-            var projectScopes = reflexSettings.LoadAllProjectScopes
-                ? LoadAllProjectScopes()
-                : LoadSingleProjectScope();
 
-            foreach (var projectScope in projectScopes.Where(ps => ps.gameObject.activeSelf))
+            if (reflexSettings.ProjectScopes != null)
             {
-                projectScope.InstallBindings(builder);
+                foreach (var projectScope in reflexSettings.ProjectScopes.Where(x => x != null && x.gameObject.activeSelf))
+                {
+                    projectScope.InstallBindings(builder);
+                }
             }
 
             return builder.Build();
-        }
-
-        private static IEnumerable<ProjectScope> LoadAllProjectScopes()
-        {
-            return Resources.LoadAll<ProjectScope>(string.Empty);
-        }
-
-        private static IEnumerable<ProjectScope> LoadSingleProjectScope()
-        {
-            var projectScope = Resources.Load<ProjectScope>("ProjectScope");
-            if (projectScope != null)
-            {
-                yield return projectScope;
-            }
         }
     }
 }
