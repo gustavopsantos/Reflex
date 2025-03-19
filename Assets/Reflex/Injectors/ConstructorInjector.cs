@@ -10,7 +10,7 @@ namespace Reflex.Injectors
     {
         [ThreadStatic]
         private static SizeSpecificArrayPool<object> _arrayPool;
-        internal static SizeSpecificArrayPool<object> ArrayPool => _arrayPool ??= new SizeSpecificArrayPool<object>(initialSize: 16);
+        internal static SizeSpecificArrayPool<object> ArrayPool => _arrayPool ??= new SizeSpecificArrayPool<object>(maxLength: 16);
         
         public static object Construct(Type concrete, Container container)
         {
@@ -31,6 +31,10 @@ namespace Reflex.Injectors
             catch (Exception exception)
             {
                 throw new ConstructorInjectorException(concrete, exception, constructorParameters);
+            }
+            finally
+            {
+                ArrayPool.Return(arguments);
             }
         }
         
