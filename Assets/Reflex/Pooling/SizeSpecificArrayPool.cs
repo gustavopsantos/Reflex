@@ -2,11 +2,11 @@
 
 namespace Reflex.Pooling
 {
-    internal sealed class ThreadStaticArrayPool<T> where T : new()
+    internal sealed class SizeSpecificArrayPool<T> where T : new()
     {
         private T[][] _pool;
 
-        public ThreadStaticArrayPool(int initialSize)
+        public SizeSpecificArrayPool(int initialSize)
         {
             _pool = BuildPool(initialSize);
         }

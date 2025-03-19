@@ -9,8 +9,8 @@ namespace Reflex.Injectors
     public static class ConstructorInjector
     {
         [ThreadStatic]
-        private static ThreadStaticArrayPool<object> _arrayPool;
-        internal static ThreadStaticArrayPool<object> ArrayPool => _arrayPool ??= new ThreadStaticArrayPool<object>(initialSize: 16);
+        private static SizeSpecificArrayPool<object> _arrayPool;
+        internal static SizeSpecificArrayPool<object> ArrayPool => _arrayPool ??= new SizeSpecificArrayPool<object>(initialSize: 16);
         
         public static object Construct(Type concrete, Container container)
         {

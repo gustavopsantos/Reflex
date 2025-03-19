@@ -9,8 +9,8 @@ namespace Reflex.Injectors
     internal static class MethodInjector
     {
         [ThreadStatic]
-        private static ThreadStaticArrayPool<object> _arrayPool;
-        private static ThreadStaticArrayPool<object> ArrayPool => _arrayPool ??= new ThreadStaticArrayPool<object>(initialSize: 16);
+        private static SizeSpecificArrayPool<object> _arrayPool;
+        private static SizeSpecificArrayPool<object> ArrayPool => _arrayPool ??= new SizeSpecificArrayPool<object>(initialSize: 16);
         
         internal static void Inject(InjectedMethodInfo method, object instance, Container container)
         {
