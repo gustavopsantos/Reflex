@@ -352,7 +352,7 @@ private class Foo
 {  
 	...
   
-	public NumberManager(IInputManager inputManager, IEnumerable<IManager> managers)  
+	public Foo(IInputManager inputManager, IEnumerable<IManager> managers)  
 	{  
 		...
 	}  
