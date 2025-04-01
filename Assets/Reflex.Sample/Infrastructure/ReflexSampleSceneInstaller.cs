@@ -4,15 +4,13 @@ using UnityEngine;
 
 namespace Reflex.Sample.Infrastructure
 {
-    internal class ReflexSampleInstaller : MonoBehaviour, IInstaller
+    internal class ReflexSampleSceneInstaller : MonoBehaviour, IInstaller
     {
-        [SerializeField] private PickupSoundEffect _pickupSoundEffectPrefab;
         [SerializeField] private CollectorConfigurationModel _collectorConfigurationModel;
 
         public void InstallBindings(ContainerBuilder containerBuilder)
         {
             InstallInput(containerBuilder, useMouse: false);
-            containerBuilder.AddSingleton(_pickupSoundEffectPrefab);
             containerBuilder.AddSingleton(_collectorConfigurationModel);
             containerBuilder.AddSingleton(typeof(CollectionStoragePrefs), typeof(ICollectionStorage));
         }
