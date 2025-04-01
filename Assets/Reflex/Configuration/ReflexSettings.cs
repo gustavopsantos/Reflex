@@ -20,7 +20,8 @@ namespace Reflex.Configuration
                     _instance = Resources.Load<ReflexSettings>("ReflexSettings");
                 }
                 
-                Assert.IsNotNull(_instance, "ReflexSettings not found in Resources folder. Please create one.");
+                Assert.IsNotNull(_instance, "ReflexSettings not found in Resources folder.\n" +
+                                            "Please create ReflexSettings using right mouse button over Resources folder, Create > Reflex > Settings.");
                 return _instance;
             }
         }
