@@ -108,11 +108,12 @@ public class ProjectInstaller : MonoBehaviour, IInstaller
 }
 ```
 3. In unity project window
-5. Create directory `Assets/Resources`
-6. Select just created `Resources` dir
-7. Right click, Create → Reflex → ProjectScope
-8. With just created `ProjectScope` selected
-9. Add `ProjectInstaller.cs` created at step 2 as a component
+4. Create directory `Assets/Resources`
+5. Right click over `Resources` folder, Create → Reflex → ProjectScope
+6. With just created `ProjectScope` selected
+7. Add `ProjectInstaller.cs` as a component
+8. Right click over `Resources` folder, Create → Reflex → Settings
+9. Select `ReflexSettings` ScriptableObject and add the `ProjectScope` prefab to the ProjectScopes list
 10. Create new scene `Greet`
 11. Add `Greet` to `Build Settings` → `Scenes In Build`
 12. Create `Greeter.cs` with
@@ -131,9 +132,9 @@ public class Greeter : MonoBehaviour
     }
 }
 ```
-12. Add `Greeter.cs` to any gameobject in `Greet` scene
-13. Inside Greet scene, create a new empty gameobject named `SceneScope` and attach `SceneScope` component
-14. Create `GreetInstaller.cs` with
+13. Add `Greeter.cs` to any gameobject in `Greet` scene
+14. Inside Greet scene, create a new empty gameobject named `SceneScope` and attach `SceneScope` component
+15. Create `GreetInstaller.cs` with
 ```csharp
 using Reflex.Core;
 using UnityEngine;
@@ -146,10 +147,10 @@ public class GreetInstaller : MonoBehaviour, IInstaller
     }
 }
 ```
-15. Add `GreetInstaller.cs` to `Greet.unity` `SceneScope`
-16. Create new scene `Boot`
-17. Add `Boot` to `Build Settings` → `Scenes In Build`
-18. Create `Loader.cs` with
+16. Add `GreetInstaller.cs` to `Greet.unity` `SceneScope`
+17. Create new scene `Boot`
+18. Add `Boot` to `Build Settings` → `Scenes In Build`
+19. Create `Loader.cs` with
 ```csharp
 using Reflex.Core;
 using UnityEngine;
@@ -172,10 +173,10 @@ public class Loader : MonoBehaviour
     }
 }
 ```
-19. Assign it to any gameobject at `Boot` scene
-20. Thats it, hit play while on `Boot` scene
-21. When Greet scene is loaded, there should be 3 instances implementing string contract
-22. So when Greeter::Start is called, you should see the following log in the unity console: `Hello Beautiful world`
+20. Assign it to any gameobject at `Boot` scene
+21. Thats it, hit play while on `Boot` scene
+22. When Greet scene is loaded, there should be 3 instances implementing string contract
+23. So when Greeter::Start is called, you should see the following log in the unity console: `Hello Beautiful world`
 
 ---
 
@@ -246,16 +247,15 @@ Container scoping refers to the ability of being able to create a container inhe
 ### Project Scope
 It is root scope.
 It is created just before first scene opens by relying on `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]`
-To register bindings to it, create a prefab, name it how you wish, the name is not used as a identifier, put it inside any Resources folder, and attach a "ProjectScope" component to it.
+To register bindings to it, create a prefab, name it how you wish, the name is not used as a identifier, and attach a "ProjectScope" component to it.
+Select ReflexSettings and add your ProjectScope prefab to the list of ProjectScopes.
 Then, create your installer as MonoBehaviour and implement IInstaller interface.
 Remember to attach your installer to the ProjectScope prefab, as ProjectScope searches for every child implementing IInstaller when it's time to create the ProjectScope container.
 There's a menu item to ease the process: Assets > Create > Reflex > ProjectScope
-You can create multiple ProjectScope in many different Resources folders across the project, and when its time to create the project container, all active ProjectScope prefabs will be merged, this allow a better separation of concerns if required.
+You can create multiple ProjectScope prefabs, and when its time to create the project container, all active ProjectScope prefabs will be merged, this allow a better separation of concerns if required.
 Note that ProjectScope prefab is not required, in case Reflex does not find any ProjectScope, an empty root will be created.
 ProjectScope instance will be disposed once app closes/app quits.
 > Note that unity does not call OnDestroy deterministically, so rule of thumb is do not rely on injected dependencies on OnDestroy event functions.
-
-> Note that you can use `LoadAllProjectScopes` setting in `ReflexSettings` to restrict loading only one ProjectScope that sits at `Resources/ProjectScope.prefab`.
 
 ### Scene Scope
 It is scoped from ProjectScope, inheriting all bindings from ProjectScope.
@@ -523,9 +523,10 @@ Debugger window allows you to inspect the following:
 It's a  `ReflexSettings` scriptable object instance, named `ReflexSettings` that should live inside a `Resources` folder.
 It can be created by asset menu item Assets → Create → Reflex → Settings.
 
-Currently, logging verbosity is configured in this file, and default value is set to `Info`
+- logging verbosity is configured in this asset, and default value is set to `Info`
+- the list of ProjectScopes is also configured in this asset, and default value is empty
 
-> Non-obligatory to have but projects without it will fallback using default settings
+> ReflexSettings asset is obligatory to have
 
 ---
 
