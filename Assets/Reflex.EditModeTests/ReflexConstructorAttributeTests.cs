@@ -44,8 +44,8 @@ namespace Reflex.EditModeTests
         public void ClassWithMultipleConstructors_WithoutAnyReflexConstructorAttribute_ShouldBeConstructedUsing_ConstructorWithMostArguments()
         {
             var container = new ContainerBuilder()
-                .AddSingleton(new object())
-                .AddSingleton(42)
+                .Add(Singleton.FromValue(new object()))
+                .Add(Singleton.FromValue(42))
                 .Build();
 
             var result = container.Construct<ClassWithReflexConstructorIdentifiedByMaxAmountOfArguments>();
@@ -57,8 +57,8 @@ namespace Reflex.EditModeTests
         public void ClassWithMultipleConstructors_WithOneDefiningReflexConstructorAttribute_ShouldBeConstructedUsing_ConstructorWithReflexConstructorAttribute()
         {
             var container = new ContainerBuilder()
-                .AddSingleton(new object())
-                .AddSingleton(42)
+                .Add(Singleton.FromValue(new object()))
+                .Add(Singleton.FromValue(42))
                 .Build();
 
             var result = container.Construct<ClassWithReflexConstructorIdentifiedByReflexConstructorAttribute>();

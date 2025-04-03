@@ -16,7 +16,7 @@ namespace Reflex.PlayModeTests
             var service = new object();
             var loadingOperation = SceneManager.LoadSceneAsync("ExecutionOrderTestsScene", LoadSceneMode.Single);
             var sceneBeingLoaded = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
-            ReflexSceneManager.PreInstallScene(sceneBeingLoaded, builder => builder.AddSingleton(service));
+            ReflexSceneManager.PreInstallScene(sceneBeingLoaded, builder => builder.Add(Singleton.FromValue(service)));
             yield return loadingOperation;
             var sceneContainer = sceneBeingLoaded.GetSceneContainer();
             sceneContainer.Single<object>().Should().Be(service);
@@ -28,7 +28,7 @@ namespace Reflex.PlayModeTests
             var service = new object();
             var loadSceneParams = new LoadSceneParameters(LoadSceneMode.Single);
             var sceneBeingLoaded = SceneManager.LoadScene("ExecutionOrderTestsScene", loadSceneParams);
-            ReflexSceneManager.PreInstallScene(sceneBeingLoaded, builder => builder.AddSingleton(service));
+            ReflexSceneManager.PreInstallScene(sceneBeingLoaded, builder => builder.Add(Singleton.FromValue(service)));
             yield return new WaitUntil(() => sceneBeingLoaded.isLoaded);
             var sceneContainer = sceneBeingLoaded.GetSceneContainer();
             sceneContainer.Single<object>().Should().Be(service);

@@ -9,6 +9,7 @@ namespace Reflex.Resolvers
         private readonly object _value;
         private readonly DisposableCollection _disposables = new();
         public Lifetime Lifetime => Lifetime.Singleton;
+        public Resolution Resolution => Resolution.Lazy;
 
         public SingletonValueResolver(object value)
         {

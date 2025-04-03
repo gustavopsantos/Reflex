@@ -23,9 +23,9 @@ namespace Reflex.EditModeTests
         public void Container_ShouldBeAbleToConstructObjectWithIEnumerableDependency()
         {
             var container = new ContainerBuilder()
-                .AddSingleton(1)
-                .AddSingleton(2)
-                .AddSingleton(3)
+                .Add(Singleton.FromValue(1))
+                .Add(Singleton.FromValue(2))
+                .Add(Singleton.FromValue(3))
                 .Build();
             
             Action construct = () => container.Construct<NumberManager>();
@@ -36,8 +36,8 @@ namespace Reflex.EditModeTests
         public void NestedEnumerableShouldBeSupported()
         {
             var container = new ContainerBuilder()
-                .AddSingleton(new List<int> {1, 2, 3})
-                .AddSingleton(new List<int> {4, 5, 6})
+                .Add(Singleton.FromValue(new List<int> {1, 2, 3}))
+                .Add(Singleton.FromValue(new List<int> {4, 5, 6}))
                 .Build();
 
             container.All<List<int>>().SelectMany(x => x).Should().BeEquivalentTo(new[] {1, 2, 3, 4, 5, 6});

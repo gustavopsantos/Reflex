@@ -37,7 +37,7 @@ namespace Reflex.EditModeTests
         [Test]
         public void ScopedContainer_CanResolveDependency_FromParentContainer()
         {
-            using (var outer = new ContainerBuilder().AddSingleton(42, typeof(int)).Build())
+            using (var outer = new ContainerBuilder().Add(Singleton.FromValue(42)).Build())
             {
                 using (var inner = outer.Scope())
                 {
@@ -50,7 +50,7 @@ namespace Reflex.EditModeTests
         public void ParentWithScopedContainer_ParentShouldNotBeAbleToResolveDependencyFromChild()
         {
             var outer = new ContainerBuilder().Build();
-            var inner = outer.Scope(builder => builder.AddSingleton(42, typeof(int)));
+            var inner = outer.Scope(builder => builder.Add(Singleton.FromValue(42)));
             Action resolve = () => outer.Single<int>();
             resolve.Should().ThrowExactly<UnknownContractException>();
         }
@@ -58,7 +58,7 @@ namespace Reflex.EditModeTests
         [Test]
         public void ScopedContainer_WhenDisposed_ShouldNotDisposeDependencyFromParentContainer()
         {
-            using (var outer = new ContainerBuilder().AddSingleton(typeof(Disposable), typeof(Disposable)).Build())
+            using (var outer = new ContainerBuilder().Add(Singleton.FromType(typeof(Disposable), Resolution.Lazy)).Build())
             {
                 using (var inner = outer.Scope())
                 {
@@ -112,13 +112,13 @@ namespace Reflex.EditModeTests
             var disposalOrder = new List<string>();
 
             var a = new ContainerBuilder()
-                .AddSingleton(new DisposeHook(() => { disposalOrder.Add("a"); }))
+                .Add(Singleton.FromValue(new DisposeHook(() => disposalOrder.Add("a"))))
                 .Build();
 
-            var b = a.Scope(builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("b"); })));
-            var c = b.Scope(builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("c"); })));
-            var d = c.Scope(builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("d"); })));
-            var e = d.Scope(builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("e"); })));
+            var b = a.Scope(builder => builder.Add(Singleton.FromValue(new DisposeHook(() => disposalOrder.Add("b")))));
+            var c = b.Scope(builder => builder.Add(Singleton.FromValue(new DisposeHook(() => disposalOrder.Add("c")))));
+            var d = c.Scope(builder => builder.Add(Singleton.FromValue(new DisposeHook(() => disposalOrder.Add("d")))));
+            var e = d.Scope(builder => builder.Add(Singleton.FromValue(new DisposeHook(() => disposalOrder.Add("e")))));
             
             a.Dispose();
             
@@ -131,10 +131,10 @@ namespace Reflex.EditModeTests
             var disposalOrder = new List<string>();
 
             var a = new ContainerBuilder()
-                .AddSingleton(new DisposeHook(() => { disposalOrder.Add("a"); }))
+                .Add(Singleton.FromValue(new DisposeHook(() => disposalOrder.Add("a"))))
                 .Build();
 
-            var b = a.Scope(builder => builder.AddSingleton(new DisposeHook(() => { disposalOrder.Add("b"); })));
+            var b = a.Scope(builder => builder.Add(Singleton.FromValue(new DisposeHook(() => disposalOrder.Add("b")))));
             
             a.Dispose();
             

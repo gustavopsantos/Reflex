@@ -10,11 +10,13 @@ namespace Reflex.Resolvers
         private readonly Func<Container, object> _factory;
         private readonly ConditionalWeakTable<Container, object> _instances = new();
         public Lifetime Lifetime => Lifetime.Scoped;
+        public Resolution Resolution { get; }
 
-        public ScopedFactoryResolver(Func<Container, object> factory)
+        public ScopedFactoryResolver(Func<Container, object> factory, Resolution resolution)
         {
             Diagnosis.RegisterCallSite(this);
             _factory = factory;
+            Resolution = resolution;
         }
 
         public object Resolve(Container container)

@@ -11,11 +11,13 @@ namespace Reflex.Resolvers
         private readonly Type _concreteType;
         private readonly DisposableCollection _disposables = new();
         public Lifetime Lifetime => Lifetime.Singleton;
+        public Resolution Resolution { get; }
 
-        public SingletonTypeResolver(Type concreteType)
+        public SingletonTypeResolver(Type concreteType, Resolution resolution)
         {
             Diagnosis.RegisterCallSite(this);
             _concreteType = concreteType;
+            Resolution = resolution;
         }
 
         public object Resolve(Container container)

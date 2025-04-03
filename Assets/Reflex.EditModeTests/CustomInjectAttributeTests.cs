@@ -40,7 +40,7 @@ namespace Reflex.EditModeTests
         public void CustomInheritorOfInjectAttribute_CanBeUsedToInjectFields()
         {
             using var container = new ContainerBuilder()
-                .AddSingleton(42)
+                .Add(Singleton.FromValue(42))
                 .Build();
 
             var service = container.Construct<CustomInjectOnField>();
@@ -51,7 +51,7 @@ namespace Reflex.EditModeTests
         public void CustomInheritorOfInjectAttribute_CanBeUsedToInjectProperties()
         {
             using var container = new ContainerBuilder()
-                .AddSingleton(42)
+                .Add(Singleton.FromValue(42))
                 .Build();
 
             var service = container.Construct<CustomInjectOnProperty>();
@@ -62,7 +62,7 @@ namespace Reflex.EditModeTests
         public void CustomInheritorOfInjectAttribute_CanBeUsedToInjectMethods()
         {
             using var container = new ContainerBuilder()
-                .AddSingleton(42)
+                .Add(Singleton.FromValue(42))
                 .Build();
 
             var service = container.Construct<CustomInjectOnMethod>();

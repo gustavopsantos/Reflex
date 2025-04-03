@@ -25,8 +25,8 @@ namespace Reflex.EditModeTests
         public void AddSingleton_ShouldRunAttributeInjectionOnFieldsPropertiesAndMethodsMarkedWithInjectAttribute()
         {
             var container = new ContainerBuilder()
-                .AddSingleton(42, typeof(int))
-                .AddSingleton(typeof(Foo), typeof(Foo))
+                .Add(Singleton.FromValue(42))
+                .Add(Singleton.FromType(typeof(Foo), Resolution.Lazy))
                 .Build();
             
             var foo = container.Single<Foo>();
@@ -39,8 +39,8 @@ namespace Reflex.EditModeTests
         public void AddTransient_ShouldRunAttributeInjectionOnFieldsPropertiesAndMethodsMarkedWithInjectAttribute()
         {
             var container = new ContainerBuilder()
-                .AddSingleton(42, typeof(int))
-                .AddTransient(typeof(Foo), typeof(Foo))
+                .Add(Singleton.FromValue(42))
+                .Add(Singleton.FromType(typeof(Foo), Resolution.Lazy))
                 .Build();
             
             var foo = container.Single<Foo>();

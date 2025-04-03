@@ -12,8 +12,8 @@ namespace Reflex.IL2CPP.Tests
         private void Start()
         {
             _container = new ContainerBuilder()
-                .AddSingleton(42, typeof(int))
-                .AddTransient(typeof(TestGenericStructure<int>), typeof(ITestGenericStructure<int>))
+                .Add(Singleton.FromValue(42))
+                .Add(Transient.FromType(typeof(TestGenericStructure<int>), new[] { typeof(ITestGenericStructure<int>) }))
                 .Build();
         }
 

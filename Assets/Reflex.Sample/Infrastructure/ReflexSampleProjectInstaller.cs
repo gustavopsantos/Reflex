@@ -10,6 +10,6 @@ public class ReflexSampleProjectInstaller : MonoBehaviour, IInstaller
 
     public void InstallBindings(ContainerBuilder containerBuilder)
     {
-        containerBuilder.AddSingleton(_pickupSoundEffectPrefab);
+        containerBuilder.Add(Singleton.FromValue(_pickupSoundEffectPrefab));
     }
 }

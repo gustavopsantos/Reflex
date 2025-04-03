@@ -7,7 +7,7 @@ namespace Reflex.PlayModeTests
     {
         public void InstallBindings(ContainerBuilder containerBuilder)
         {
-            containerBuilder.AddSingleton("A");
+            containerBuilder.Add(Singleton.FromValue("A"));
         }
     }
 }

@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
 using UnityEngine;
+using Resolution = Reflex.Core.Resolution;
 
 namespace Reflex.EditModeTests
 {
@@ -28,7 +29,7 @@ namespace Reflex.EditModeTests
 
             void Act()
             {
-                var container = new ContainerBuilder().AddSingleton(typeof(Service), typeof(Service)).Build();
+                var container = new ContainerBuilder().Add(Singleton.FromType(typeof(Service), Resolution.Lazy)).Build();
                 var service = container.Single<Service>();
                 references.Add(new WeakReference(service));
                 container.Dispose();

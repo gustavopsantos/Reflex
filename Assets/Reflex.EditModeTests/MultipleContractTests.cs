@@ -31,8 +31,8 @@ namespace Reflex.EditModeTests
         public void SingletonWithMultipleContractsCanBeResolved()
         {
             var container = new ContainerBuilder()
-                .AddSingleton(typeof(BundleManager), typeof(IBundleManager), typeof(IManager))
-                .AddSingleton(typeof(PrefabManager), typeof(IPrefabManager), typeof(IManager))
+                .Add(Singleton.FromType(typeof(BundleManager), new[] { typeof(IBundleManager), typeof(IManager) }, Resolution.Lazy))
+                .Add(Singleton.FromType(typeof(PrefabManager), new[] { typeof(IPrefabManager), typeof(IManager) }, Resolution.Lazy))
                 .Build();
 
             var bundleManager = container.Single<IBundleManager>();

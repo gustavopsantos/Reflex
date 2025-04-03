@@ -20,7 +20,7 @@ namespace Reflex.EditModeTests
         [Test]
         public void TransientFromType_ConstructedInstances_ShouldBeDisposed_WithinConstructingContainer()
         {
-            var parentContainer = new ContainerBuilder().AddTransient(typeof(Service)).Build();
+            var parentContainer = new ContainerBuilder().Add(Transient.FromType(typeof(Service))).Build();
             var childContainer = parentContainer.Scope();
 
             var instanceConstructedByChild = childContainer.Resolve<Service>();
@@ -35,7 +35,7 @@ namespace Reflex.EditModeTests
         [Test]
         public void TransientFromFactory_ConstructedInstances_ShouldBeDisposed_WithinConstructingContainer()
         {
-            var parentContainer = new ContainerBuilder().AddTransient(_ => new Service()).Build();
+            var parentContainer = new ContainerBuilder().Add(Transient.FromFactory(_ => new Service())).Build();
             var childContainer = parentContainer.Scope();
 
             var instanceConstructedByChild = childContainer.Resolve<Service>();
@@ -52,7 +52,7 @@ namespace Reflex.EditModeTests
         {
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
-            var parentContainer = new ContainerBuilder().AddTransient(typeof(Service)).Build();
+            var parentContainer = new ContainerBuilder().Add(Transient.FromType(typeof(Service))).Build();
 
             void Act()
             {
@@ -74,7 +74,7 @@ namespace Reflex.EditModeTests
         {
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
-            var parentContainer = new ContainerBuilder().AddTransient(c => new Service()).Build();
+            var parentContainer = new ContainerBuilder().Add(Transient.FromFactory(c => new Service())).Build();
 
             void Act()
             {
