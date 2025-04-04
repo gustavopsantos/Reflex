@@ -108,11 +108,11 @@ public class ProjectInstaller : MonoBehaviour, IInstaller
 }
 ```
 3. In unity project window
-4. Create directory `Assets/Resources`
-5. Right click over `Resources` folder, Create → Reflex → ProjectScope
-6. With just created `ProjectScope` selected
-7. Add `ProjectInstaller.cs` as a component
-8. Right click over `Resources` folder, Create → Reflex → Settings
+4. Right click over any folder, Create → Reflex → ProjectScope. Since ProjectScopes is strongly referenced by ReflexSettings, you can create it anywhere, it does not need to be inside `Resources` folder.
+5. Select `ProjectScope` you just created
+6. Add `ProjectInstaller.cs` as a component
+7. Create directory `Assets/Resources`
+8. Right click over `Resources` folder, Create → Reflex → Settings. ReflexSettings should always be created inside `Resources` folder.
 9. Select `ReflexSettings` ScriptableObject and add the `ProjectScope` prefab to the ProjectScopes list
 10. Create new scene `Greet`
 11. Add `Greet` to `Build Settings` → `Scenes In Build`
