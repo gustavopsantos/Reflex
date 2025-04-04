@@ -2,6 +2,7 @@ using System;
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
+using Reflex.Enums;
 using Reflex.Exceptions;
 
 namespace Reflex.EditModeTests
@@ -36,7 +37,7 @@ namespace Reflex.EditModeTests
         public void Resolve_ValueTypeSingleton_ShouldReturn42()
         {
             var container = new ContainerBuilder()
-                .Add(Singleton.FromValue(42))
+                .RegisterValue(42, Lifetime.Singleton)
                 .Build();
             
             container.Single<int>().Should().Be(42);
@@ -54,7 +55,7 @@ namespace Reflex.EditModeTests
         public void Resolve_AsTransientFromType_ShouldReturnAlwaysANewInstance()
         {
             var container = new ContainerBuilder()
-                .Add(Transient.FromType(typeof(Valuable), new[] { typeof(IValuable) }))
+                .RegisterType(typeof(Valuable), new[] { typeof(IValuable) }, Lifetime.Transient, Resolution.Lazy)
                 .Build();
             
             container.Single<IValuable>().Value = 123;
@@ -73,7 +74,7 @@ namespace Reflex.EditModeTests
             }
             
             var container = new ContainerBuilder()
-                .Add(Transient.FromFactory(Factory))
+                .RegisterFactory(Factory, Lifetime.Transient, Resolution.Lazy)
                 .Build();
             
             container.Single<string>().Should().Be("Hello World!");
@@ -86,7 +87,7 @@ namespace Reflex.EditModeTests
         public void Resolve_AsSingletonFromType_ShouldReturnAlwaysSameInstance()
         {
             var container = new ContainerBuilder()
-                .Add(Singleton.FromType(typeof(Valuable), new[] { typeof(IValuable) }, Resolution.Lazy))
+                .RegisterType(typeof(Valuable), new[] { typeof(IValuable) }, Lifetime.Singleton, Resolution.Lazy)
                 .Build();
             
             container.Single<IValuable>().Value = 123;
@@ -105,7 +106,7 @@ namespace Reflex.EditModeTests
             }
             
             var container = new ContainerBuilder()
-                .Add(Singleton.FromFactory(Factory, Resolution.Lazy))
+                .RegisterFactory(Factory, Lifetime.Singleton, Resolution.Lazy)
                 .Build();
             
             container.Single<string>().Should().Be("Hello World!");
@@ -126,7 +127,7 @@ namespace Reflex.EditModeTests
         public void Resolve_KnownDependencyAsTransientWithUnknownDependency_ShouldThrowConstructorInjectorException()
         {
             var container = new ContainerBuilder()
-                .Add(Transient.FromType(typeof(ClassWithDependency), new[] { typeof(IClassWithDependency) }))
+                .RegisterType(typeof(ClassWithDependency), new[] { typeof(IClassWithDependency) }, Lifetime.Transient, Resolution.Lazy)
                 .Build();
             
             Action resolve = () => container.Single<IClassWithDependency>();
@@ -137,7 +138,7 @@ namespace Reflex.EditModeTests
         public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowConstructorInjectorException()
         {
             var container = new ContainerBuilder()
-                .Add(Singleton.FromType(typeof(ClassWithDependency), new []{typeof(IClassWithDependency)}, Resolution.Lazy))
+                .RegisterType(typeof(ClassWithDependency), new []{typeof(IClassWithDependency)}, Lifetime.Singleton, Resolution.Lazy)
                 .Build();
             
             Action resolve = () => container.Single<IClassWithDependency>();
@@ -148,7 +149,7 @@ namespace Reflex.EditModeTests
         public void Resolve_ValueTypeAsTransient_ShouldReturnDefault()
         {
             var container = new ContainerBuilder()
-                .Add(Transient.FromType(typeof(int)))
+                .RegisterType(typeof(int), Lifetime.Transient, Resolution.Lazy)
                 .Build();
             
         	container.Single<int>().Should().Be(default);
@@ -168,8 +169,8 @@ namespace Reflex.EditModeTests
         public void Resolve_ValueTypeAsTransient_CustomConstructor_ValueShouldReturn42()
         {
             var container = new ContainerBuilder()
-                .Add(Singleton.FromValue(42))
-                .Add(Transient.FromType(typeof(MyStruct)))
+                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterType(typeof(MyStruct), Lifetime.Transient, Resolution.Lazy)
                 .Build();
             
             container.Single<MyStruct>().Value.Should().Be(42);
@@ -196,12 +197,12 @@ namespace Reflex.EditModeTests
             }
         }
 
-        private class Xing
+        private class NumberAndStringCache
         {
             public int Int;
             public string String;
 
-            public Xing(ISetup<int> intSetup, ISetup<string> stringSetup)
+            public NumberAndStringCache(ISetup<int> intSetup, ISetup<string> stringSetup)
             {
                 Int = default;
                 String = string.Empty;
@@ -214,12 +215,12 @@ namespace Reflex.EditModeTests
         public void Resolve_ClassWithGenericDependency_WithNormalDefinition_ValuesShouldBe42AndABC()
         {
             var container = new ContainerBuilder()
-                .Add(Transient.FromType(typeof(Xing), new[] { typeof(Xing) }))
-                .Add(Transient.FromType(typeof(IntSetup), new[] { typeof(ISetup<int>) }))
-                .Add(Transient.FromType(typeof(StringSetup), new[] { typeof(ISetup<string>) }))
+                .RegisterType(typeof(NumberAndStringCache), Lifetime.Transient, Resolution.Lazy)
+                .RegisterType(typeof(IntSetup), new[] { typeof(ISetup<int>) }, Lifetime.Transient, Resolution.Lazy)
+                .RegisterType(typeof(StringSetup), new[] { typeof(ISetup<string>) }, Lifetime.Transient, Resolution.Lazy)
                 .Build();
             
-        	var instance = container.Construct<Xing>();
+        	var instance = container.Construct<NumberAndStringCache>();
         	instance.Int.Should().Be(42);
         	instance.String.Should().Be("abc");
         }
@@ -228,7 +229,7 @@ namespace Reflex.EditModeTests
         public void AddSingleton_WithoutContract_ShouldBindToItsType()
         {
             var container = new ContainerBuilder()
-                .Add(Singleton.FromValue(42))
+                .RegisterValue(42, Lifetime.Singleton)
                 .Build();
             
             container.Single<int>().Should().Be(42);
@@ -244,9 +245,9 @@ namespace Reflex.EditModeTests
         [Test]
         public void All_OnParentShouldNotBeAffectedByScoped()
         {
-            var container = new ContainerBuilder().Add(Singleton.FromValue(1)).Build();
+            var container = new ContainerBuilder().RegisterValue(1, Lifetime.Singleton).Build();
             string.Join(",", container.All<int>()).Should().Be("1");
-            var scoped = container.Scope(containerBuilder => { containerBuilder.Add(Singleton.FromValue(2)); });
+            var scoped = container.Scope(containerBuilder => { containerBuilder.RegisterValue(2, Lifetime.Singleton); });
             string.Join(",", container.All<int>()).Should().Be("1");
         }
         
@@ -260,7 +261,7 @@ namespace Reflex.EditModeTests
         [Test]
         public void HasBindingReturnTrueWhenBindingIsDefined()
         {
-            var container = new ContainerBuilder().Add(Singleton.FromValue(42)).Build();
+            var container = new ContainerBuilder().RegisterValue(42, Lifetime.Singleton).Build();
             container.HasBinding<int>().Should().BeTrue();
         }
     }

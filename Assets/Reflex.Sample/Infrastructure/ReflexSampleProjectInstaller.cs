@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using Reflex.Core;
+using Reflex.Enums;
 using Reflex.Sample.Infrastructure;
 using UnityEngine;
 
@@ -10,6 +9,6 @@ public class ReflexSampleProjectInstaller : MonoBehaviour, IInstaller
 
     public void InstallBindings(ContainerBuilder containerBuilder)
     {
-        containerBuilder.Add(Singleton.FromValue(_pickupSoundEffectPrefab));
+        containerBuilder.RegisterValue(_pickupSoundEffectPrefab, Lifetime.Singleton);
     }
 }

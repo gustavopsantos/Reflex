@@ -2,6 +2,7 @@ using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
+using Reflex.Enums;
 
 namespace Reflex.EditModeTests
 {
@@ -31,8 +32,8 @@ namespace Reflex.EditModeTests
         public void SingletonWithMultipleContractsCanBeResolved()
         {
             var container = new ContainerBuilder()
-                .Add(Singleton.FromType(typeof(BundleManager), new[] { typeof(IBundleManager), typeof(IManager) }, Resolution.Lazy))
-                .Add(Singleton.FromType(typeof(PrefabManager), new[] { typeof(IPrefabManager), typeof(IManager) }, Resolution.Lazy))
+                .RegisterType(typeof(BundleManager), new[] { typeof(IBundleManager), typeof(IManager) }, Lifetime.Singleton, Resolution.Lazy)
+                .RegisterType(typeof(PrefabManager), new[] { typeof(IPrefabManager), typeof(IManager) }, Lifetime.Singleton, Resolution.Lazy)
                 .Build();
 
             var bundleManager = container.Single<IBundleManager>();

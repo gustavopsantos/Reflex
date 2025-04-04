@@ -2,9 +2,10 @@
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
+using Reflex.Enums;
 using Reflex.Exceptions;
 using UnityEngine;
-using Resolution = Reflex.Core.Resolution;
+using Resolution = Reflex.Enums.Resolution;
 
 namespace Reflex.EditModeTests
 {
@@ -24,7 +25,7 @@ namespace Reflex.EditModeTests
         public void AddSingletonFromType_ValuableWithIDisposableAsContract_ShouldThrow()
         {
             var builder = new ContainerBuilder();
-            Action addSingleton = () => builder.Add(Singleton.FromType(typeof(Valuable), new[] { typeof(IDisposable) }, Resolution.Lazy));
+            Action addSingleton = () => builder.RegisterType(typeof(Valuable), new[] { typeof(IDisposable) }, Lifetime.Singleton, Resolution.Lazy);
             addSingleton.Should().ThrowExactly<ContractDefinitionException>();
         }
 
@@ -32,7 +33,7 @@ namespace Reflex.EditModeTests
         public void AddSingletonFromType_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
         {
             var builder = new ContainerBuilder();
-            Action addSingleton = () => builder.Add(Singleton.FromType(typeof(Valuable), new[] { typeof(object), typeof(Valuable), typeof(IValuable) }, Resolution.Lazy));
+            Action addSingleton = () => builder.RegisterType(typeof(Valuable), new[] { typeof(object), typeof(Valuable), typeof(IValuable) }, Lifetime.Singleton, Resolution.Lazy);
             addSingleton.Should().NotThrow();
         }
         
@@ -40,7 +41,7 @@ namespace Reflex.EditModeTests
         public void AddSingletonFromValue_ValuableWithIDisposableAsContract_ShouldThrow()
         {
             var builder = new ContainerBuilder();
-            Action addSingleton = () => builder.Add(Singleton.FromValue(new Valuable(), new[] { typeof(IDisposable) }));
+            Action addSingleton = () => builder.RegisterValue(new Valuable(), new[] { typeof(IDisposable) }, Lifetime.Singleton);
             addSingleton.Should().ThrowExactly<ContractDefinitionException>();
         }
         
@@ -48,7 +49,7 @@ namespace Reflex.EditModeTests
         public void AddSingletonFromValue_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
         {
             var builder = new ContainerBuilder();
-            Action addSingleton = () => builder.Add(Singleton.FromValue(new Valuable(), new[] { typeof(object), typeof(Valuable), typeof(IValuable) }));
+            Action addSingleton = () => builder.RegisterValue(new Valuable(), new[] { typeof(object), typeof(Valuable), typeof(IValuable) }, Lifetime.Singleton);
             addSingleton.Should().NotThrow();
         }
         
@@ -61,7 +62,7 @@ namespace Reflex.EditModeTests
             }
             
             var builder = new ContainerBuilder();
-            Action addSingleton = () => builder.Add(Singleton.FromFactory(Factory, new[] { typeof(IDisposable) }, Resolution.Lazy));
+            Action addSingleton = () => builder.RegisterFactory(Factory, new[] { typeof(IDisposable) }, Lifetime.Singleton, Resolution.Lazy);
             addSingleton.Should().ThrowExactly<ContractDefinitionException>();
         }
         
@@ -74,7 +75,7 @@ namespace Reflex.EditModeTests
             }
             
             var builder = new ContainerBuilder();
-            Action addSingleton = () => builder.Add(Singleton.FromFactory(Factory, new[] { typeof(object), typeof(Valuable), typeof(IValuable) }, Resolution.Lazy));
+            Action addSingleton = () => builder.RegisterFactory(Factory, new[] { typeof(object), typeof(Valuable), typeof(IValuable) }, Lifetime.Singleton, Resolution.Lazy);
             addSingleton.Should().NotThrow();
         }
         
@@ -82,7 +83,7 @@ namespace Reflex.EditModeTests
         public void AddTransientFromType_ValuableWithIDisposableAsContract_ShouldThrow()
         {
             var builder = new ContainerBuilder();
-            Action addSingleton = () => builder.Add(Transient.FromType(typeof(Valuable), new[] { typeof(IDisposable) }));
+            Action addSingleton = () => builder.RegisterType(typeof(Valuable), new[] { typeof(IDisposable) }, Lifetime.Transient, Resolution.Lazy);
             addSingleton.Should().ThrowExactly<ContractDefinitionException>();
         }
 
@@ -90,7 +91,7 @@ namespace Reflex.EditModeTests
         public void AddTransientFromType_ValuableWithObjectAndValuableAndIValuableAsContract_ShouldNotThrow()
         {
             var builder = new ContainerBuilder();
-            Action addSingleton = () => builder.Add(Transient.FromType(typeof(Valuable), new[] { typeof(object), typeof(Valuable), typeof(IValuable) }));
+            Action addSingleton = () => builder.RegisterType(typeof(Valuable), new[] { typeof(object), typeof(Valuable), typeof(IValuable) }, Lifetime.Transient, Resolution.Lazy);
             addSingleton.Should().NotThrow();
         }
         
@@ -103,7 +104,7 @@ namespace Reflex.EditModeTests
             }
             
             var builder = new ContainerBuilder();
-            Action addSingleton = () => builder.Add(Transient.FromFactory(Factory, new[] { typeof(IDisposable) }));
+            Action addSingleton = () => builder.RegisterFactory(Factory, new[] { typeof(IDisposable) }, Lifetime.Transient, Resolution.Lazy);
             addSingleton.Should().ThrowExactly<ContractDefinitionException>();
         }
 
@@ -116,7 +117,7 @@ namespace Reflex.EditModeTests
             }
             
             var builder = new ContainerBuilder();
-            Action addSingleton = () => builder.Add(Transient.FromFactory(Factory, new[] { typeof(object), typeof(Valuable), typeof(IValuable) }));
+            Action addSingleton = () => builder.RegisterFactory(Factory, new[] { typeof(object), typeof(Valuable), typeof(IValuable) }, Lifetime.Transient, Resolution.Lazy);
             addSingleton.Should().NotThrow();
         }
 
@@ -124,7 +125,7 @@ namespace Reflex.EditModeTests
         public void HasBinding_ShouldTrue()
         {
             var value = Debug.unityLogger;
-            var builder = new ContainerBuilder().Add(Singleton.FromValue(value));
+            var builder = new ContainerBuilder().RegisterValue(value, Lifetime.Singleton);
             builder.HasBinding(value.GetType()).Should().BeTrue();
         }
         
@@ -134,7 +135,6 @@ namespace Reflex.EditModeTests
             Container container = null;
             var builder = new ContainerBuilder();
             builder.OnContainerBuilt += ContainerCallback;
-            Action addSingleton = () => builder.Add(Singleton.FromValue(new Valuable(), new[] { typeof(IDisposable) })).Build();
             void ContainerCallback(Container ctx)
             {
                 container = ctx;

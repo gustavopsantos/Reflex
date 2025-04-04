@@ -1,7 +1,9 @@
 using System;
 using IL2CPPTest.Models;
 using Reflex.Core;
+using Reflex.Enums;
 using UnityEngine;
+using Resolution = Reflex.Enums.Resolution;
 
 namespace Reflex.IL2CPP.Tests
 {
@@ -12,8 +14,8 @@ namespace Reflex.IL2CPP.Tests
         private void Start()
         {
             _container = new ContainerBuilder()
-                .Add(Singleton.FromValue(42))
-                .Add(Transient.FromType(typeof(TestGenericStructure<int>), new[] { typeof(ITestGenericStructure<int>) }))
+                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterType(typeof(TestGenericStructure<int>), new[] { typeof(ITestGenericStructure<int>) }, Lifetime.Singleton, Resolution.Lazy)
                 .Build();
         }
 

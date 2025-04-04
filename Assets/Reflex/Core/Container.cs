@@ -12,8 +12,6 @@ namespace Reflex.Core
 {
     public sealed class Container : IDisposable
     {
-        public event Action<Container> OnContainerScoped; 
-        
         public string Name { get; }
         internal Container Parent { get; }
         internal List<Container> Children { get; } = new();
@@ -59,7 +57,6 @@ namespace Reflex.Core
             var builder = new ContainerBuilder().SetParent(this);
             extend?.Invoke(builder);
             var scoped = builder.Build();
-            OnContainerScoped?.Invoke(scoped);
             return scoped;
         }
         

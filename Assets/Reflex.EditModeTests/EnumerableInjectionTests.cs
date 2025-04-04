@@ -4,6 +4,7 @@ using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
+using Reflex.Enums;
 
 namespace Reflex.EditModeTests
 {
@@ -23,9 +24,9 @@ namespace Reflex.EditModeTests
         public void Container_ShouldBeAbleToConstructObjectWithIEnumerableDependency()
         {
             var container = new ContainerBuilder()
-                .Add(Singleton.FromValue(1))
-                .Add(Singleton.FromValue(2))
-                .Add(Singleton.FromValue(3))
+                .RegisterValue(1, Lifetime.Singleton)
+                .RegisterValue(2, Lifetime.Singleton)
+                .RegisterValue(3, Lifetime.Singleton)
                 .Build();
             
             Action construct = () => container.Construct<NumberManager>();
@@ -36,8 +37,8 @@ namespace Reflex.EditModeTests
         public void NestedEnumerableShouldBeSupported()
         {
             var container = new ContainerBuilder()
-                .Add(Singleton.FromValue(new List<int> {1, 2, 3}))
-                .Add(Singleton.FromValue(new List<int> {4, 5, 6}))
+                .RegisterValue(new List<int> {1, 2, 3}, Lifetime.Singleton)
+                .RegisterValue(new List<int> {4, 5, 6}, Lifetime.Singleton)
                 .Build();
 
             container.All<List<int>>().SelectMany(x => x).Should().BeEquivalentTo(new[] {1, 2, 3, 4, 5, 6});

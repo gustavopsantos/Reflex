@@ -1,4 +1,4 @@
-﻿namespace Reflex.Core
+﻿namespace Reflex.Enums
 {
     public enum Resolution
     {

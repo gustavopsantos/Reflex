@@ -1,7 +1,8 @@
 ﻿using NUnit.Framework;
 using Reflex.Core;
+using Reflex.Enums;
 using UnityEngine;
-using Resolution = Reflex.Core.Resolution;
+using Resolution = Reflex.Enums.Resolution;
 
 namespace Reflex.EditModeTests
 {
@@ -19,16 +20,16 @@ namespace Reflex.EditModeTests
         public void Foo()
         {
             var containerBuilder = new ContainerBuilder()
-                .Add(Scoped.FromType(typeof(ScopedService), Resolution.Lazy));
+                .RegisterType(typeof(ScopedService), Lifetime.Scoped, Resolution.Lazy);
 
-            containerBuilder.OnContainerBuilt += c => OnContainerBuilt(c);
-
-            void OnContainerBuilt(Container c)
-            {
-                containerBuilder.OnContainerBuilt -= OnContainerBuilt;
-                c.Resolve<ScopedService>();
-                c.OnContainerScoped += OnContainerBuilt;
-            }
+            // containerBuilder.OnContainerBuilt += OnContainerBuilt;
+            //
+            // void OnContainerBuilt(Container c)
+            // {
+            //     containerBuilder.OnContainerBuilt -= OnContainerBuilt;
+            //     c.Resolve<ScopedService>();
+            //     c.OnContainerScoped += OnContainerBuilt;
+            // }
             
             var container = containerBuilder.Build();
             var scoped1 = container.Scope();

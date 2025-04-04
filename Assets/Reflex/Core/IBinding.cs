@@ -6,7 +6,6 @@ namespace Reflex.Core
 {
     public interface IBinding
     {
-        Type Concrete { get; }
         Type[] Contracts { get; }
         IResolver Resolver { get; }
 

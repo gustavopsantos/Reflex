@@ -1,11 +1,11 @@
 ﻿using System;
+using Reflex.Enums;
 using Reflex.Resolvers;
 
 namespace Reflex.Core
 {
     public class Transient : IBinding
     {
-        public Type Concrete { get; }
         public Type[] Contracts { get; }
         public IResolver Resolver { get; }
         public Resolution Resolution { get; }
@@ -17,26 +17,15 @@ namespace Reflex.Core
         private Transient(Type concrete, Type[] contracts, IResolver resolver)
         {
             IBinding.Validate(concrete, contracts);
-            Concrete = concrete;
             Contracts = contracts;
             Resolver = resolver;
             Resolution = Resolution.Lazy;
-        }
-        
-        public static Transient FromType(Type type)
-        {
-            return FromType(type, new[] { type });
         }
         
         public static Transient FromType(Type type, Type[] contracts)
         {
             var resolver = new TransientTypeResolver(type);
             return new Transient(type, contracts, resolver);
-        }
-        
-        public static Transient FromFactory<T>(Func<Container, T> factory)
-        {
-            return FromFactory<T>(factory, new[] { typeof(T) });
         }
         
         public static Transient FromFactory<T>(Func<Container, T> factory, Type[] contracts)

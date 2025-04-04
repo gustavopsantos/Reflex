@@ -2,6 +2,7 @@ using System;
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
+using Reflex.Enums;
 
 namespace Reflex.EditModeTests
 {
@@ -21,7 +22,7 @@ namespace Reflex.EditModeTests
         public void SingletonFromType_ShouldBeDisposed_WhenOwnerIsDisposed()
         {
             var container = new ContainerBuilder()
-                .Add(Singleton.FromType(typeof(Service), Resolution.Lazy))
+                .RegisterType(typeof(Service), Lifetime.Singleton, Resolution.Lazy)
                 .Build();
             
             var service = container.Single<Service>();
@@ -34,7 +35,7 @@ namespace Reflex.EditModeTests
         {
             var service = new Service();
             var container = new ContainerBuilder()
-                .Add(Singleton.FromValue(service))
+                .RegisterValue(service, Lifetime.Singleton)
                 .Build();
             
             container.Dispose();
@@ -50,7 +51,7 @@ namespace Reflex.EditModeTests
             }
             
             var container = new ContainerBuilder()
-                .Add(Singleton.FromFactory(Factory, Resolution.Lazy))
+                .RegisterFactory(Factory, Lifetime.Singleton, Resolution.Lazy)
                 .Build();
 
             var service = container.Single<Service>();
@@ -62,7 +63,7 @@ namespace Reflex.EditModeTests
         public void TransientFromType_ShouldBeDisposed_WhenOwnerIsDisposed()
         {
             var container = new ContainerBuilder()
-                .Add(Transient.FromType(typeof(Service)))
+                .RegisterType(typeof(Service), Lifetime.Transient, Resolution.Lazy)
                 .Build();
             
             var service = container.Single<Service>();
@@ -79,7 +80,7 @@ namespace Reflex.EditModeTests
             }
             
             var container = new ContainerBuilder()
-                .Add(Transient.FromFactory(Factory))
+                .RegisterFactory(Factory, Lifetime.Transient, Resolution.Lazy)
                 .Build();
             
             var service = container.Single<Service>();

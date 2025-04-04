@@ -2,6 +2,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Attributes;
 using Reflex.Core;
+using Reflex.Enums;
 
 namespace Reflex.EditModeTests
 {
@@ -25,8 +26,8 @@ namespace Reflex.EditModeTests
         public void AddSingleton_ShouldRunAttributeInjectionOnFieldsPropertiesAndMethodsMarkedWithInjectAttribute()
         {
             var container = new ContainerBuilder()
-                .Add(Singleton.FromValue(42))
-                .Add(Singleton.FromType(typeof(Foo), Resolution.Lazy))
+                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterType(typeof(Foo), Lifetime.Singleton, Resolution.Lazy)
                 .Build();
             
             var foo = container.Single<Foo>();
@@ -39,8 +40,8 @@ namespace Reflex.EditModeTests
         public void AddTransient_ShouldRunAttributeInjectionOnFieldsPropertiesAndMethodsMarkedWithInjectAttribute()
         {
             var container = new ContainerBuilder()
-                .Add(Singleton.FromValue(42))
-                .Add(Singleton.FromType(typeof(Foo), Resolution.Lazy))
+                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterType(typeof(Foo), Lifetime.Singleton, Resolution.Lazy)
                 .Build();
             
             var foo = container.Single<Foo>();
