@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using Reflex.Configuration;
 using Reflex.Core;
 using Reflex.Logging;
 using UnityEngine;
@@ -24,7 +26,7 @@ namespace Reflex.Injectors
         {
             ReportReflexDebuggerStatus();
             ResetStaticState();
-            ProjectContainer = CreateProjectContainer.Create();
+            ProjectContainer = CreateProjectContainer();
 
             void InjectScene(Scene scene, SceneScope sceneScope)
             {
@@ -58,6 +60,22 @@ namespace Reflex.Injectors
             OnSceneLoaded += InjectScene;
             SceneManager.sceneUnloaded += DisposeScene;
             Application.quitting += DisposeProject;
+        }
+
+        private static Container CreateProjectContainer()
+        {
+            var reflexSettings = ReflexSettings.Instance;
+            var builder = new ContainerBuilder().SetName("ProjectContainer");
+
+            if (reflexSettings.ProjectScopes != null)
+            {
+                foreach (var projectScope in reflexSettings.ProjectScopes.Where(x => x != null && x.gameObject.activeSelf))
+                {
+                    projectScope.InstallBindings(builder);
+                }
+            }
+
+            return builder.Build();
         }
 
         private static Container CreateSceneContainer(Scene scene, Container projectContainer, SceneScope sceneScope)
