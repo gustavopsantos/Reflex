@@ -75,6 +75,7 @@ namespace Reflex.Core
                 }
             }
 
+            Bindings.Clear();
             OnContainerBuilt?.Invoke(container);
             return container;
         }
