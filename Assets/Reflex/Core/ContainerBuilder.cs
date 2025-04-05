@@ -12,7 +12,7 @@ namespace Reflex.Core
     {
         public string Name { get; private set; }
         public Container Parent { get; private set; }
-        public List<IBinding> Bindings { get; } = new();
+        public List<Binding> Bindings { get; } = new();
         public event Action<Container> OnContainerBuilt;
 
         public Container Build()
@@ -91,9 +91,9 @@ namespace Reflex.Core
             return this;
         }
         
-        public bool HasBinding(Type type)
+        public bool HasBinding(Type contract)
         {
-            return Bindings.Any(binding => binding.Contracts.Contains(type));
+            return Bindings.Any(binding => binding.Contracts.Contains(contract));
         }
 
         public ContainerBuilder RegisterType(Type type, Lifetime lifetime, Resolution resolution)
@@ -107,16 +107,15 @@ namespace Reflex.Core
             Assert.IsTrue(contracts != null && contracts.Length > 0);
             Assert.IsFalse(lifetime == Lifetime.Transient && resolution == Resolution.Eager, "Type registration Lifetime.Transient + Resolution.Eager not allowed");
 
-            IBinding binding = lifetime switch
+            IResolver resolver = lifetime switch
             {
-                Lifetime.Singleton => Singleton.FromType(type, contracts, resolution),
-                Lifetime.Transient => Transient.FromType(type, contracts),
-                Lifetime.Scoped => Scoped.FromType(type, contracts, resolution),
+                Lifetime.Singleton => new SingletonTypeResolver(type, resolution),
+                Lifetime.Transient => new TransientTypeResolver(type),
+                Lifetime.Scoped => new ScopedTypeResolver(type, resolution),
                 _ => throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, "Unhandled lifetime in ContainerBuilder.RegisterType() method.")
             };
-
-            Bindings.Add(binding);
-            return this;
+            
+            return Add(type, contracts, resolver);
         }
         
         public ContainerBuilder RegisterValue(object value, Lifetime lifetime)
@@ -128,10 +127,8 @@ namespace Reflex.Core
         {
             Assert.IsTrue(contracts != null && contracts.Length > 0);
             Assert.IsTrue(lifetime == Lifetime.Singleton, "Value registration only supports Lifetime.Singleton");
-            
-            IBinding binding = Singleton.FromValue(value, contracts);
-            Bindings.Add(binding);
-            return this;
+            var resolver = new SingletonValueResolver(value);
+            return Add(value.GetType(), contracts, resolver);
         }
 
         public ContainerBuilder RegisterFactory<T>(Func<Container, T> factory, Lifetime lifetime, Resolution resolution)
@@ -145,14 +142,25 @@ namespace Reflex.Core
             Assert.IsTrue(contracts != null && contracts.Length > 0);
             Assert.IsFalse(lifetime == Lifetime.Transient && resolution == Resolution.Eager, "Factory registration Lifetime.Transient + Resolution.Eager not allowed");
             
-            IBinding binding = lifetime switch
+            object TypelessFactory(Container container)
             {
-                Lifetime.Singleton => Singleton.FromFactory(factory, contracts, resolution),
-                Lifetime.Transient => Transient.FromFactory(factory, contracts),
-                Lifetime.Scoped => Scoped.FromFactory(factory, contracts, resolution),
+                return factory.Invoke(container);
+            }
+            
+            IResolver resolver = lifetime switch
+            {
+                Lifetime.Singleton =>  new SingletonFactoryResolver(TypelessFactory, resolution),
+                Lifetime.Transient => new TransientFactoryResolver(TypelessFactory),
+                Lifetime.Scoped => new ScopedFactoryResolver(TypelessFactory, resolution),
                 _ => throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, "Unhandled lifetime in ContainerBuilder.RegisterFactory() method.")
             };
-            
+
+            return Add(typeof(T), contracts, resolver);
+        }
+        
+        private ContainerBuilder Add(Type concrete, Type[] contracts, IResolver resolver)
+        {
+            var binding = Binding.Validated(resolver, concrete, contracts);
             Bindings.Add(binding);
             return this;
         }
