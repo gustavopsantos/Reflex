@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
 using Reflex.Enums;
+using UnityEditor.Compilation;
 using UnityEngine;
 using Resolution = Reflex.Enums.Resolution;
 
@@ -21,6 +22,15 @@ namespace Reflex.EditModeTests
             Resources.UnloadUnusedAssets();
             GC.Collect();
             GC.WaitForPendingFinalizers();
+        }
+
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            if (CompilationPipeline.codeOptimization == CodeOptimization.Debug)
+            {
+                Assert.Inconclusive("GC works differently in Debug mode. Please run tests in Release mode.");
+            }
         }
 
         [Test, Retry(3)]
