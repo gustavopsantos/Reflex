@@ -188,8 +188,11 @@ public class Loader : MonoBehaviour
 ---
 
 ## 🎯 Injection Strategy
-Beginning from version 8.0.0, Reflex stops injecting all scenes automatically on Start, to start injecting only scenes with a SceneScope on Awake.
-This allows users to consume injected dependencies on callbacks such as Awake and OnEnable while giving more granular control on which scenes must be injected or not.
+As of version 8.0.0 Reflex has stopped automatically managing dependency injection for any scene.
+
+If you plan on using dependency injection in one of your scenes, add a game object somewhere in the hierarchy with a `SceneScope` component attached. You can still manage dependencies project-wide or utilize this scene container for limited access. This component must be present at scene load time.
+
+This allows users to consume injected dependencies on callbacks such as `Awake` and `OnEnable` while giving more granular control over which scene should be injected or not.
 
 ---
 
