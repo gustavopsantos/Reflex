@@ -8,7 +8,7 @@ namespace Reflex.EditModeTests
     public class ParentOverrideScopeTests
     {
         [Test]
-        public void ParentOverrideScope_WillOverrideAnyContainerParent_WhileIsNotDisposed()
+        public void ParentOverrideScope_WillOverrideAnyNewContainerParent_WhileItsNotDisposed()
         {
             var parentOverride = new ContainerBuilder()
                 .RegisterValue(95, Lifetime.Singleton)
