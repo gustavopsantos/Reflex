@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Reflex.Enums;
 using Reflex.Generics;
+using Reflex.Injectors;
 using Reflex.Resolvers;
 using UnityEngine.Assertions;
 
@@ -19,7 +20,16 @@ namespace Reflex.Core
         {
             var disposables = new DisposableCollection();
             var resolversByContract = new Dictionary<Type, List<IResolver>>();
+            
+            // Extra installers
+            UnityInjector.ExtraInstallers?.Invoke(this);
 
+            // Parent override
+            if (UnityInjector.ContainerParentOverride.TryPeek(out var parentOverride))
+            {
+                Parent = parentOverride;
+            }
+            
             // Inherited resolvers
             if (Parent != null)
             {

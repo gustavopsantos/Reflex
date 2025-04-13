@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Reflex.Configuration;
 using Reflex.Core;
 using Reflex.Logging;
@@ -18,8 +17,8 @@ namespace Reflex.Injectors
         internal static Action<Scene, ContainerScope> OnSceneLoaded;
         internal static Container ProjectContainer { get; private set; }
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
-        internal static Dictionary<Scene, Container> SceneContainerParentOverride { get; } = new();
-        internal static event Action<ContainerBuilder> ExtraInstallers;
+        internal static Stack<Container> ContainerParentOverride { get; } = new();
+        internal static Action<ContainerBuilder> ExtraInstallers;
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeAwakeOfFirstSceneOnly()
@@ -73,21 +72,19 @@ namespace Reflex.Injectors
                 ReflexLogger.Log("Project Bindings Installed", LogLevel.Info, reflexSettings.RootScope.gameObject);
             }
             
-            ExtraInstallers?.Invoke(builder);
             return builder.Build();
         }
 
         private static Container CreateSceneContainer(Scene scene, Container projectContainer, ContainerScope containerScope)
         {
-            var sceneParentContainer = SceneContainerParentOverride.Remove(scene, out var container)
-                ? container
+            var parentContainer = ContainerParentOverride.TryPeek(out var containerParentOverride)
+                ? containerParentOverride
                 : projectContainer;
             
-            return sceneParentContainer.Scope(builder =>
+            return parentContainer.Scope(builder =>
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
                 containerScope.InstallBindings(builder);
-                ExtraInstallers?.Invoke(builder);
                 ReflexLogger.Log($"Scene ({scene.name}) Bindings Installed", LogLevel.Info, containerScope.gameObject);
             });
         }
@@ -102,7 +99,7 @@ namespace Reflex.Injectors
             OnSceneLoaded = null;
             ProjectContainer = null;
             ContainersPerScene.Clear();
-            SceneContainerParentOverride.Clear();
+            ContainerParentOverride.Clear();
             ExtraInstallers = null;
         }
 
