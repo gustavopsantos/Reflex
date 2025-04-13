@@ -77,11 +77,7 @@ namespace Reflex.Injectors
 
         private static Container CreateSceneContainer(Scene scene, Container rootContainer, ContainerScope containerScope)
         {
-            var parentContainer = ContainerParentOverride.TryPeek(out var containerParentOverride)
-                ? containerParentOverride
-                : rootContainer;
-            
-            return parentContainer.Scope(builder =>
+            return rootContainer.Scope(builder =>
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
                 containerScope.InstallBindings(builder);
