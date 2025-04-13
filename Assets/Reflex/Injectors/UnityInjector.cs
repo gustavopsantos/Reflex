@@ -15,7 +15,7 @@ namespace Reflex.Injectors
     internal static class UnityInjector
     {
         internal static Action<Scene, ContainerScope> OnSceneLoaded;
-        internal static Container ProjectContainer { get; private set; }
+        internal static Container RootContainer { get; private set; }
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
         internal static Stack<Container> ContainerParentOverride { get; } = new();
         internal static Action<ContainerBuilder> ExtraInstallers;
@@ -25,12 +25,12 @@ namespace Reflex.Injectors
         {
             ReportReflexDebuggerStatus();
             ResetStaticState();
-            ProjectContainer = CreateProjectContainer();
+            RootContainer = CreateRootContainer();
 
             void InjectScene(Scene scene, ContainerScope containerScope)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
-                var sceneContainer = CreateSceneContainer(scene, ProjectContainer, containerScope);
+                var sceneContainer = CreateSceneContainer(scene, RootContainer, containerScope);
                 ContainersPerScene.Add(scene, sceneContainer);
                 SceneInjector.Inject(scene, sceneContainer);
             }
@@ -47,8 +47,8 @@ namespace Reflex.Injectors
             
             void DisposeProject()
             {
-                ProjectContainer.Dispose();
-                ProjectContainer = null;
+                RootContainer.Dispose();
+                RootContainer = null;
                 
                 // Unsubscribe from static events ensuring that Reflex works with domain reloading set to false
                 OnSceneLoaded -= InjectScene;
@@ -61,25 +61,25 @@ namespace Reflex.Injectors
             Application.quitting += DisposeProject;
         }
 
-        private static Container CreateProjectContainer()
+        private static Container CreateRootContainer()
         {
             var reflexSettings = ReflexSettings.Instance;
-            var builder = new ContainerBuilder().SetName("ProjectContainer");
+            var builder = new ContainerBuilder().SetName("RootContainer");
 
             if (reflexSettings.RootScope != null)
             {
                 reflexSettings.RootScope.InstallBindings(builder);
-                ReflexLogger.Log("Project Bindings Installed", LogLevel.Info, reflexSettings.RootScope.gameObject);
+                ReflexLogger.Log("Root Bindings Installed", LogLevel.Info, reflexSettings.RootScope.gameObject);
             }
             
             return builder.Build();
         }
 
-        private static Container CreateSceneContainer(Scene scene, Container projectContainer, ContainerScope containerScope)
+        private static Container CreateSceneContainer(Scene scene, Container rootContainer, ContainerScope containerScope)
         {
             var parentContainer = ContainerParentOverride.TryPeek(out var containerParentOverride)
                 ? containerParentOverride
-                : projectContainer;
+                : rootContainer;
             
             return parentContainer.Scope(builder =>
             {
@@ -97,7 +97,7 @@ namespace Reflex.Injectors
         private static void ResetStaticState()
         {
             OnSceneLoaded = null;
-            ProjectContainer = null;
+            RootContainer = null;
             ContainersPerScene.Clear();
             ContainerParentOverride.Clear();
             ExtraInstallers = null;
