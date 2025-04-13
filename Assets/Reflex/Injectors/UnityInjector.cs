@@ -19,7 +19,7 @@ namespace Reflex.Injectors
         internal static Container ProjectContainer { get; private set; }
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
         internal static Dictionary<Scene, Container> SceneContainerParentOverride { get; } = new();
-        internal static Dictionary<Scene, Action<ContainerBuilder>> ScenePreInstaller { get; } = new();
+        internal static event Action<ContainerBuilder> ExtraInstallers;
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeAwakeOfFirstSceneOnly()
@@ -73,6 +73,7 @@ namespace Reflex.Injectors
                 ReflexLogger.Log("Project Bindings Installed", LogLevel.Info, reflexSettings.RootScope.gameObject);
             }
             
+            ExtraInstallers?.Invoke(builder);
             return builder.Build();
         }
 
@@ -85,13 +86,8 @@ namespace Reflex.Injectors
             return sceneParentContainer.Scope(builder =>
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
-
-                if (ScenePreInstaller.Remove(scene, out var preInstaller))
-                {
-                    preInstaller.Invoke(builder);
-                }
-
                 containerScope.InstallBindings(builder);
+                ExtraInstallers?.Invoke(builder);
                 ReflexLogger.Log($"Scene ({scene.name}) Bindings Installed", LogLevel.Info, containerScope.gameObject);
             });
         }
@@ -107,7 +103,7 @@ namespace Reflex.Injectors
             ProjectContainer = null;
             ContainersPerScene.Clear();
             SceneContainerParentOverride.Clear();
-            ScenePreInstaller.Clear();
+            ExtraInstallers = null;
         }
 
         [Conditional("REFLEX_DEBUG")]

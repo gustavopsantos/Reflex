@@ -11,28 +11,37 @@ namespace Reflex.PlayModeTests
 {
     public class ScenePreInstallerTests
     {
+        private static void ExtraInstaller(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterValue(42, Lifetime.Singleton);
+        }
+        
         [UnityTest]
         public IEnumerator PreInstall_ShouldWorkWith_SceneManagerLoadSceneAsync()
         {
-            var service = new object();
-            var loadingOperation = SceneManager.LoadSceneAsync("ExecutionOrderTestsScene", LoadSceneMode.Single);
-            var sceneBeingLoaded = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
-            ReflexSceneManager.PreInstallScene(sceneBeingLoaded, builder => builder.RegisterValue(service, Lifetime.Singleton));
-            yield return loadingOperation;
-            var sceneContainer = sceneBeingLoaded.GetSceneContainer();
-            sceneContainer.Single<object>().Should().Be(service);
+            using (new ExtraInstallerScope(ExtraInstaller))
+            {
+                yield return SceneManager.LoadSceneAsync("ExecutionOrderTestsScene");
+            }
+            
+            var activeScene = SceneManager.GetActiveScene();
+            var sceneContainer = activeScene.GetSceneContainer();
+            sceneContainer.Single<int>().Should().Be(42);
         }
 
         [UnityTest]
         public IEnumerator PreInstall_ShouldWorkWith_SceneManagerLoadScene()
         {
-            var service = new object();
-            var loadSceneParams = new LoadSceneParameters(LoadSceneMode.Single);
-            var sceneBeingLoaded = SceneManager.LoadScene("ExecutionOrderTestsScene", loadSceneParams);
-            ReflexSceneManager.PreInstallScene(sceneBeingLoaded, builder => builder.RegisterValue(service, Lifetime.Singleton));
-            yield return new WaitUntil(() => sceneBeingLoaded.isLoaded);
-            var sceneContainer = sceneBeingLoaded.GetSceneContainer();
-            sceneContainer.Single<object>().Should().Be(service);
+            using (new ExtraInstallerScope(ExtraInstaller))
+            {
+                var loadSceneParams = new LoadSceneParameters(LoadSceneMode.Single);
+                var loadScene = SceneManager.LoadScene("ExecutionOrderTestsScene", loadSceneParams);
+                yield return new WaitUntil(() => loadScene.isLoaded);
+            }
+            
+            var activeScene = SceneManager.GetActiveScene();
+            var sceneContainer = activeScene.GetSceneContainer();
+            sceneContainer.Single<int>().Should().Be(42);
         }
     }
 }
