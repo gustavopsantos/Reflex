@@ -1396,7 +1396,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1768555616}
-  - component: {fileID: 1768555619}
+  - component: {fileID: 1768555621}
   - component: {fileID: 1768555620}
   m_Layer: 0
   m_Name: SceneScope
@@ -1420,18 +1420,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1768555619
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1768555615}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fd1482e4a9dee141aecc5bcd0a4f0f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1768555620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1444,8 +1432,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21df1c5ba313938458a1be4ec6173984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pickupSoundEffectPrefab: {fileID: 2361240671020676878, guid: 90203e981266cfa47ae2e46ad3f1eac1, type: 3}
   _collectorConfigurationModel: {fileID: 11400000, guid: be293664c5b1a894582d7fd59251b6a1, type: 2}
+--- !u!114 &1768555621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1768555615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5312032623c34414a54ea00e35a7eb8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1774418929
 GameObject:
   m_ObjectHideFlags: 0
