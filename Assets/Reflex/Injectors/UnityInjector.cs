@@ -67,12 +67,9 @@ namespace Reflex.Injectors
             var reflexSettings = ReflexSettings.Instance;
             var builder = new ContainerBuilder().SetName("ProjectContainer");
 
-            if (reflexSettings.ProjectScopes != null)
+            foreach (var projectScope in reflexSettings.ProjectScopes.Where(x => x != null && x.gameObject.activeSelf))
             {
-                foreach (var projectScope in reflexSettings.ProjectScopes.Where(x => x != null && x.gameObject.activeSelf))
-                {
-                    projectScope.InstallBindings(builder);
-                }
+                projectScope.InstallBindings(builder);
             }
 
             return builder.Build();

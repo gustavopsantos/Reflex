@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Reflex.Core;
 using Reflex.Logging;
@@ -27,7 +26,7 @@ namespace Reflex.Configuration
         }
         
         [field: SerializeField] public LogLevel LogLevel { get; private set; }
-        [field: SerializeField] public List<ProjectScope> ProjectScopes { get; private set; }
+        [field: SerializeField] public List<ProjectScope> ProjectScopes { get; private set; } = new();
 
         private void OnValidate()
         {
