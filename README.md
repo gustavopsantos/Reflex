@@ -420,24 +420,24 @@ using UnityEngine;
 
 namespace Reflex.EditModeTests 
 {
-    public class TypedString 
+    public class TypedInstance <T> 
     {
-        private readonly string _value;
-        protected TypedString(string value) => _value = value;
-        public static implicit operator string(TypedString typedString) => typedString._value;
+        private readonly T _value;
+        protected TypedInstance(T value) => _value = value;
+        public static implicit operator T(TypedInstance <T> typedInstance) => typedInstance._value;
     }
 
-    public class AppName: TypedString 
+    public class AppName: TypedInstance<string> 
     {
         public AppName(string value): base(value) {}
     }
 
-    public class AppVersion: TypedString 
+    public class AppVersion: TypedInstance<string> 
     {
         public AppVersion(string value): base(value) {}
     }
 
-    public class AppWindow 
+    public class AppWindow
     {
         private readonly string _appName;
         private readonly string _appVersion;
@@ -462,7 +462,7 @@ namespace Reflex.EditModeTests
                 .AddSingleton(new AppName("MyHelloWorldConsoleApp"))
                 .Build();
 
-            var appWindow = container.Resolve<AppWindow>();
+            var appWindow = container.Resolve <AppWindow>();
             appWindow.Present();
         }
     }
