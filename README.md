@@ -420,19 +420,19 @@ using UnityEngine;
 
 namespace Reflex.EditModeTests 
 {
-    public class TypedInstance <T> 
+    public class TypedInstance<T> 
     {
         private readonly T _value;
         protected TypedInstance(T value) => _value = value;
-        public static implicit operator T(TypedInstance <T> typedInstance) => typedInstance._value;
+        public static implicit operator T(TypedInstance<T> typedInstance) => typedInstance._value;
     }
 
-    public class AppName: TypedInstance<string> 
+    public class AppName : TypedInstance<string> 
     {
         public AppName(string value): base(value) {}
     }
 
-    public class AppVersion: TypedInstance<string> 
+    public class AppVersion : TypedInstance<string> 
     {
         public AppVersion(string value): base(value) {}
     }
