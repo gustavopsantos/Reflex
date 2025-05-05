@@ -35,6 +35,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - [Scopes](#-scopes)
 - [Bindings](#-bindings)
 - [Resolving](#-resolving)
+- [Selective Resolution](#-selective-resolution)
 - [Callbacks](#-callbacks)
 - [Attributes](#-attributes)
 - [Manual Injection](#-manual-injection)
@@ -408,6 +409,67 @@ private void Documentation_Bindings()
 ```
 
 ---
+## 🍒 Selective Resolution
+Selective Resolution is the technique of resolving a specific dependency or implementation **usually** using a composite key made of a `string` identifier and a `type`. It allows fine-grained control over which binding to use in contexts where multiple bindings of the same type exist.
+Reflex offers the flexibility to achieve the same functionality using its existing features, without the need to rely on builder methods like `WithId` and attributes such as `[Inject(Id = "FooId")]`, as seen in other DI frameworks.
+Here's an example:
+```cs
+using NUnit.Framework;
+using Reflex.Core;
+using UnityEngine;
+
+namespace Reflex.EditModeTests 
+{
+    public class TypedInstance<T> 
+    {
+        private readonly T _value;
+        protected TypedInstance(T value) => _value = value;
+        public static implicit operator T(TypedInstance<T> typedInstance) => typedInstance._value;
+    }
+
+    public class AppName : TypedInstance<string> 
+    {
+        public AppName(string value): base(value) {}
+    }
+
+    public class AppVersion : TypedInstance<string> 
+    {
+        public AppVersion(string value): base(value) {}
+    }
+
+    public class AppWindow
+    {
+        private readonly string _appName;
+        private readonly string _appVersion;
+
+        public AppWindow(AppName appName, AppVersion appVersion) 
+        {
+            _appName = appName;
+            _appVersion = appVersion;
+        }
+
+        public void Present() => Debug.Log($"Hello from {_appName} version: {_appVersion}");
+    }
+
+    public class SelectiveBindingTests 
+    {
+        [Test]
+        public void TestSelectiveBinding() 
+        {
+            var container = new ContainerBuilder()
+                .AddSingleton(typeof (AppWindow))
+                .AddSingleton(new AppVersion("0.9"))
+                .AddSingleton(new AppName("MyHelloWorldConsoleApp"))
+                .Build();
+
+            var appWindow = container.Resolve <AppWindow>();
+            appWindow.Present();
+        }
+    }
+}
+```
+
+---
 
 ## 🪝 Callbacks
 ### `ContainerBuilder::OnContainerBuilt`
@@ -529,6 +591,7 @@ It can be created by asset menu item Assets → Create → Reflex → Settings.
 - logging verbosity is configured in this asset, and default value is set to `Info`
 - the list of ProjectScopes is also configured in this asset, and default value is empty
 
+> [!IMPORTANT]
 > ReflexSettings asset is obligatory to have
 
 ---
