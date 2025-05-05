@@ -1,7 +1,7 @@
 <div align=center>   
 
 <p align="center">
-  <img src="..\Graphics\logo.png" width="250">
+  <img src="graphics\logo.png" width="250">
 </p>
 
 ### Blazing fast, minimal but complete dependency injection library for <a href="https://unity.com/">Unity</a>
@@ -183,7 +183,7 @@ public class Loader : MonoBehaviour
 
 ## 🎬 Execution Order
 <p align="center">
-  <img src="..\Graphics/execution-order.png" />
+  <img src="graphics/execution-order.png" />
 </p>
 
 ---
@@ -564,15 +564,15 @@ It can be accessed from menu item  Window → Analysis → Reflex Debugger, or f
 To enable reflex debug mode you must go to Edit → Project Settings → Player, then in the Other Settings panel, scroll down to Script Compilation → Scripting Define Symbols and add `REFLEX_DEBUG`. This can be easily achieved by clicking on the bug button at bottom right corner inside Reflex Debugger Window.
 > Note that debug mode reduces performance and increases memory pressure, so use it wisely.  
 
-![Preview](../Graphics/reflex-debugger.png)  
+![Preview](graphics/reflex-debugger.png)  
 
 ### Legend
 
 | Icon                                                                                                    | Name                                                                                                                                                                                            | Description                                                                                                                                                                          |
 |---------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <img style='vertical-align:middle;' src='..\Graphics\icon-container.png' alt="Container Icon" width="24">  | Name taken from `Name` property of a `Container` instance. Scene containers uses `scene.name` + `scene.GetHashCode()`, so you can differentiate between two instances of the same opened scene. | Represents a container, containers has a collection of bindings                                                                                                                      |
-| <img style='vertical-align:middle;' src='..\Graphics\icon-resolver.png' alt="Container Icon" width="24">   | Name created from the array of contracts you described your binding.                                                                                                                            | Represents a binding, bindings has a collection of instances, singleton will have only one instance, transients can have many instances and factories depends on your implementation |
-| <img style='vertical-align:middle;' src='..\Graphics\icon-instance.png' alt="Container Icon" width="24">   | Name taken from `Name` property of the `Type` of the concrete object.                                                                                                                           | Represents a instance, it's the concrete object that were created by the parent binding and it's being injected to consumers                                                           |
+| <img style='vertical-align:middle;' src='graphics\icon-container.png' alt="Container Icon" width="24">  | Name taken from `Name` property of a `Container` instance. Scene containers uses `scene.name` + `scene.GetHashCode()`, so you can differentiate between two instances of the same opened scene. | Represents a container, containers has a collection of bindings                                                                                                                      |
+| <img style='vertical-align:middle;' src='graphics\icon-resolver.png' alt="Container Icon" width="24">   | Name created from the array of contracts you described your binding.                                                                                                                            | Represents a binding, bindings has a collection of instances, singleton will have only one instance, transients can have many instances and factories depends on your implementation |
+| <img style='vertical-align:middle;' src='graphics\icon-instance.png' alt="Container Icon" width="24">   | Name taken from `Name` property of the `Type` of the concrete object.                                                                                                                           | Represents a instance, it's the concrete object that were created by the parent binding and it's being injected to consumers                                                           |
 
 Debugger window allows you to inspect the following:
 - Hierarchy of Containers, Bindings and Instances
