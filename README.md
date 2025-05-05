@@ -591,6 +591,7 @@ It can be created by asset menu item Assets → Create → Reflex → Settings.
 - logging verbosity is configured in this asset, and default value is set to `Info`
 - the list of ProjectScopes is also configured in this asset, and default value is empty
 
+> [!IMPORTANT]
 > ReflexSettings asset is obligatory to have
 
 ---
