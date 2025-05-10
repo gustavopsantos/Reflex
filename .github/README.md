@@ -40,6 +40,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - [Attributes](#-attributes)
 - [Manual Injection](#-manual-injection)
 - [Extensions](#-extensions)
+- [Unit Testing](#-unit-testing)
 - [Debugger](#-debugger)
 - [Settings](#-settings)
 - [Performance](#-performance)
@@ -161,16 +162,16 @@ public class Loader : MonoBehaviour
 {
     private void Start()
     {
-	// If you are loading scenes without addressables
-	var scene = SceneManager.LoadScene("Greet", new LoadSceneParameters(LoadSceneMode.Single));
-	ReflexSceneManager.PreInstallScene(scene, builder => builder.AddSingleton("Beautiful"));
+    // If you are loading scenes without addressables
+    var scene = SceneManager.LoadScene("Greet", new LoadSceneParameters(LoadSceneMode.Single));
+    ReflexSceneManager.PreInstallScene(scene, builder => builder.AddSingleton("Beautiful"));
 
-	// If you are loading scenes with addressables
-	Addressables.LoadSceneAsync("Greet", activateOnLoad: false).Completed += handle =>
-	{
-		ReflexSceneManager.PreInstallScene(handle.Result.Scene, builder => builder.AddSingleton("Beautiful"));
-		handle.Result.ActivateAsync();
-	};
+    // If you are loading scenes with addressables
+    Addressables.LoadSceneAsync("Greet", activateOnLoad: false).Completed += handle =>
+    {
+        ReflexSceneManager.PreInstallScene(handle.Result.Scene, builder => builder.AddSingleton("Beautiful"));
+        handle.Result.ActivateAsync();
+    };
     }
 }
 ```
@@ -354,12 +355,12 @@ It's simply as just requesting the contracts you need as following example:
 ```csharp
 private class Foo
 {  
-	...
+    ...
   
-	public Foo(IInputManager inputManager, IEnumerable<IManager> managers)  
-	{  
-		...
-	}  
+    public Foo(IInputManager inputManager, IEnumerable<IManager> managers)  
+    {  
+        ...
+    }  
 }
 ```
 
@@ -371,14 +372,14 @@ You can use it to inject fields, writeable properties and methods like following
 ```csharp
 class Foo : MonoBehaviour  
 {  
-	[Inject] private readonly IInputManager _inputManager;  
-	[Inject] public IEnumerable<IManager> Managers { get; private set; }  
+    [Inject] private readonly IInputManager _inputManager;  
+    [Inject] public IEnumerable<IManager> Managers { get; private set; }  
   
-	[Inject]  
-	private void Inject(IEnumerable<int> numbers) // Method name here does not matter  
-	{  
-	  ...
-	}  
+    [Inject]  
+    private void Inject(IEnumerable<int> numbers) // Method name here does not matter  
+    {  
+      ...
+    }  
 }
 ```
 > Note that attribute injection also works on non-mono classes.
@@ -398,13 +399,13 @@ Example:
 ```csharp
 private void Documentation_Bindings()  
 {
-	var container = new ContainerBuilder()
-		.AddSingleton(1)
-		.AddSingleton(2)
-		.AddSingleton(3)
-		.Build();
+    var container = new ContainerBuilder()
+        .AddSingleton(1)
+        .AddSingleton(2)
+        .AddSingleton(3)
+        .Build();
 
-	Debug.Log(string.Join(", ", container.All<int>())); // Prints: 1, 2, 3
+    Debug.Log(string.Join(", ", container.All<int>())); // Prints: 1, 2, 3
 }
 ```
 
@@ -483,14 +484,14 @@ Should be used to inject fields, writeable properties and methods like following
 ```csharp
 class Foo : MonoBehaviour  
 {  
-	[Inject] private readonly IInputManager _inputManager;  
-	[Inject] public IEnumerable<IManager> Managers { get; private set; }  
+    [Inject] private readonly IInputManager _inputManager;  
+    [Inject] public IEnumerable<IManager> Managers { get; private set; }  
   
-	[Inject]  
-	private void Inject(IEnumerable<int> numbers) // Method name here does not matter  
-	{  
-	  ...
-	}  
+    [Inject]  
+    private void Inject(IEnumerable<int> numbers) // Method name here does not matter  
+    {  
+      ...
+    }  
 }
 ```
 > Note that `InjectAttribute` also works on non-mono classes.
@@ -554,6 +555,73 @@ SceneExtensions::GetSceneContainer(this Scene scene)
 
 // Usage example:
 var foo = gameObject.scene.GetSceneContainer().Resolve<IFoo>();
+```
+
+---
+
+## :wrench: Unit Testing
+
+If you are making unit tests in Unity with the NUnit framework, setting up your container and bindings is done slightly differently.
+
+Here is an example:
+```csharp
+using NUnit.Framework;
+using Reflex.Attributes;
+using Reflex.Core;
+using Reflex.Injectors;
+
+public class FooTests
+{
+    private Container _container;
+
+    [Inject] private readonly int _injectedNumber;
+    [Inject] private readonly string _injectedString;
+    [Inject] private readonly MyClass _injectedClass;
+    [Inject] private readonly MyClassWithInterface _injectedClassWithInterface;
+
+    [OneTimeSetUp]
+    public void Setup()
+    {
+        _container = new ContainerBuilder()
+            .AddSingleton(42)
+            .AddSingleton("The answer to life, the universe and everything")
+            .AddSingleton(typeof(MyClass))
+            .AddSingleton(typeof(MyClassWithInterface), typeof(IMyInterface))
+            .Build();
+
+        AttributeInjector.Inject(this, _container);
+    }
+
+    [OneTimeTearDown]
+    public void TearDown()
+    {
+        _container.Dispose();
+    }
+
+    [Test]
+    public void TestInjectedNumber()
+    {
+        Assert.AreEqual(expected: 42, actual: _injectedNumber);
+    }
+
+    [Test]
+    public void TestInjectedString()
+    {
+        Assert.AreEqual(expected: "The answer to life, the universe and everything", actual: _injectedString);
+    }
+
+    [Test]
+    public void TestInjectedClass()
+    {
+        Assert.AreEqual(expected: 42, actual: _injectedClass.ComputeTheAnswerToLife());
+    }
+
+    [Test]
+    public void TestInjectedClassWithInterface()
+    {
+        Assert.AreEqual(expected: 42, actual: _injectedClassWithInterface.ComputeTheAnswerToLife());
+    }
+}
 ```
 
 ---
