@@ -40,6 +40,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - [Attributes](#-attributes)
 - [Manual Injection](#-manual-injection)
 - [Extensions](#-extensions)
+- [Unit Testing](#-unit-testing)
 - [Debugger](#-debugger)
 - [Settings](#-settings)
 - [Performance](#-performance)
@@ -554,6 +555,73 @@ SceneExtensions::GetSceneContainer(this Scene scene)
 
 // Usage example:
 var foo = gameObject.scene.GetSceneContainer().Resolve<IFoo>();
+```
+
+---
+
+## 🔧 Unit Testing
+
+If you are making unit tests in Unity with the NUnit framework, setting up your container and bindings is done slightly differently.
+
+Here is an example:
+```csharp
+using NUnit.Framework;
+using Reflex.Attributes;
+using Reflex.Core;
+using Reflex.Injectors;
+
+public class FooTests
+{
+    private Container _container;
+
+    [Inject] private readonly int _injectedNumber;
+    [Inject] private readonly string _injectedString;
+    [Inject] private readonly MyClass _injectedClass;
+    [Inject] private readonly MyClassWithInterface _injectedClassWithInterface;
+
+    [OneTimeSetUp]
+    public void Setup()
+    {
+        _container = new ContainerBuilder()
+            .AddSingleton(42)
+            .AddSingleton("The answer to life, the universe and everything")
+            .AddSingleton(typeof(MyClass))
+            .AddSingleton(typeof(MyClassWithInterface), typeof(IMyInterface))
+            .Build();
+
+        AttributeInjector.Inject(this, _container);
+    }
+
+    [OneTimeTearDown]
+    public void TearDown()
+    {
+        _container.Dispose();
+    }
+
+    [Test]
+    public void TestInjectedNumber()
+    {
+        Assert.AreEqual(expected: 42, actual: _injectedNumber);
+    }
+
+    [Test]
+    public void TestInjectedString()
+    {
+        Assert.AreEqual(expected: "The answer to life, the universe and everything", actual: _injectedString);
+    }
+
+    [Test]
+    public void TestInjectedClass()
+    {
+        Assert.AreEqual(expected: 42, actual: _injectedClass.ComputeTheAnswerToLife());
+    }
+
+    [Test]
+    public void TestInjectedClassWithInterface()
+    {
+        Assert.AreEqual(expected: 42, actual: _injectedClassWithInterface.ComputeTheAnswerToLife());
+    }
+}
 ```
 
 ---
