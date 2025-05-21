@@ -1,7 +1,7 @@
 <div align=center>   
 
 <p align="center">
-  <img src="Graphics\logo.png" width="250">
+  <img src="graphics\logo.png" width="250">
 </p>
 
 ### Blazing fast, minimal but complete dependency injection library for <a href="https://unity.com/">Unity</a>
@@ -35,6 +35,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - [Scopes](#-scopes)
 - [Bindings](#-bindings)
 - [Resolving](#-resolving)
+- [Selective Resolution](#-selective-resolution)
 - [Callbacks](#-callbacks)
 - [Attributes](#-attributes)
 - [Manual Injection](#-manual-injection)
@@ -73,7 +74,7 @@ You can install Reflex using any of the following methods:
 
 ### Unity Package Manager
 ```
-https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#10.0.1
+https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#10.0.3
 ```
 
 1. In Unity, open **Window** → **Package Manager**.
@@ -108,11 +109,11 @@ public class ProjectInstaller : MonoBehaviour, IInstaller
 }
 ```
 3. In unity project window
-4. Create directory `Assets/Resources`
-5. Right click over `Resources` folder, Create → Reflex → ProjectScope
-6. With just created `ProjectScope` selected
-7. Add `ProjectInstaller.cs` as a component
-8. Right click over `Resources` folder, Create → Reflex → Settings
+4. Right click over any folder, Create → Reflex → ProjectScope. Since ProjectScopes is strongly referenced by ReflexSettings, you can create it anywhere, it does not need to be inside `Resources` folder.
+5. Select `ProjectScope` you just created
+6. Add `ProjectInstaller.cs` as a component
+7. Create directory `Assets/Resources`
+8. Right click over `Resources` folder, Create → Reflex → Settings. ReflexSettings should always be created inside `Resources` folder.
 9. Select `ReflexSettings` ScriptableObject and add the `ProjectScope` prefab to the ProjectScopes list
 10. Create new scene `Greet`
 11. Add `Greet` to `Build Settings` → `Scenes In Build`
@@ -182,14 +183,17 @@ public class Loader : MonoBehaviour
 
 ## 🎬 Execution Order
 <p align="center">
-  <img src="Graphics/execution-order.png" />
+  <img src="graphics/execution-order.png" />
 </p>
 
 ---
 
 ## 🎯 Injection Strategy
-Beginning from version 8.0.0, Reflex stops injecting all scenes automatically on Start, to start injecting only scenes with a SceneScope on Awake.
-This allows users to consume injected dependencies on callbacks such as Awake and OnEnable while giving more granular control on which scenes must be injected or not.
+As of version 8.0.0 Reflex has stopped automatically managing dependency injection for any scene.
+
+If you plan on using dependency injection in one of your scenes, add a game object somewhere in the hierarchy with a `SceneScope` component attached. You can still manage dependencies project-wide or utilize this scene container for limited access. This component must be present at scene load time.
+
+This allows users to consume injected dependencies on callbacks such as `Awake` and `OnEnable` while giving more granular control over which scene should be injected or not.
 
 ---
 
@@ -405,6 +409,67 @@ private void Documentation_Bindings()
 ```
 
 ---
+## 🍒 Selective Resolution
+Selective Resolution is the technique of resolving a specific dependency or implementation **usually** using a composite key made of a `string` identifier and a `type`. It allows fine-grained control over which binding to use in contexts where multiple bindings of the same type exist.
+Reflex offers the flexibility to achieve the same functionality using its existing features, without the need to rely on builder methods like `WithId` and attributes such as `[Inject(Id = "FooId")]`, as seen in other DI frameworks.
+Here's an example:
+```cs
+using NUnit.Framework;
+using Reflex.Core;
+using UnityEngine;
+
+namespace Reflex.EditModeTests 
+{
+    public class TypedInstance<T> 
+    {
+        private readonly T _value;
+        protected TypedInstance(T value) => _value = value;
+        public static implicit operator T(TypedInstance<T> typedInstance) => typedInstance._value;
+    }
+
+    public class AppName : TypedInstance<string> 
+    {
+        public AppName(string value): base(value) {}
+    }
+
+    public class AppVersion : TypedInstance<string> 
+    {
+        public AppVersion(string value): base(value) {}
+    }
+
+    public class AppWindow
+    {
+        private readonly string _appName;
+        private readonly string _appVersion;
+
+        public AppWindow(AppName appName, AppVersion appVersion) 
+        {
+            _appName = appName;
+            _appVersion = appVersion;
+        }
+
+        public void Present() => Debug.Log($"Hello from {_appName} version: {_appVersion}");
+    }
+
+    public class SelectiveBindingTests 
+    {
+        [Test]
+        public void TestSelectiveBinding() 
+        {
+            var container = new ContainerBuilder()
+                .AddSingleton(typeof (AppWindow))
+                .AddSingleton(new AppVersion("0.9"))
+                .AddSingleton(new AppName("MyHelloWorldConsoleApp"))
+                .Build();
+
+            var appWindow = container.Resolve <AppWindow>();
+            appWindow.Present();
+        }
+    }
+}
+```
+
+---
 
 ## 🪝 Callbacks
 ### `ContainerBuilder::OnContainerBuilt`
@@ -499,15 +564,15 @@ It can be accessed from menu item  Window → Analysis → Reflex Debugger, or f
 To enable reflex debug mode you must go to Edit → Project Settings → Player, then in the Other Settings panel, scroll down to Script Compilation → Scripting Define Symbols and add `REFLEX_DEBUG`. This can be easily achieved by clicking on the bug button at bottom right corner inside Reflex Debugger Window.
 > Note that debug mode reduces performance and increases memory pressure, so use it wisely.  
 
-![Preview](Graphics/reflex-debugger.png)  
+![Preview](graphics/reflex-debugger.png)  
 
 ### Legend
 
 | Icon                                                                                                    | Name                                                                                                                                                                                            | Description                                                                                                                                                                          |
 |---------------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <img style='vertical-align:middle;' src='Graphics\icon-container.png' alt="Container Icon" width="24">  | Name taken from `Name` property of a `Container` instance. Scene containers uses `scene.name` + `scene.GetHashCode()`, so you can differentiate between two instances of the same opened scene. | Represents a container, containers has a collection of bindings                                                                                                                      |
-| <img style='vertical-align:middle;' src='Graphics\icon-resolver.png' alt="Container Icon" width="24">   | Name created from the array of contracts you described your binding.                                                                                                                            | Represents a binding, bindings has a collection of instances, singleton will have only one instance, transients can have many instances and factories depends on your implementation |
-| <img style='vertical-align:middle;' src='Graphics\icon-instance.png' alt="Container Icon" width="24">   | Name taken from `Name` property of the `Type` of the concrete object.                                                                                                                           | Represents a instance, it's the concrete object that were created by the parent binding and it's being injected to consumers                                                           |
+| <img style='vertical-align:middle;' src='graphics\icon-container.png' alt="Container Icon" width="24">  | Name taken from `Name` property of a `Container` instance. Scene containers uses `scene.name` + `scene.GetHashCode()`, so you can differentiate between two instances of the same opened scene. | Represents a container, containers has a collection of bindings                                                                                                                      |
+| <img style='vertical-align:middle;' src='graphics\icon-resolver.png' alt="Container Icon" width="24">   | Name created from the array of contracts you described your binding.                                                                                                                            | Represents a binding, bindings has a collection of instances, singleton will have only one instance, transients can have many instances and factories depends on your implementation |
+| <img style='vertical-align:middle;' src='graphics\icon-instance.png' alt="Container Icon" width="24">   | Name taken from `Name` property of the `Type` of the concrete object.                                                                                                                           | Represents a instance, it's the concrete object that were created by the parent binding and it's being injected to consumers                                                           |
 
 Debugger window allows you to inspect the following:
 - Hierarchy of Containers, Bindings and Instances
@@ -526,6 +591,7 @@ It can be created by asset menu item Assets → Create → Reflex → Settings.
 - logging verbosity is configured in this asset, and default value is set to `Info`
 - the list of ProjectScopes is also configured in this asset, and default value is empty
 
+> [!IMPORTANT]
 > ReflexSettings asset is obligatory to have
 
 ---

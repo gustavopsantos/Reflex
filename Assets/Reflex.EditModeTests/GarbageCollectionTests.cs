@@ -23,7 +23,7 @@ namespace Reflex.EditModeTests
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
-
+        
         [OneTimeSetUp]
         public void Setup()
         {
