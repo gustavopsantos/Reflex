@@ -56,7 +56,6 @@ namespace Reflex.Core
                 }
             }
             
-            Bindings.Clear();   
             var container = new Container(Name, Parent, resolversByContract, disposables);
 
             // Eagerly resolve inherited Scoped + Eager bindings
