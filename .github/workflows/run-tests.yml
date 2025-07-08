@@ -1,4 +1,4 @@
-name: Tests
+name: 🧪 Tests
 
 on: push
 
@@ -9,19 +9,15 @@ jobs:
   TestRunner:
     name: Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 5
     container:
-      image: "unityci/editor:ubuntu-2021.3.10f1-base-2.0.0"
+      image: "unityci/editor:ubuntu-2021.3.45f1-base-3.1.0"
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
     - name: Activate Unity
       run: echo "$UNITY_LICENSE" > Unity_lic.ulf && (/opt/unity/Editor/Unity -nographics -batchmode -manualLicenseFile Unity_lic.ulf || true)
     - name: Edit Mode Tests
-      run: /opt/unity/Editor/Unity -projectPath . -batchmode -nographics -runTests -testPlatform EditMode -retry 4
+      run: /opt/unity/Editor/Unity -projectPath . -batchmode -nographics -runTests -testPlatform EditMode -retry 3
     - name: Play Mode Tests
-      run: /opt/unity/Editor/Unity -projectPath . -batchmode -nographics -runTests -testPlatform PlayMode -retry 4
-#    - name: Publish Results
-#      uses: actions/upload-artifact@v2
-#      with:
-#        path: test-results.xml
+      run: /opt/unity/Editor/Unity -projectPath . -batchmode -nographics -runTests -testPlatform PlayMode -retry 3

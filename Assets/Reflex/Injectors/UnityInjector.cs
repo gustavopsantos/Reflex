@@ -15,7 +15,6 @@ namespace Reflex.Injectors
     internal static class UnityInjector
     {
         internal static Action<Scene, ContainerScope> OnSceneLoaded;
-        internal static Container RootContainer { get; private set; }
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
         internal static Stack<Container> ContainerParentOverride { get; } = new();
         internal static Action<ContainerBuilder> ExtraInstallers;
@@ -25,12 +24,12 @@ namespace Reflex.Injectors
         {
             ReportReflexDebuggerStatus();
             ResetStaticState();
-            RootContainer = CreateRootContainer();
+            Container.RootContainer = CreateRootContainer();
 
             void InjectScene(Scene scene, ContainerScope containerScope)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
-                var sceneContainer = CreateSceneContainer(scene, RootContainer, containerScope);
+                var sceneContainer = CreateSceneContainer(scene, Container.RootContainer, containerScope);
                 ContainersPerScene.Add(scene, sceneContainer);
                 SceneInjector.Inject(scene, sceneContainer);
             }
@@ -47,8 +46,8 @@ namespace Reflex.Injectors
             
             void DisposeProject()
             {
-                RootContainer?.Dispose();
-                RootContainer = null;
+                Container.RootContainer?.Dispose();
+                Container.RootContainer = null;
                 
                 // Unsubscribe from static events ensuring that Reflex works with domain reloading set to false
                 OnSceneLoaded -= InjectScene;
@@ -93,7 +92,7 @@ namespace Reflex.Injectors
         private static void ResetStaticState()
         {
             OnSceneLoaded = null;
-            RootContainer = null;
+            Container.RootContainer = null;
             ContainersPerScene.Clear();
             ContainerParentOverride.Clear();
             ExtraInstallers = null;
