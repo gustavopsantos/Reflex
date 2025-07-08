@@ -12,7 +12,8 @@ namespace Reflex.EditModeTests
         public void Setup()
         {
             var testRunnerApi = ScriptableObject.CreateInstance<TestRunnerApi>();
-            testRunnerApi.RegisterCallbacks(new TestResultReporter());
+            var testResultReporter = new TestResultReporter(testRunnerApi);
+            testRunnerApi.RegisterCallbacks(testResultReporter);
         }
     }
 }

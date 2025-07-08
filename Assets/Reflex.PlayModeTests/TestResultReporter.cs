@@ -8,7 +8,13 @@ namespace Reflex.PlayModeTests
 {
     public class TestResultReporter : ICallbacks
     {
+        private readonly TestRunnerApi _testRunnerApi;
         private readonly List<ITestResultAdaptor> _results = new();
+
+        public TestResultReporter(TestRunnerApi testRunnerApi)
+        {
+            _testRunnerApi = testRunnerApi;
+        }
         
         void ICallbacks.RunStarted(ITestAdaptor testsToRun)
         {
@@ -17,8 +23,7 @@ namespace Reflex.PlayModeTests
 
         void ICallbacks.RunFinished(ITestResultAdaptor result)
         {
-            var testRunnerApi = ScriptableObject.CreateInstance<TestRunnerApi>();
-            testRunnerApi.UnregisterCallbacks(this);
+            _testRunnerApi.UnregisterCallbacks(this);
             
             using (new ApplicationStackTraceLogTypeScope(LogType.Log, StackTraceLogType.None))
             {
