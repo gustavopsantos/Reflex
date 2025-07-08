@@ -1,10 +1,12 @@
-name: 🔑 Get Unity License File (ALF)
+# Manually run, generates a unity license file that should be saved into GitHub > Settings > Secrets
+
+name: 🔑 Generate Unity License File (ALF)
 
 on: workflow_dispatch
 
 jobs:
   GetUnityLicenseFile:
-    name: Get Unity License File
+    name: Generate Unity License File
     runs-on: ubuntu-latest
     container:
       image: "unityci/editor:ubuntu-2021.3.45f1-base-3.1.0"
