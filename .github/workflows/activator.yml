@@ -3,14 +3,14 @@ name: 🔑 Get Unity License File (ALF)
 on: workflow_dispatch
 
 jobs:
-  DoSomething:
-    name: Um Job Legal
+  GetUnityLicenseFile:
+    name: Get Unity License File
     runs-on: ubuntu-latest
     container:
-      image: "unityci/editor:ubuntu-2019.4.17f1-base-0.15.0"
+      image: "unityci/editor:ubuntu-2021.3.45f1-base-3.1.0"
     steps:
     - uses: actions/checkout@v2
     - run: /opt/unity/Editor/Unity -nographics -batchmode -createManualActivationFile -logfile || true
     - uses: actions/upload-artifact@v2
       with:
-        path: Unity_v2019.4.17f1.alf
+        path: Unity_v2021.3.45f1.alf
