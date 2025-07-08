@@ -13,7 +13,7 @@ namespace Reflex.Core
     public sealed class Container : IDisposable
     {
         public string Name { get; }
-        internal Container Parent { get; }
+        public Container Parent { get; }
         internal List<Container> Children { get; } = new();
         internal Dictionary<Type, List<IResolver>> ResolversByContract { get; }
         internal DisposableCollection Disposables { get; }
