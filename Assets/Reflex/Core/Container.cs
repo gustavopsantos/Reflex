@@ -12,6 +12,7 @@ namespace Reflex.Core
 {
     public sealed class Container : IDisposable
     {
+        public static Container ProjectContainer { get; internal set; } 
         public string Name { get; }
         public Container Parent { get; }
         internal List<Container> Children { get; } = new();

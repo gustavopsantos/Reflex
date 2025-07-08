@@ -194,7 +194,7 @@ namespace Reflex.Editor.DebuggingWindow
         private IList<MyTreeElement> GetData()
         {
             var root = new MyTreeElement("Root", -1, ++_id, ContainerIcon, () => string.Empty, Array.Empty<string>(), string.Empty, null, string.Empty);
-            BuildDataRecursively(root, UnityInjector.ProjectContainer);
+            BuildDataRecursively(root, Container.ProjectContainer);
 
             var list = new List<MyTreeElement>();
             TreeElementUtility.TreeToList(root, list);

@@ -16,7 +16,6 @@ namespace Reflex.Injectors
     internal static class UnityInjector
     {
         internal static Action<Scene, SceneScope> OnSceneLoaded;
-        internal static Container ProjectContainer { get; private set; }
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
         internal static Dictionary<Scene, Container> SceneContainerParentOverride { get; } = new();
         internal static Dictionary<Scene, Action<ContainerBuilder>> ScenePreInstaller { get; } = new();
@@ -26,12 +25,12 @@ namespace Reflex.Injectors
         {
             ReportReflexDebuggerStatus();
             ResetStaticState();
-            ProjectContainer = CreateProjectContainer();
+            Container.ProjectContainer = CreateProjectContainer();
 
             void InjectScene(Scene scene, SceneScope sceneScope)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
-                var sceneContainer = CreateSceneContainer(scene, ProjectContainer, sceneScope);
+                var sceneContainer = CreateSceneContainer(scene, Container.ProjectContainer, sceneScope);
                 ContainersPerScene.Add(scene, sceneContainer);
                 SceneInjector.Inject(scene, sceneContainer);
             }
@@ -48,8 +47,8 @@ namespace Reflex.Injectors
             
             void DisposeProject()
             {
-                ProjectContainer?.Dispose();
-                ProjectContainer = null;
+                Container.ProjectContainer?.Dispose();
+                Container.ProjectContainer = null;
                 
                 // Unsubscribe from static events ensuring that Reflex works with domain reloading set to false
                 OnSceneLoaded -= InjectScene;
@@ -105,7 +104,7 @@ namespace Reflex.Injectors
         private static void ResetStaticState()
         {
             OnSceneLoaded = null;
-            ProjectContainer = null;
+            Container.ProjectContainer = null;
             ContainersPerScene.Clear();
             SceneContainerParentOverride.Clear();
             ScenePreInstaller.Clear();
