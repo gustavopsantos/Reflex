@@ -113,7 +113,7 @@ public class ProjectInstaller : MonoBehaviour, IInstaller
 5. Select `ProjectScope` you just created
 6. Add `ProjectInstaller.cs` as a component
 7. Create directory `Assets/Resources`
-8. Right click over `Resources` folder, Create → Reflex → Settings. ReflexSettings should always be created inside `Resources` folder.
+8. Right click over `Resources` folder, Create → Reflex → Settings. ReflexSettings should always be created directly inside `Resources` folder, without any subfolder.
 9. Select `ReflexSettings` ScriptableObject and add the `ProjectScope` prefab to the ProjectScopes list
 10. Create new scene `Greet`
 11. Add `Greet` to `Build Settings` → `Scenes In Build`
@@ -134,7 +134,7 @@ public class Greeter : MonoBehaviour
 }
 ```
 13. Add `Greeter.cs` to any gameobject in `Greet` scene
-14. Inside Greet scene, create a new empty gameobject named `SceneScope` and attach `SceneScope` component
+14. Inside Greet scene, create a scene scope, Right Click on Hierarchy > Reflex > SceneScope.
 15. Create `GreetInstaller.cs` with
 ```csharp
 using Reflex.Core;
@@ -161,23 +161,27 @@ public class Loader : MonoBehaviour
 {
     private void Start()
     {
-	// If you are loading scenes without addressables
-	var scene = SceneManager.LoadScene("Greet", new LoadSceneParameters(LoadSceneMode.Single));
-	ReflexSceneManager.PreInstallScene(scene, builder => builder.AddSingleton("Beautiful"));
+        var extraInstallerScope = new ExtraInstallerScope(builder => builder.AddSingleton("of Developers"));
 
-	// If you are loading scenes with addressables
-	Addressables.LoadSceneAsync("Greet", activateOnLoad: false).Completed += handle =>
-	{
-		ReflexSceneManager.PreInstallScene(handle.Result.Scene, builder => builder.AddSingleton("Beautiful"));
-		handle.Result.ActivateAsync();
-	};
+        void DisposeExtraInstallerScopeAfterSceneIsLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (scene.name == "Greet")
+            {
+                SceneManager.sceneLoaded -= DisposeExtraInstallerScopeAfterSceneIsLoaded;
+                extraInstallerScope.Dispose();
+            }
+        }
+
+        SceneManager.sceneLoaded += DisposeExtraInstallerScopeAfterSceneIsLoaded;
+        SceneManager.LoadScene("Greet"); // If you are loading scenes without Addressables
+        Addressables.LoadSceneAsync("Greet"); // If you are loading scenes with Addressables
     }
 }
 ```
-20. Assign it to any gameobject at `Boot` scene
-21. Thats it, hit play while on `Boot` scene
+20. Add `Loader.cs` to any gameobject at `Boot` scene
+21. Thats it, hit play from `Boot` scene
 22. When Greet scene is loaded, there should be 3 instances implementing string contract
-23. So when Greeter::Start is called, you should see the following log in the unity console: `Hello Beautiful world`
+23. So when Greeter.Start is called, you should see the following log in the unity console: `Hello World of Developers`
 
 ---
 
