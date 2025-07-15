@@ -549,6 +549,16 @@ An alternative approach is to utilize the `GameObjectSelfInjector`, which can be
 ---
 
 ## 🧩 Extensions
+
+### ParentOverrideScope
+The `ParentOverrideScope` allows you to temporarily override the default parent container for all containers created via `ContainerBuilder`. Once an instance of this scope is created, it remains active until explicitly disposed, during which time all newly built containers will inherit from the overridden parent instead of the default one.
+This is particularly useful when you want one scene to inherit services from another, enabling fine-grained control over which parent container is used for each newly loaded scene.
+
+### ExtraInstallerScope
+The `ExtraInstallerScope` provides a mechanism for injecting additional bindings into containers after their initial setup. Once an instance of this scope is created, it remains active until explicitly disposed, it acts as a post-installation hook for all containers built through `ContainerBuilder`.
+This is especially useful in dynamic scenarios—for example, if you have fetched asynchronous dependencies in a boot scene and want to ensure they are available when transitioning into a gameplay scene. It supports use cases resembling a state machine, where the application moves from an "initializing" state to a "ready" state, injecting the required dependencies at the appropriate time.
+
+### GetSceneContainer
 ```csharp
 // Allows you to get a scene container, allowing you to resolve/inject dependencies in a different way during runtime
 SceneExtensions::GetSceneContainer(this Scene scene)
