@@ -17,8 +17,8 @@ namespace Reflex.Injectors
     {
         internal static Action<Scene, SceneScope> OnSceneLoaded;
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
-        internal static Dictionary<Scene, Container> SceneContainerParentOverride { get; } = new();
-        internal static Dictionary<Scene, Action<ContainerBuilder>> ScenePreInstaller { get; } = new();
+        internal static Stack<Container> ContainerParentOverride { get; } = new();
+        internal static Action<ContainerBuilder> ExtraInstallers;
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeAwakeOfFirstSceneOnly()
@@ -79,19 +79,9 @@ namespace Reflex.Injectors
 
         private static Container CreateSceneContainer(Scene scene, Container projectContainer, SceneScope sceneScope)
         {
-            var sceneParentContainer = SceneContainerParentOverride.Remove(scene, out var container)
-                ? container
-                : projectContainer;
-            
-            return sceneParentContainer.Scope(builder =>
+            return projectContainer.Scope(builder =>
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
-
-                if (ScenePreInstaller.Remove(scene, out var preInstaller))
-                {
-                    preInstaller.Invoke(builder);
-                }
-
                 sceneScope.InstallBindings(builder);
             });
         }
@@ -106,8 +96,8 @@ namespace Reflex.Injectors
             OnSceneLoaded = null;
             Container.ProjectContainer = null;
             ContainersPerScene.Clear();
-            SceneContainerParentOverride.Clear();
-            ScenePreInstaller.Clear();
+            ContainerParentOverride.Clear();
+            ExtraInstallers = null;
         }
 
         [Conditional("REFLEX_DEBUG")]
