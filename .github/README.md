@@ -210,26 +210,29 @@ Reflex's default strategy for creating containers involves initially generating 
 graph
 ProjectContainer --> BootScene
 ProjectContainer --> LobbyScene
-ProjectContainer --> GameModeOneScene
+ProjectContainer --> GameScene
 ProjectContainer --> GameModeTwoScene
 ```
 
-### Scene Parent Override
-
-If you want a scene to inherit services from another scene, you can use the `ReflexSceneManager::OverrideSceneParentContainer` method. This feature provides developers with more granular control over which parent container is used for each newly loaded scene.
+### Parent Override Scope
+The `ParentOverrideScope` class allows you to temporarily override the default parent container for all containers created via `ContainerBuilder`. Once an instance of this scope is created, it remains active until explicitly disposed, during which time all newly built containers will inherit from the overridden parent instead of the default one.
+This is particularly useful for instance when you want one scene to inherit services from another scene, enabling a more granular control over which parent container is used for each newly loaded scene.
 
 ```csharp
-// Scene Manager Sample
-var bootScene = SceneManager.GetSceneByName("Boot");  
-var sessionScene = SceneManager.LoadScene("Session", new LoadSceneParameters(LoadSceneMode.Additive));  
-ReflexSceneManager.OverrideSceneParentContainer(scene: sessionScene, parent: bootScene.GetSceneContainer());
+var bootSceneContainer = gameObject.scene.GetSceneContainer();
+var parentOverrideScope = new ParentOverrideScope(bootSceneContainer);
 
-// Addessable Sample
-var handle = Addressables.LoadSceneAsync("Session", LoadSceneMode.Additive, activateOnLoad: false);
-await handle.Task;
-var bootScene = SceneManager.GetSceneByName("Boot");
-ReflexSceneManager.OverrideSceneParentContainer(scene: handle.Result.Scene, parent: bootScene.GetSceneContainer());
-handle.Result.ActivateAsync();
+// If you are loading scenes without addressables
+SceneManager.LoadSceneAsync("Lobby", LoadSceneMode.Additive).completed += operation =>
+{
+    parentOverrideScope.Dispose();
+};
+
+// If you are loading scenes with addressables
+Addressables.LoadSceneAsync("Lobby", LoadSceneMode.Additive).Completed += operation =>
+{
+    parentOverrideScope.Dispose();
+};
 ```  
 
 By utilizing this API, you can create hierarchical structures such as the one shown below:
@@ -238,8 +241,6 @@ By utilizing this API, you can create hierarchical structures such as the one sh
 graph
 ProjectContainer-->BootScene
 BootScene-->LobbyScene
-LobbyScene-->GameModeOneScene
-LobbyScene-->GameModeTwoScene
 ```
 
 
@@ -284,6 +285,35 @@ using var scopedContainer = parentContainer.Scope(builder =>
 {  
   // Extend your scoped container by adding extra registrations here  
 });
+```
+
+### Extra Installer Scope
+The `ExtraInstallerScope` provides a mechanism for injecting additional bindings into containers after their initial setup. Once an instance of this scope is created, it remains active until explicitly disposed, it acts as a post-installation hook for all containers built through `ContainerBuilder`.
+This is especially useful in dynamic scenarios—for example, if you have fetched asynchronous dependencies in a boot scene and want to ensure they are available when transitioning into a gameplay scene. It supports use cases resembling a state machine, where the application moves from an "initializing" state to a "ready" state, injecting the required dependencies at the appropriate time.
+
+Below is an example of a Boot scene that retrieves a remote configuration before transitioning to the Game scene. By the time the Game scene is loaded, the remote configuration is already registered within the Game scene's scope container.
+
+```csharp
+public class Boot : MonoBehaviour
+{
+    private async void Start()
+    {
+        var remoteConfig = await FetchRemoteConfigAsync();
+
+        var extraInstallerScope = new ExtraInstallerScope(gameSceneScopeContainerBuilder =>
+        {
+            gameSceneScopeContainerBuilder.AddSingleton(remoteConfig);
+        });
+
+        SceneManager.LoadSceneAsync("Game").completed += operation => extraInstallerScope.Dispose();
+    }
+
+    private async Task<string> FetchRemoteConfigAsync()
+    {
+        await Task.Delay(1000); // Simulate network delay
+        return "remote config data";
+    }
+}
 ```
 
 ## 🔩 Bindings
@@ -550,14 +580,6 @@ An alternative approach is to utilize the `GameObjectSelfInjector`, which can be
 ---
 
 ## 🧩 Extensions
-
-### ParentOverrideScope
-The `ParentOverrideScope` allows you to temporarily override the default parent container for all containers created via `ContainerBuilder`. Once an instance of this scope is created, it remains active until explicitly disposed, during which time all newly built containers will inherit from the overridden parent instead of the default one.
-This is particularly useful when you want one scene to inherit services from another, enabling fine-grained control over which parent container is used for each newly loaded scene.
-
-### ExtraInstallerScope
-The `ExtraInstallerScope` provides a mechanism for injecting additional bindings into containers after their initial setup. Once an instance of this scope is created, it remains active until explicitly disposed, it acts as a post-installation hook for all containers built through `ContainerBuilder`.
-This is especially useful in dynamic scenarios—for example, if you have fetched asynchronous dependencies in a boot scene and want to ensure they are available when transitioning into a gameplay scene. It supports use cases resembling a state machine, where the application moves from an "initializing" state to a "ready" state, injecting the required dependencies at the appropriate time.
 
 ### GetSceneContainer
 ```csharp
