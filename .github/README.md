@@ -155,26 +155,27 @@ public class GreetInstaller : MonoBehaviour, IInstaller
 ```csharp
 using Reflex.Core;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Loader : MonoBehaviour
 {
     private void Start()
     {
-        var extraInstallerScope = new ExtraInstallerScope(builder => builder.AddSingleton("of Developers"));
-
-        void DisposeExtraInstallerScopeAfterSceneIsLoaded(Scene scene, LoadSceneMode mode)
+        var extraInstallerScope = new ExtraInstallerScope(greetSceneScopeBuilder =>
         {
-            if (scene.name == "Greet")
-            {
-                SceneManager.sceneLoaded -= DisposeExtraInstallerScopeAfterSceneIsLoaded;
-                extraInstallerScope.Dispose();
-            }
-        }
+            greetSceneScopeBuilder.AddSingleton("of Developers");
+        });
 
-        SceneManager.sceneLoaded += DisposeExtraInstallerScopeAfterSceneIsLoaded;
-        SceneManager.LoadScene("Greet"); // If you are loading scenes without Addressables
-        Addressables.LoadSceneAsync("Greet"); // If you are loading scenes with Addressables
+        // If you are loading scenes without addressables
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Greet").completed += operation =>
+        {
+            extraInstallerScope.Dispose();
+        };
+
+        // If you are loading scenes with addressables
+        UnityEngine.AddressableAssets.Addressables.LoadSceneAsync("Greet").Completed += operation =>
+        {
+            extraInstallerScope.Dispose();
+        };
     }
 }
 ```
