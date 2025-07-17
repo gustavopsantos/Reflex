@@ -10,7 +10,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 
 [![Discord](https://img.shields.io/static/v1?label=&labelColor=5865F2&message=Support&color=grey&logo=Discord&logoColor=white&url=https://discord.gg/XM47TsGScH)](https://discord.gg/XM47TsGScH)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Tests](https://github.com/gustavopsantos/reflex/actions/workflows/tests.yml/badge.svg?branch=main)
+![Tests](https://github.com/gustavopsantos/reflex/actions/workflows/run-tests.yml/badge.svg?branch=main)
 [![PullRequests](https://img.shields.io/badge/PRs-welcome-blueviolet)](http://makeapullrequest.com)
 [![Releases](https://img.shields.io/github/release/gustavopsantos/reflex.svg)](https://github.com/gustavopsantos/reflex/releases)
 [![OpenUPM](https://img.shields.io/npm/v/com.gustavopsantos.reflex?label=OpenUPM&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.gustavopsantos.reflex/)
@@ -74,7 +74,7 @@ You can install Reflex using any of the following methods:
 
 ### Unity Package Manager
 ```
-https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#10.1.0
+https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#11.0.0
 ```
 
 1. In Unity, open **Window** → **Package Manager**.
@@ -113,7 +113,7 @@ public class ProjectInstaller : MonoBehaviour, IInstaller
 5. Select `ProjectScope` you just created
 6. Add `ProjectInstaller.cs` as a component
 7. Create directory `Assets/Resources`
-8. Right click over `Resources` folder, Create → Reflex → Settings. ReflexSettings should always be created inside `Resources` folder.
+8. Right click over `Resources` folder, Create → Reflex → Settings. ReflexSettings should always be created directly inside `Resources` folder, without any subfolder.
 9. Select `ReflexSettings` ScriptableObject and add the `ProjectScope` prefab to the ProjectScopes list
 10. Create new scene `Greet`
 11. Add `Greet` to `Build Settings` → `Scenes In Build`
@@ -134,7 +134,7 @@ public class Greeter : MonoBehaviour
 }
 ```
 13. Add `Greeter.cs` to any gameobject in `Greet` scene
-14. Inside Greet scene, create a new empty gameobject named `SceneScope` and attach `SceneScope` component
+14. Inside Greet scene, create a scene scope, Right Click on Hierarchy > Reflex > SceneScope.
 15. Create `GreetInstaller.cs` with
 ```csharp
 using Reflex.Core;
@@ -155,29 +155,34 @@ public class GreetInstaller : MonoBehaviour, IInstaller
 ```csharp
 using Reflex.Core;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Loader : MonoBehaviour
 {
     private void Start()
     {
-	// If you are loading scenes without addressables
-	var scene = SceneManager.LoadScene("Greet", new LoadSceneParameters(LoadSceneMode.Single));
-	ReflexSceneManager.PreInstallScene(scene, builder => builder.AddSingleton("Beautiful"));
+        var extraInstallerScope = new ExtraInstallerScope(greetSceneScopeBuilder =>
+        {
+            greetSceneScopeBuilder.AddSingleton("of Developers");
+        });
 
-	// If you are loading scenes with addressables
-	Addressables.LoadSceneAsync("Greet", activateOnLoad: false).Completed += handle =>
-	{
-		ReflexSceneManager.PreInstallScene(handle.Result.Scene, builder => builder.AddSingleton("Beautiful"));
-		handle.Result.ActivateAsync();
-	};
+        // If you are loading scenes without addressables
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Greet").completed += operation =>
+        {
+            extraInstallerScope.Dispose();
+        };
+
+        // If you are loading scenes with addressables
+        UnityEngine.AddressableAssets.Addressables.LoadSceneAsync("Greet").Completed += operation =>
+        {
+            extraInstallerScope.Dispose();
+        };
     }
 }
 ```
-20. Assign it to any gameobject at `Boot` scene
-21. Thats it, hit play while on `Boot` scene
+20. Add `Loader.cs` to any gameobject at `Boot` scene
+21. Thats it, hit play from `Boot` scene
 22. When Greet scene is loaded, there should be 3 instances implementing string contract
-23. So when Greeter::Start is called, you should see the following log in the unity console: `Hello Beautiful world`
+23. So when Greeter.Start is called, you should see the following log in the unity console: `Hello World of Developers`
 
 ---
 
@@ -205,26 +210,29 @@ Reflex's default strategy for creating containers involves initially generating 
 graph
 ProjectContainer --> BootScene
 ProjectContainer --> LobbyScene
-ProjectContainer --> GameModeOneScene
+ProjectContainer --> GameScene
 ProjectContainer --> GameModeTwoScene
 ```
 
-### Scene Parent Override
-
-If you want a scene to inherit services from another scene, you can use the `ReflexSceneManager::OverrideSceneParentContainer` method. This feature provides developers with more granular control over which parent container is used for each newly loaded scene.
+### Parent Override Scope
+The `ParentOverrideScope` class allows you to temporarily override the default parent container for all containers created via `ContainerBuilder`. Once an instance of this scope is created, it remains active until explicitly disposed, during which time all newly built containers will inherit from the overridden parent instead of the default one.
+This is particularly useful for instance when you want one scene to inherit services from another scene, enabling a more granular control over which parent container is used for each newly loaded scene.
 
 ```csharp
-// Scene Manager Sample
-var bootScene = SceneManager.GetSceneByName("Boot");  
-var sessionScene = SceneManager.LoadScene("Session", new LoadSceneParameters(LoadSceneMode.Additive));  
-ReflexSceneManager.OverrideSceneParentContainer(scene: sessionScene, parent: bootScene.GetSceneContainer());
+var bootSceneContainer = gameObject.scene.GetSceneContainer();
+var parentOverrideScope = new ParentOverrideScope(bootSceneContainer);
 
-// Addessable Sample
-var handle = Addressables.LoadSceneAsync("Session", LoadSceneMode.Additive, activateOnLoad: false);
-await handle.Task;
-var bootScene = SceneManager.GetSceneByName("Boot");
-ReflexSceneManager.OverrideSceneParentContainer(scene: handle.Result.Scene, parent: bootScene.GetSceneContainer());
-handle.Result.ActivateAsync();
+// If you are loading scenes without addressables
+SceneManager.LoadSceneAsync("Lobby", LoadSceneMode.Additive).completed += operation =>
+{
+    parentOverrideScope.Dispose();
+};
+
+// If you are loading scenes with addressables
+Addressables.LoadSceneAsync("Lobby", LoadSceneMode.Additive).Completed += operation =>
+{
+    parentOverrideScope.Dispose();
+};
 ```  
 
 By utilizing this API, you can create hierarchical structures such as the one shown below:
@@ -233,8 +241,6 @@ By utilizing this API, you can create hierarchical structures such as the one sh
 graph
 ProjectContainer-->BootScene
 BootScene-->LobbyScene
-LobbyScene-->GameModeOneScene
-LobbyScene-->GameModeTwoScene
 ```
 
 
@@ -279,6 +285,35 @@ using var scopedContainer = parentContainer.Scope(builder =>
 {  
   // Extend your scoped container by adding extra registrations here  
 });
+```
+
+### Extra Installer Scope
+The `ExtraInstallerScope` provides a mechanism for injecting additional bindings into containers after their initial setup. Once an instance of this scope is created, it remains active until explicitly disposed, it acts as a post-installation hook for all containers built through `ContainerBuilder`.
+This is especially useful in dynamic scenarios—for example, if you have fetched asynchronous dependencies in a boot scene and want to ensure they are available when transitioning into a gameplay scene. It supports use cases resembling a state machine, where the application moves from an "initializing" state to a "ready" state, injecting the required dependencies at the appropriate time.
+
+Below is an example of a Boot scene that retrieves a remote configuration before transitioning to the Game scene. By the time the Game scene is loaded, the remote configuration is already registered within the Game scene's scope container.
+
+```csharp
+public class Boot : MonoBehaviour
+{
+    private async void Start()
+    {
+        var remoteConfig = await FetchRemoteConfigAsync();
+
+        var extraInstallerScope = new ExtraInstallerScope(gameSceneScopeContainerBuilder =>
+        {
+            gameSceneScopeContainerBuilder.AddSingleton(remoteConfig);
+        });
+
+        SceneManager.LoadSceneAsync("Game").completed += operation => extraInstallerScope.Dispose();
+    }
+
+    private async Task<string> FetchRemoteConfigAsync()
+    {
+        await Task.Delay(1000); // Simulate network delay
+        return "remote config data";
+    }
+}
 ```
 
 ## 🔩 Bindings
@@ -545,6 +580,8 @@ An alternative approach is to utilize the `GameObjectSelfInjector`, which can be
 ---
 
 ## 🧩 Extensions
+
+### GetSceneContainer
 ```csharp
 // Allows you to get a scene container, allowing you to resolve/inject dependencies in a different way during runtime
 SceneExtensions::GetSceneContainer(this Scene scene)
