@@ -22,15 +22,15 @@ namespace Reflex.Reflectors
             }
 
             var newExpression = Expression.New(constructor, argumentsExpressions);
-            var lambda = Expression.Lambda(typeof(ObjectActivator), Expression.Convert(newExpression, typeof(object)), param);
-            return (ObjectActivator) lambda.Compile();
+            var lambda = Expression.Lambda<ObjectActivator>(Expression.Convert(newExpression, typeof(object)), param);
+            return lambda.Compile();
         }
 
         public ObjectActivator GenerateDefaultActivator(Type type)
         {
             var body = Expression.Convert(Expression.Default(type), typeof(object));
-            var lambda = Expression.Lambda(typeof(ObjectActivator), body, Expression.Parameter(typeof(object[])));
-            return (ObjectActivator) lambda.Compile();
+            var lambda = Expression.Lambda<ObjectActivator>(body, Expression.Parameter(typeof(object[])));
+            return lambda.Compile();
         }
     }
 }
