@@ -2,12 +2,12 @@ using System.Reflection;
 
 namespace Reflex.Caching
 {
-    internal sealed class InjectedMethodInfo
+    internal sealed class InjectableMethodInfo
     {
         public readonly MethodInfo MethodInfo;
         public readonly ParameterInfo[] Parameters;
 
-        public InjectedMethodInfo(MethodInfo methodInfo)
+        public InjectableMethodInfo(MethodInfo methodInfo)
         {
             MethodInfo = methodInfo;
             Parameters = methodInfo.GetParameters();

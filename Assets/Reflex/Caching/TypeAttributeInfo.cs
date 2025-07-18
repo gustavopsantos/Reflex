@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Reflection;
 
 namespace Reflex.Caching
@@ -7,13 +6,13 @@ namespace Reflex.Caching
     {
         public readonly FieldInfo[] InjectableFields;
         public readonly PropertyInfo[] InjectableProperties;
-        public readonly InjectedMethodInfo[] InjectableMethods;
+        public readonly InjectableMethodInfo[] InjectableMethods;
 
-        public TypeAttributeInfo(FieldInfo[] injectableFields, PropertyInfo[] injectableProperties, MethodInfo[] injectableMethods)
+        public TypeAttributeInfo(FieldInfo[] injectableFields, PropertyInfo[] injectableProperties, InjectableMethodInfo[] injectableMethods)
         {
             InjectableFields = injectableFields;
             InjectableProperties = injectableProperties;
-            InjectableMethods = injectableMethods.Select(mi => new InjectedMethodInfo(mi)).ToArray();
+            InjectableMethods = injectableMethods;
         }
     }
 }

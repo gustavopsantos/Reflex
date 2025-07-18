@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Reflex.Attributes;
+using UnityEngine.Pool;
 
 namespace Reflex.Caching
 {
@@ -10,48 +10,55 @@ namespace Reflex.Caching
     {
         private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
-        private static readonly List<FieldInfo> _fields = new();
-        private static readonly List<PropertyInfo> _properties = new();
-        private static readonly List<MethodInfo> _methods = new();
-        private static readonly Dictionary<Type, TypeAttributeInfo> _dictionary = new();
+        private static readonly Dictionary<Type, TypeAttributeInfo> _cache = new();
         
         internal static TypeAttributeInfo Get(Type type)
         {
-            if (!_dictionary.TryGetValue(type, out var info))
+            if (!_cache.TryGetValue(type, out var info))
             {
-                _fields.Clear();
-                _properties.Clear();
-                _methods.Clear();
-                Generate(type);
-                info = new TypeAttributeInfo(_fields.ToArray(), _properties.ToArray(), _methods.ToArray());
-                _dictionary.Add(type, info);
+                info = Generate(type);
+                _cache.Add(type, info);
             }
     
             return info;
         }
-        
-        private static void Generate(Type type)
+
+        internal static TypeAttributeInfo Generate(Type type)
         {
-            var fields = type
-                .GetFields(Flags)
-                .Where(f => f.IsDefined(typeof(InjectAttribute)));
-
-            var properties = type
-                .GetProperties(Flags)
-                .Where(p => p.CanWrite && p.IsDefined(typeof(InjectAttribute)));
-
-            var methods = type
-                .GetMethods(Flags)
-                .Where(m => m.IsDefined(typeof(InjectAttribute)));
+            using var pooled1 = ListPool<FieldInfo>.Get(out var fieldList);
+            using var pooled2 = ListPool<PropertyInfo>.Get(out var propertyList);
+            using var pooled3 = ListPool<InjectableMethodInfo>.Get(out var methodList);
             
-            _fields.AddRange(fields);
-            _properties.AddRange(properties);
-            _methods.AddRange(methods);
-
-            if (type.BaseType != null)
+            while (type != null && type != typeof(object))
             {
-                Generate(type.BaseType);
+                foreach (var field in type.GetFields(Flags))
+                {
+                    if (field.IsDefined(typeof(InjectAttribute)))
+                    {
+                        fieldList.Add(field);
+                    }
+                }
+
+                foreach (var property in type.GetProperties(Flags))
+                {
+                    if (property.CanWrite && property.IsDefined(typeof(InjectAttribute)))
+                    {
+                        propertyList.Add(property);
+                    }
+                }
+                
+                foreach (var method in type.GetMethods(Flags))
+                {
+                    if (method.IsDefined(typeof(InjectAttribute)))
+                    {
+                        methodList.Add(new InjectableMethodInfo(method));
+                    }
+                }
+
+                type = type.BaseType;
             }
+
+            return new TypeAttributeInfo(fieldList.ToArray(), propertyList.ToArray(), methodList.ToArray());
         }
     }
 }

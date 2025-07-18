@@ -12,7 +12,7 @@ namespace Reflex.Injectors
         private static SizeSpecificArrayPool<object> _arrayPool;
         private static SizeSpecificArrayPool<object> ArrayPool => _arrayPool ??= new SizeSpecificArrayPool<object>(maxLength: 16);
         
-        internal static void Inject(InjectedMethodInfo method, object instance, Container container)
+        internal static void Inject(InjectableMethodInfo method, object instance, Container container)
         {
             var methodParameters = method.Parameters;
             var methodParametersLength = methodParameters.Length;
