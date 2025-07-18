@@ -15,7 +15,7 @@ namespace Reflex.Injectors
             }
             catch (Exception e)
             {
-                throw new PropertyInjectorException(e);
+                throw new PropertyInjectorException(property, e);
             }
         }
     }
