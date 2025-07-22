@@ -592,7 +592,7 @@ SceneExtensions::GetSceneContainer(this Scene scene)
 // Usage example:
 var foo = gameObject.scene.GetSceneContainer().Resolve<IFoo>();
 ```
-
+ 
 ---
 
 ## 🐛 Debugger
