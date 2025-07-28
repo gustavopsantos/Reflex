@@ -17,8 +17,6 @@ namespace Reflex.Injectors
     {
         internal static Action<Scene, SceneScope> OnSceneLoaded;
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
-        internal static Stack<Container> ContainerParentOverride { get; } = new();
-        internal static Action<ContainerBuilder> ExtraInstallers;
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeAwakeOfFirstSceneOnly()
@@ -83,6 +81,7 @@ namespace Reflex.Injectors
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
                 sceneScope.InstallBindings(builder);
+                SceneScope.OnSceneContainerBuilding?.Invoke(scene, builder);
             });
         }
 
@@ -94,10 +93,10 @@ namespace Reflex.Injectors
         private static void ResetStaticState()
         {
             OnSceneLoaded = null;
+            SceneScope.OnSceneContainerBuilding = null;
             Container.ProjectContainer = null;
+            Container.RootContainers.Clear();
             ContainersPerScene.Clear();
-            ContainerParentOverride.Clear();
-            ExtraInstallers = null;
         }
 
         [Conditional("REFLEX_DEBUG")]
