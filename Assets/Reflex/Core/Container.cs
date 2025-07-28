@@ -18,6 +18,9 @@ namespace Reflex.Core
         internal List<Container> Children { get; } = new();
         internal Dictionary<Type, List<IResolver>> ResolversByContract { get; }
         internal DisposableCollection Disposables { get; }
+#if UNITY_EDITOR
+        internal static readonly List<Container> RootContainers = new();
+#endif
         
         internal Container(string name, Container parent, Dictionary<Type, List<IResolver>> resolversByContract, DisposableCollection disposables)
         {
@@ -28,6 +31,13 @@ namespace Reflex.Core
             ResolversByContract = resolversByContract;
             Disposables = disposables;
             OverrideSelfInjection();
+
+#if UNITY_EDITOR
+            if (parent == null)
+            {
+                RootContainers.Add(this);
+            }
+#endif
         }
 
         public bool HasBinding<T>()

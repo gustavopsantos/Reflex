@@ -1,13 +1,17 @@
+using System;
 using Reflex.Injectors;
 using Reflex.Logging;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.SceneManagement;
 
 namespace Reflex.Core
 {
     [DefaultExecutionOrder(int.MinValue)]
     public sealed class SceneScope : MonoBehaviour
     {
+        public static Action<Scene, ContainerBuilder> OnSceneContainerBuilding;
+        
         private void Awake()
         {
             UnityInjector.OnSceneLoaded.Invoke(gameObject.scene, this);
