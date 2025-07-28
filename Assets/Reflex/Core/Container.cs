@@ -14,7 +14,7 @@ namespace Reflex.Core
     {
         public static Container ProjectContainer { get; internal set; } 
         public string Name { get; }
-        public Container Parent { get; }
+        public List<Container> Parents { get; }
         internal List<Container> Children { get; } = new();
         internal Dictionary<Type, List<IResolver>> ResolversByContract { get; }
         internal DisposableCollection Disposables { get; }
@@ -22,18 +22,21 @@ namespace Reflex.Core
         internal static readonly List<Container> RootContainers = new();
 #endif
         
-        internal Container(string name, Container parent, Dictionary<Type, List<IResolver>> resolversByContract, DisposableCollection disposables)
+        internal Container(string name, List<Container> parents, Dictionary<Type, List<IResolver>> resolversByContract, DisposableCollection disposables)
         {
             Diagnosis.RegisterBuildCallSite(this);
             Name = name;
-            Parent = parent;
-            Parent?.Children.Add(this);
+            Parents = parents;
+            foreach (var parent in Parents)
+            {
+                parent.Children.Add(this);
+            }
             ResolversByContract = resolversByContract;
             Disposables = disposables;
             OverrideSelfInjection();
 
 #if UNITY_EDITOR
-            if (parent == null)
+            if (Parents.Count == 0)
             {
                 RootContainers.Add(this);
             }
@@ -57,7 +60,15 @@ namespace Reflex.Core
                 child.Dispose();
             }
 
-            Parent?.Children.Remove(this);
+            foreach (var parent in Parents)
+            {
+                parent.Children.Remove(this);
+            }
+
+#if UNITY_EDITOR
+            RootContainers.Remove(this);
+#endif
+            
             ResolversByContract.Clear();
             Disposables.Dispose();
             ReflexLogger.Log($"Container {Name} disposed", LogLevel.Info);
@@ -65,7 +76,7 @@ namespace Reflex.Core
 
         public Container Scope(Action<ContainerBuilder> extend = null)
         {
-            var builder = new ContainerBuilder().SetParent(this);
+            var builder = new ContainerBuilder().AddParent(this);
             extend?.Invoke(builder);
             return builder.Build();
         }
