@@ -160,21 +160,24 @@ public class Loader : MonoBehaviour
 {
     private void Start()
     {
-        var extraInstallerScope = new ExtraInstallerScope(greetSceneScopeBuilder =>
+        void InstallExtra(Scene scene, ContainerBuilder builder)
         {
-            greetSceneScopeBuilder.AddSingleton("of Developers");
-        });
+            builder.AddSingleton("of Developers");
+        }
+        
+        // This way you can access ContainerBuilder of the scene that is currently building
+        SceneScope.OnSceneContainerBuilding += InstallExtra;
 
         // If you are loading scenes without addressables
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Greet").completed += operation =>
         {
-            extraInstallerScope.Dispose();
+            SceneScope.OnSceneContainerBuilding -= InstallExtra;
         };
 
         // If you are loading scenes with addressables
         UnityEngine.AddressableAssets.Addressables.LoadSceneAsync("Greet").Completed += operation =>
         {
-            extraInstallerScope.Dispose();
+            SceneScope.OnSceneContainerBuilding -= InstallExtra;
         };
     }
 }
@@ -214,26 +217,31 @@ ProjectContainer --> GameScene
 ProjectContainer --> GameModeTwoScene
 ```
 
-### Parent Override Scope
-The `ParentOverrideScope` class allows you to temporarily override the default parent container for all containers created via `ContainerBuilder`. Once an instance of this scope is created, it remains active until explicitly disposed, during which time all newly built containers will inherit from the overridden parent instead of the default one.
-This is particularly useful for instance when you want one scene to inherit services from another scene, enabling a more granular control over which parent container is used for each newly loaded scene.
-
+### Override scene container parent
+To do this or whatever else you want with scene `ContainerBuilder` you can access it with `SceneScope.OnSceneContainerBuilding` like we show in `Loader.cs` in "Getting Started" section.
 ```csharp
+// here we take boot scene container just for an example, you can use any container you need
 var bootSceneContainer = gameObject.scene.GetSceneContainer();
-var parentOverrideScope = new ParentOverrideScope(bootSceneContainer);
+
+void OverrideParent(Scene scene, ContainerBuilder builder)
+{
+    builder.SetParent(bootSceneContainer);
+}
+
+SceneScope.OnSceneContainerBuilding += OverrideParent;
 
 // If you are loading scenes without addressables
 SceneManager.LoadSceneAsync("Lobby", LoadSceneMode.Additive).completed += operation =>
 {
-    parentOverrideScope.Dispose();
+    SceneScope.OnSceneContainerBuilding -= OverrideParent;
 };
 
 // If you are loading scenes with addressables
 Addressables.LoadSceneAsync("Lobby", LoadSceneMode.Additive).Completed += operation =>
 {
-    parentOverrideScope.Dispose();
+    SceneScope.OnSceneContainerBuilding -= OverrideParent;
 };
-```  
+```
 
 By utilizing this API, you can create hierarchical structures such as the one shown below:
 
@@ -285,35 +293,6 @@ using var scopedContainer = parentContainer.Scope(builder =>
 {  
   // Extend your scoped container by adding extra registrations here  
 });
-```
-
-### Extra Installer Scope
-The `ExtraInstallerScope` provides a mechanism for injecting additional bindings into containers after their initial setup. Once an instance of this scope is created, it remains active until explicitly disposed, it acts as a post-installation hook for all containers built through `ContainerBuilder`.
-This is especially useful in dynamic scenarios—for example, if you have fetched asynchronous dependencies in a boot scene and want to ensure they are available when transitioning into a gameplay scene. It supports use cases resembling a state machine, where the application moves from an "initializing" state to a "ready" state, injecting the required dependencies at the appropriate time.
-
-Below is an example of a Boot scene that retrieves a remote configuration before transitioning to the Game scene. By the time the Game scene is loaded, the remote configuration is already registered within the Game scene's scope container.
-
-```csharp
-public class Boot : MonoBehaviour
-{
-    private async void Start()
-    {
-        var remoteConfig = await FetchRemoteConfigAsync();
-
-        var extraInstallerScope = new ExtraInstallerScope(gameSceneScopeContainerBuilder =>
-        {
-            gameSceneScopeContainerBuilder.AddSingleton(remoteConfig);
-        });
-
-        SceneManager.LoadSceneAsync("Game").completed += operation => extraInstallerScope.Dispose();
-    }
-
-    private async Task<string> FetchRemoteConfigAsync()
-    {
-        await Task.Delay(1000); // Simulate network delay
-        return "remote config data";
-    }
-}
 ```
 
 ## 🔩 Bindings
