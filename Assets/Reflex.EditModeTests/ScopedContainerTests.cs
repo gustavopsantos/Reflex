@@ -178,5 +178,19 @@ namespace Reflex.EditModeTests
 
             string.Join("", child.All<string>()).Should().BeEquivalentTo("ABCD");
         }
+
+        [Test] public void ScopedContainer_MultipleInheritance_SingleResolve()
+        {
+            var list = new List<int>();
+            var parent = new ContainerBuilder().AddSingleton(list).Build();
+            var subParent0 = new ContainerBuilder().AddParent(parent).Build();
+            var subParent1 = new ContainerBuilder().AddParent(parent).Build();
+            var child = new ContainerBuilder()
+                .AddParent(subParent0)
+                .AddParent(subParent1)
+                .Build();
+
+            child.Single<List<int>>();
+        }
     }
 }

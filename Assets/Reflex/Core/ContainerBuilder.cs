@@ -12,25 +12,29 @@ namespace Reflex.Core
         public List<Container> Parents { get; } = new();
         public List<Binding> Bindings { get; } = new();
         public event Action<Container> OnContainerBuilt;
+        
+        private static readonly HashSet<IResolver> ResolversSet = new();
+        private static readonly Dictionary<Type, HashSet<IResolver>> ResolversByContract = new();
 
         public Container Build()
         {
             var disposables = new DisposableCollection();
-            var resolversByContract = new Dictionary<Type, List<IResolver>>();
+            ResolversByContract.Clear();
 
             // Inherited resolvers
+            ResolversSet.Clear();
             foreach (var parent in Parents)
             {
                 foreach (var (contract, parentResolvers) in parent.ResolversByContract)
                 {
-                    if (!resolversByContract.TryGetValue(contract, out var resolvers))
+                    if (!ResolversByContract.TryGetValue(contract, out var resolversSet))
                     {
-                        resolvers = new(parentResolvers);
-                        resolversByContract[contract] = resolvers;
+                        resolversSet = new(parentResolvers);
+                        ResolversByContract[contract] = resolversSet;
                     } 
                     else
                     {
-                        resolvers.AddRange(parentResolvers);
+                        resolversSet.UnionWith(parentResolvers);
                     }
                 }
             }
@@ -42,18 +46,19 @@ namespace Reflex.Core
 
                 foreach (var contract in binding.Contracts)
                 {
-                    if (!resolversByContract.TryGetValue(contract, out var resolvers))
+                    if (!ResolversByContract.TryGetValue(contract, out var resolversSet))
                     {
-                        resolvers = new List<IResolver>();
-                        resolversByContract.Add(contract, resolvers);
+                        resolversSet = new ();
+                        ResolversByContract[contract] = resolversSet;
                     }
-
-                    resolvers.Add(binding.Resolver);
+                    resolversSet.Add(binding.Resolver);
                 }
             }
             
             Bindings.Clear();   
-            var container = new Container(Name, Parents, resolversByContract, disposables);
+            var container = new Container(Name, Parents, 
+                ResolversByContract.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList()),
+                disposables);
             OnContainerBuilt?.Invoke(container);
             return container;
         }
