@@ -13,7 +13,6 @@ namespace Reflex.Core
         public List<Binding> Bindings { get; } = new();
         public event Action<Container> OnContainerBuilt;
         
-        private static readonly HashSet<IResolver> ResolversSet = new();
         private static readonly Dictionary<Type, HashSet<IResolver>> ResolversByContract = new();
 
         public Container Build()
@@ -22,7 +21,6 @@ namespace Reflex.Core
             ResolversByContract.Clear();
 
             // Inherited resolvers
-            ResolversSet.Clear();
             foreach (var parent in Parents)
             {
                 foreach (var (contract, parentResolvers) in parent.ResolversByContract)
