@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Reflex.Extensions;
 using Reflex.Generics;
-using Reflex.Injectors;
 using Reflex.Resolvers;
 
 namespace Reflex.Core
@@ -19,15 +17,6 @@ namespace Reflex.Core
         {
             var disposables = new DisposableCollection();
             var resolversByContract = new Dictionary<Type, List<IResolver>>();
-            
-            // Extra installers
-            UnityInjector.ExtraInstallers?.Invoke(this);
-
-            // Parent override
-            if (UnityInjector.ContainerParentOverride.TryPeek(out var parentOverride))
-            {
-                Parent = parentOverride;
-            }
 
             // Inherited resolvers
             if (Parent != null)
