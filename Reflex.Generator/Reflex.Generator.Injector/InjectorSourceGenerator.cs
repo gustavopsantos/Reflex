@@ -22,7 +22,7 @@ namespace Reflex.Generator.Injector
         public void Execute(GeneratorExecutionContext context)
         {
             var waypoints = new WaypointsData(context.Compilation);
-            var contractors = InjectionVisitor.Collect(waypoints, context.Compilation.GlobalNamespace);
+            var contractors = InjectionVisitor.Collect(waypoints, context.Compilation.Assembly.GlobalNamespace);
 
             var codeBuilder = new CodeStringBuilder();
 
