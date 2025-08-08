@@ -31,7 +31,8 @@ namespace Reflex.EditModeTests
 
             var sample = new MockParent.MockUsage();
 
-            AttributeInjector.Inject(sample, container);
+            IAttributeInjectionContract handle = sample;
+            AttributeInjector.Inject(handle, container);
 
             Assert.AreEqual(sample.SampleField, TestDependency);
             Assert.AreEqual(sample.SampleProperty, TestDependency);
