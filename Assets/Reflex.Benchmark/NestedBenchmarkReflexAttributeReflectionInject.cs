@@ -1,11 +1,16 @@
+using Reflex.Attributes;
 using Reflex.Benchmark.NestedModel;
 using Reflex.Benchmark.Utilities;
 using Reflex.Core;
+using Reflex.Injectors;
 
 namespace Reflex.Benchmark
 {
-    internal class NestedBenchmarkReflex : MonoProfiler
+    public partial class NestedBenchmarkReflexAttributeReflectionInject : MonoProfiler
     {
+        [Inject]
+        IA Dependency;
+
         private Container _container;
 
         private void Start()
@@ -21,7 +26,7 @@ namespace Reflex.Benchmark
 
         protected override void Sample()
         {
-            _container.Resolve<IA>();
+            AttributeInjector.Inject(this, _container);
         }
     }
 }
