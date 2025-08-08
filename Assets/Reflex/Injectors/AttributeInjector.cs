@@ -42,7 +42,7 @@ namespace Reflex.Injectors
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Inject(IAttributeInjectionContract contract, Container container)
         {
-            contract.Inject(container);
+            contract.ReflexInject(container);
         }
     }
 }

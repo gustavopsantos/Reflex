@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Collections.Generic;
 using System.Threading;
+using System;
 
 namespace Reflex.Generator.Injector
 {
@@ -10,13 +11,16 @@ namespace Reflex.Generator.Injector
     {
         public static SymbolEqualityComparer SymbolEquality => SymbolEqualityComparer.Default;
 
-        public static bool HasAttribute(this ISymbol parameter, INamedTypeSymbol attribute)
+        public static bool HasAttribute(this ISymbol parameter, INamedTypeSymbol attribute, bool recursive = false)
         {
             var collection = parameter.GetAttributes();
 
             foreach (var data in collection)
                 if (SymbolEquality.Equals(attribute, data.AttributeClass))
                     return true;
+
+            if (recursive && parameter is ITypeSymbol type && type.BaseType != null)
+                return HasAttribute(type.BaseType, attribute, recursive: true);
 
             return false;
         }
@@ -73,6 +77,18 @@ namespace Reflex.Generator.Injector
         public static Diagnostic Create(this DiagnosticDescriptor descriptor, Location location, params object[] arguments)
         {
             return Diagnostic.Create(descriptor, location, arguments);
+        }
+
+        public static void Log(object target)
+        {
+            try
+            {
+                System.IO.File.AppendAllText($"C:/Files/Log.txt", target.ToString() + Environment.NewLine);
+            }
+            catch (Exception)
+            {
+
+            }
         }
     }
 }

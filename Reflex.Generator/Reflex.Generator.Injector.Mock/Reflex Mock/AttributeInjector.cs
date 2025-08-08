@@ -8,7 +8,7 @@ namespace Reflex.Injectors
     {
         public static void Inject(IAttributeInjectionContract obj, Container container)
         {
-            obj.Inject(container);
+            obj.ReflexInject(container);
         }
     }
 }

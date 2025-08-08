@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
+using System;
 using System.Collections.Generic;
 
 namespace Reflex.Generator.Injector
@@ -12,8 +13,12 @@ namespace Reflex.Generator.Injector
             public static readonly string Namespace = "Reflex";
 
             public static readonly string Container = $"{Namespace}.Core.{nameof(Container)}";
+
             public static readonly string InjectAttribute = $"{Namespace}.Attributes.{nameof(InjectAttribute)}";
+
             public static readonly string IAttributeInjectionContract = $"{Namespace}.Injectors.{nameof(IAttributeInjectionContract)}";
+            public static readonly string IAttributeInjectionContractImplementation = "ReflexInject";
+
             public static readonly string SourceGeneratorInjectableAttribute = $"{Namespace}.Attributes.{nameof(SourceGeneratorInjectableAttribute)}";
         }
 
@@ -69,10 +74,59 @@ namespace Reflex.Generator.Injector
                 codeBuilder.StartBlock();
             }
 
+            var interfaceImplementationSyntax = CalculateContractInterfaceImplementationSyntax(waypoints, contractor);
+
+            //Write Interface Implementation
+            {
+                //Method Syntax
+                switch (interfaceImplementationSyntax)
+                {
+                    case ContractImplementationSyntax.Direct:
+                    {
+                        codeBuilder.Write("public void ");
+                        codeBuilder.Write(Constants.IAttributeInjectionContractImplementation);
+                    }
+                    break;
+
+                    case ContractImplementationSyntax.Virtual:
+                    {
+                        codeBuilder.Write("public virtual void ");
+                        codeBuilder.Write(Constants.IAttributeInjectionContractImplementation);
+                    }
+                    break;
+
+                    case ContractImplementationSyntax.Override:
+                    {
+                        codeBuilder.Write("public override void ");
+                        codeBuilder.Write(Constants.IAttributeInjectionContractImplementation);
+                    }
+                    break;
+
+                    default: throw new NotImplementedException();
+                }
+
+                //Parameters
+                using (codeBuilder.Parameters())
+                {
+                    codeBuilder.Write(Constants.Container);
+                    codeBuilder.Write(" container");
+                }
+            }
+
             StartWriteInterfaceImplementation(codeBuilder, "Inject");
 
             using (codeBuilder.CodeBlock())
             {
+                if (interfaceImplementationSyntax is ContractImplementationSyntax.Override)
+                {
+                    codeBuilder.Write("base.");
+                    codeBuilder.Write(Constants.IAttributeInjectionContractImplementation);
+                    codeBuilder.Write("(container)");
+                    codeBuilder.EndLine();
+
+                    codeBuilder.Newline();
+                }
+
                 //Write Fields
                 foreach (var field in cache.Fields)
                 {
@@ -205,6 +259,38 @@ namespace Reflex.Generator.Injector
             return true;
         }
 
+        ContractImplementationSyntax CalculateContractInterfaceImplementationSyntax(WaypointsData waypoints, INamedTypeSymbol contractor)
+        {
+            if (contractor.IsSealed | contractor.IsValueType)
+                return ContractImplementationSyntax.Direct;
+
+            if (CheckIsBaseClass(contractor))
+                return ContractImplementationSyntax.Virtual;
+            else
+                return ContractImplementationSyntax.Override;
+
+            bool CheckIsBaseClass(INamedTypeSymbol type)
+            {
+                while (true)
+                {
+                    type = type.BaseType;
+                    if (type == null)
+                        break;
+
+                    if (type.HasAttribute(waypoints.SourceGeneratorInjectableAttribute))
+                        return false;
+                }
+
+                return true;
+            }
+        }
+        enum ContractImplementationSyntax
+        {
+            Direct,
+            Virtual,
+            Override,
+        }
+
         /// <summary>
         /// Shortcut for writing "<![CDATA[container.Resolve<type>()]]>"
         /// </summary>
@@ -225,17 +311,7 @@ namespace Reflex.Generator.Injector
         /// </summary>
         static void StartWriteInterfaceImplementation(CodeStringBuilder builder, string method)
         {
-            builder.Write("void ");
-            builder.Write(Constants.IAttributeInjectionContract);
 
-            builder.Write(".");
-            builder.Write(method);
-
-            using (builder.Parameters())
-            {
-                builder.Write(Constants.Container);
-                builder.Write(" container");
-            }
         }
 
         void WriteSourceFile(GeneratorExecutionContext context, CodeStringBuilder builder)
@@ -309,7 +385,7 @@ namespace Reflex.Generator.Injector
                 foreach (var member in symbol.GetTypeMembers())
                     Visit(member);
 
-                if (symbol.HasAttribute(Waypoints.SourceGeneratorInjectableAttribute))
+                if (symbol.HasAttribute(Waypoints.SourceGeneratorInjectableAttribute, recursive: true))
                     Contractors.Add(symbol);
             }
 

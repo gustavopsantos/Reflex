@@ -16,7 +16,7 @@ namespace Reflex.EditModeTests
         [Test]
         public void MockUsage_ImplementsInterface()
         {
-            var sample = new MockParent.MockUsage();
+            var sample = new MockParent.MockUsageChild();
             Assert.IsTrue(sample is Reflex.Injectors.IAttributeInjectionContract);
         }
 
@@ -29,33 +29,54 @@ namespace Reflex.EditModeTests
                 .AddSingleton(TestDependency)
                 .Build();
 
-            var sample = new MockParent.MockUsage();
+            var sample = new MockParent.MockUsageChild();
 
             IAttributeInjectionContract handle = sample;
             AttributeInjector.Inject(handle, container);
 
-            Assert.AreEqual(sample.SampleField, TestDependency);
-            Assert.AreEqual(sample.SampleProperty, TestDependency);
-            Assert.AreEqual(sample.SampleMethodParameter, TestDependency);
+            Assert.AreEqual(sample.BaseSampleField, TestDependency);
+            Assert.AreEqual(sample.BaseSampleProperty, TestDependency);
+            Assert.AreEqual(sample.BaseSampleMethodParameter, TestDependency);
+
+            Assert.AreEqual(sample.ChildSampleField, TestDependency);
+            Assert.AreEqual(sample.ChildSampleProperty, TestDependency);
+            Assert.AreEqual(sample.ChildSampleMethodParameter, TestDependency);
         }
     }
 
     public partial class MockParent
     {
         [SourceGeneratorInjectable]
-        public partial class MockUsage
+        public partial class MockUsageBase
         {
             [Inject]
-            public string SampleField;
+            public string BaseSampleField;
 
             [Inject]
-            public string SampleProperty { get; private set; }
+            public string BaseSampleProperty { get; private set; }
 
-            public string SampleMethodParameter;
+            public string BaseSampleMethodParameter;
             [Inject]
-            public void SampleMethod(string SampleMethodParameter)
+            public void BaseSampleMethod(string SampleMethodParameter)
             {
-                this.SampleMethodParameter = SampleMethodParameter;
+                this.BaseSampleMethodParameter = SampleMethodParameter;
+            }
+        }
+
+        [SourceGeneratorInjectable]
+        public partial class MockUsageChild : MockUsageBase
+        {
+            [Inject]
+            public string ChildSampleField;
+
+            [Inject]
+            public string ChildSampleProperty { get; private set; }
+
+            public string ChildSampleMethodParameter;
+            [Inject]
+            public void ChildSampleMethod(string SampleMethodParameter)
+            {
+                this.ChildSampleMethodParameter = SampleMethodParameter;
             }
         }
     }

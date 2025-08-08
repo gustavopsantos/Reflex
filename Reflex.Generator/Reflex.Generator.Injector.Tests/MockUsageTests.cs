@@ -11,7 +11,7 @@ namespace Reflex.Generator.Injector.Tests
         [TestMethod]
         public void ImplementsInterface() //Somewhat un-needed since the injection test bellow will cause a compile time exception first, but whatever ¯\_(ツ)_/¯
         {
-            var sample = new MockContainer.MockUsage();
+            var sample = new MockContainer.MockUsageChild();
             Assert.IsTrue(sample is Reflex.Injectors.IAttributeInjectionContract);
         }
 
@@ -24,13 +24,17 @@ namespace Reflex.Generator.Injector.Tests
 
             container.AddSingleton(TestDependency);
 
-            var sample = new MockContainer.MockUsage();
+            var sample = new MockContainer.MockUsageChild();
 
             AttributeInjector.Inject(sample, container);
 
-            Assert.AreEqual(sample.SampleField, TestDependency);
-            Assert.AreEqual(sample.SampleProperty, TestDependency);
-            Assert.AreEqual(sample.SampleMethodParameter, TestDependency);
+            Assert.AreEqual(sample.BaseSampleField, TestDependency);
+            Assert.AreEqual(sample.BaseSampleProperty, TestDependency);
+            Assert.AreEqual(sample.BaseSampleMethodParameter, TestDependency);
+
+            Assert.AreEqual(sample.ChildSampleField, TestDependency);
+            Assert.AreEqual(sample.ChildSampleProperty, TestDependency);
+            Assert.AreEqual(sample.ChildSampleMethodParameter, TestDependency);
         }
     }
 }

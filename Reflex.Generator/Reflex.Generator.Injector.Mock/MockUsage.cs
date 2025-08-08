@@ -7,19 +7,36 @@ namespace Level1
         public partial class MockContainer
         {
             [SourceGeneratorInjectable]
-            public partial class MockUsage
+            public partial class MockUsageBase
             {
                 [Inject]
-                public string SampleField;
+                public string BaseSampleField;
 
                 [Inject]
-                public string SampleProperty { get; private set; }
+                public string BaseSampleProperty { get; private set; }
 
-                public string SampleMethodParameter;
+                public string BaseSampleMethodParameter;
                 [Inject]
-                public void SampleMethod(string SampleMethodParameter)
+                public void BaseSampleMethod(string SampleMethodParameter)
                 {
-                    this.SampleMethodParameter = SampleMethodParameter;
+                    this.BaseSampleMethodParameter = SampleMethodParameter;
+                }
+            }
+
+            [SourceGeneratorInjectable]
+            public partial class MockUsageChild : MockUsageBase
+            {
+                [Inject]
+                public string ChildSampleField;
+
+                [Inject]
+                public string ChildSampleProperty { get; private set; }
+
+                public string ChildSampleMethodParameter;
+                [Inject]
+                public void ChildSampleMethod(string SampleMethodParameter)
+                {
+                    this.ChildSampleMethodParameter = SampleMethodParameter;
                 }
             }
         }

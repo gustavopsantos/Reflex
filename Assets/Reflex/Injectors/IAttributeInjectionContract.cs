@@ -4,6 +4,9 @@ namespace Reflex.Injectors
 {
     public interface IAttributeInjectionContract
     {
-        void Inject(Container container);
+        /// <summary>
+        /// Automatically invoked by Reflex for dependency injection
+        /// </summary>
+        void ReflexInject(Container container);
     }
 }
