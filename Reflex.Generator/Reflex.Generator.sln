@@ -4,6 +4,10 @@ VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflex.Generator.Injector", "Reflex.Generator.Injector\Reflex.Generator.Injector.csproj", "{4460A3A3-49B8-4321-8D2E-082EB699D7D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflex.Generator.Injector.Mock", "Reflex.Generator.Injector.Mock\Reflex.Generator.Injector.Mock.csproj", "{D360C5F3-E085-438C-BB4D-4A269A6DDB79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflex.Generator.Injector.Tests", "Reflex.Generator.Injector.Tests\Reflex.Generator.Injector.Tests.csproj", "{D1FD61F0-0BD8-4F64-8121-E08619C4CB8C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +18,14 @@ Global
 		{4460A3A3-49B8-4321-8D2E-082EB699D7D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4460A3A3-49B8-4321-8D2E-082EB699D7D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4460A3A3-49B8-4321-8D2E-082EB699D7D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D360C5F3-E085-438C-BB4D-4A269A6DDB79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D360C5F3-E085-438C-BB4D-4A269A6DDB79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D360C5F3-E085-438C-BB4D-4A269A6DDB79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D360C5F3-E085-438C-BB4D-4A269A6DDB79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1FD61F0-0BD8-4F64-8121-E08619C4CB8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1FD61F0-0BD8-4F64-8121-E08619C4CB8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1FD61F0-0BD8-4F64-8121-E08619C4CB8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1FD61F0-0BD8-4F64-8121-E08619C4CB8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
