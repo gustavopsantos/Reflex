@@ -69,91 +69,51 @@ namespace Reflex.Generator.Injector
                 codeBuilder.StartBlock();
             }
 
-            //Write Fields
-            {
-                StartWriteInterfaceImplementation(codeBuilder, "InjectFields");
+            StartWriteInterfaceImplementation(codeBuilder, "Inject");
 
-                if (cache.Fields.Count is 0)
+            using (codeBuilder.CodeBlock())
+            {
+                //Write Fields
+                foreach (var field in cache.Fields)
                 {
-                    codeBuilder.Write(" {}");
-                    codeBuilder.Newline();
+                    codeBuilder.Write(field.Name);
+                    codeBuilder.Write(" = ");
+                    WriteContainerResolutionCall(codeBuilder, field.Type);
+                    codeBuilder.EndLine();
                 }
-                else
+
+                codeBuilder.Newline();
+
+                //Write Properties
+                foreach (var property in cache.Properties)
                 {
-                    using (codeBuilder.CodeBlock())
+                    codeBuilder.Write(property.Name);
+                    codeBuilder.Write(" = ");
+                    WriteContainerResolutionCall(codeBuilder, property.Type);
+                    codeBuilder.EndLine();
+                }
+
+                codeBuilder.Newline();
+
+                //Write Methods
+                foreach (var method in cache.Methods)
+                {
+                    var arguments = method.Parameters;
+
+                    codeBuilder.Write(method.Name);
+
+                    using (codeBuilder.Parameters())
                     {
-                        foreach (var field in cache.Fields)
+                        for (int i = 0; i < arguments.Length; i++)
                         {
-                            codeBuilder.Write(field.Name);
-                            codeBuilder.Write(" = ");
-                            WriteContainerResolutionCall(codeBuilder, field.Type);
-                            codeBuilder.EndLine();
+                            WriteContainerResolutionCall(codeBuilder, arguments[i].Type);
+
+                            if (i != arguments.Length - 1)
+                                codeBuilder.Write(", ");
                         }
                     }
-                }
-            }
 
-            codeBuilder.Newline();
-
-            //Write Properties
-            {
-                StartWriteInterfaceImplementation(codeBuilder, "InjectProperties");
-
-                if (cache.Properties.Count is 0)
-                {
-                    codeBuilder.Write(" {}");
-                    codeBuilder.Newline();
-                }
-                else
-                {
-                    using (codeBuilder.CodeBlock())
-                    {
-                        foreach (var property in cache.Properties)
-                        {
-                            codeBuilder.Write(property.Name);
-                            codeBuilder.Write(" = ");
-                            WriteContainerResolutionCall(codeBuilder, property.Type);
-                            codeBuilder.EndLine();
-                        }
-                    }
-                }
-            }
-
-            codeBuilder.Newline();
-
-            //Write Methods
-            {
-                StartWriteInterfaceImplementation(codeBuilder, "InjectMethods");
-
-                if (cache.Methods.Count is 0)
-                {
-                    codeBuilder.Write(" {}");
-                    codeBuilder.Newline();
-                }
-                else
-                {
-                    using (codeBuilder.CodeBlock())
-                    {
-                        foreach (var method in cache.Methods)
-                        {
-                            var arguments = method.Parameters;
-
-                            codeBuilder.Write(method.Name);
-
-                            using (codeBuilder.Parameters())
-                            {
-                                for (int i = 0; i < arguments.Length; i++)
-                                {
-                                    WriteContainerResolutionCall(codeBuilder, arguments[i].Type);
-
-                                    if (i != arguments.Length - 1)
-                                        codeBuilder.Write(", ");
-                                }
-                            }
-
-                            codeBuilder.EndLine();
-                        }
-                    }
+                    codeBuilder.EndLine();
                 }
             }
 

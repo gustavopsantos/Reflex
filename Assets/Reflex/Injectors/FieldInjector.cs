@@ -18,9 +18,5 @@ namespace Reflex.Injectors
                 throw new FieldInjectorException(field, e);
             }
         }
-        internal static void Inject(IAttributeInjectionContract contract, Container container)
-        {
-            contract.InjectFields(container);
-        }
     }
 }

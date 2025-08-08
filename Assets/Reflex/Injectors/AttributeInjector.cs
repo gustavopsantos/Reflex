@@ -1,6 +1,8 @@
 using Reflex.Caching;
 using Reflex.Core;
 
+using System.Runtime.CompilerServices;
+
 namespace Reflex.Injectors
 {
     public static class AttributeInjector
@@ -36,11 +38,11 @@ namespace Reflex.Injectors
                 MethodInjector.Inject(methods[i], obj, container);
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Inject(IAttributeInjectionContract contract, Container container)
         {
-            FieldInjector.Inject(contract, container);
-            PropertyInjector.Inject(contract, container);
-            MethodInjector.Inject(contract, container);
+            contract.Inject(container);
         }
     }
 }

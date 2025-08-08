@@ -36,9 +36,5 @@ namespace Reflex.Injectors
                 ArrayPool.Return(arguments);
             }
         }
-        internal static void Inject(IAttributeInjectionContract contract, Container container)
-        {
-            contract.InjectMethods(container);
-        }
     }
 }
