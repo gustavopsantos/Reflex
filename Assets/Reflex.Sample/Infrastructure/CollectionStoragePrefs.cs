@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Reflex.Sample.Application;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Utilities;
 using UnityEngine;
+using UnityEngine.Scripting;
 
 namespace Reflex.Sample.Infrastructure
 {
@@ -9,6 +11,12 @@ namespace Reflex.Sample.Infrastructure
     {
         private readonly HashSet<string> _storage;
 
+        [Preserve]
+        private static void FixDeserializeObject() // https://discussions.unity.com/t/unable-to-deserialize-hashsets/807067
+        {
+            AotHelper.EnsureList<string>();
+        }
+        
         public CollectionStoragePrefs()
         {
             var json = PlayerPrefs.GetString("collection-storage", "[]");
