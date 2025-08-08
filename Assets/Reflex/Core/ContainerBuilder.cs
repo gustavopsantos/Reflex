@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Reflex.Exceptions;
 using Reflex.Generics;
 using Reflex.Resolvers;
 
@@ -69,6 +70,8 @@ namespace Reflex.Core
         
         public ContainerBuilder AddParent(Container parent)
         {
+            if (parent == null)
+                throw new ContainerBuilderAddNullParentException(this);
             Parents.Add(parent);
             return this;
         }
@@ -79,7 +82,7 @@ namespace Reflex.Core
             return this;
         }
         
-        public ContainerBuilder ClearParents()
+        public ContainerBuilder RemoveAllParents()
         {
             Parents.Clear();
             return this;
