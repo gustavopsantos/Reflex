@@ -13,13 +13,13 @@ namespace Reflex.Core
         public List<Container> Parents { get; } = new();
         public List<Binding> Bindings { get; } = new();
         public event Action<Container> OnContainerBuilt;
-        
+
+        private static readonly List<HashSet<IResolver>> HashSets = new();
         private static readonly Dictionary<Type, HashSet<IResolver>> ResolversByContract = new();
 
         public Container Build()
         {
             var disposables = new DisposableCollection();
-            ResolversByContract.Clear();
 
             // Inherited resolvers
             foreach (var parent in Parents)
@@ -28,7 +28,8 @@ namespace Reflex.Core
                 {
                     if (!ResolversByContract.TryGetValue(contract, out var resolversSet))
                     {
-                        resolversSet = new(parentResolvers);
+                        resolversSet = GetResolversHashSet();
+                        resolversSet.UnionWith(parentResolvers);
                         ResolversByContract[contract] = resolversSet;
                     } 
                     else
@@ -47,7 +48,7 @@ namespace Reflex.Core
                 {
                     if (!ResolversByContract.TryGetValue(contract, out var resolversSet))
                     {
-                        resolversSet = new ();
+                        resolversSet = GetResolversHashSet();
                         ResolversByContract[contract] = resolversSet;
                     }
                     resolversSet.Add(binding.Resolver);
@@ -59,7 +60,27 @@ namespace Reflex.Core
                 ResolversByContract.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList()),
                 disposables);
             OnContainerBuilt?.Invoke(container);
+            
+            foreach (var hashSet in ResolversByContract.Values)
+            {
+                hashSet.Clear();
+                HashSets.Add(hashSet);
+            }
+            ResolversByContract.Clear();
+            
             return container;
+
+            HashSet<IResolver> GetResolversHashSet()
+            {
+                if (HashSets.Count > 0)
+                {
+                    var hashSet = HashSets[^1];
+                    HashSets.RemoveAt(HashSets.Count - 1);
+                    return hashSet;
+                }
+
+                return new();
+            }
         }
 
         public ContainerBuilder SetName(string name)
