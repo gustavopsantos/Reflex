@@ -95,7 +95,9 @@ namespace Reflex.Injectors
             OnSceneLoaded = null;
             SceneScope.OnSceneContainerBuilding = null;
             Container.ProjectContainer = null;
+#if UNITY_EDITOR
             Container.RootContainers.Clear();
+#endif
             ContainersPerScene.Clear();
         }
 

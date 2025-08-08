@@ -6,12 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Reflex.Benchmark/Reflex.Benchmark.unity
-    guid: 0c9d6100fcc33b24b86d31e49f415c14
-  - enabled: 1
     path: Assets/Reflex.Sample/Reflex.Sample.unity
     guid: f80437131882cdd4e9340aa7044d8c91
-  - enabled: 1
+  - enabled: 0
+    path: Assets/Reflex.Benchmark/Reflex.Benchmark.unity
+    guid: 0c9d6100fcc33b24b86d31e49f415c14
+  - enabled: 0
     path: Assets/Reflex.PlayModeTests/ExecutionOrderTestsScene.unity
     guid: 91745e204bf4eb440a28be79690dc713
   m_configObjects: {}

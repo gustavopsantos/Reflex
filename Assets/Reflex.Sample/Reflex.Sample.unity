@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.4366757, g: 0.48427194, b: 0.5645252, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1347,6 +1346,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1444,7 +1444,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21df1c5ba313938458a1be4ec6173984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pickupSoundEffectPrefab: {fileID: 2361240671020676878, guid: 90203e981266cfa47ae2e46ad3f1eac1, type: 3}
   _collectorConfigurationModel: {fileID: 11400000, guid: be293664c5b1a894582d7fd59251b6a1, type: 2}
 --- !u!1 &1774418929
 GameObject:
