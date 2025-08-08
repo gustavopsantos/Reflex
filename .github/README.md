@@ -57,6 +57,7 @@ Reflex is an [Dependency Injection](https://stackify.com/dependency-injection/) 
 - **AOT Support:** Basically there's no runtime Emit, so it works fine on IL2CPP builds. [<sup>[*]</sup>](#-scripting-restrictions)
 - **Contract Table:** Allows usages of APIs like `container.All<IDisposable>`
 - **Immutable Container**: Performant thread safety free of lock plus predictable behavior.
+- **Source Generated**: Implements modern Roslyn source generator to minimize reflection usage and speed up injection.
 
 Compatible with the following platforms:
 
@@ -508,6 +509,41 @@ class Foo : MonoBehaviour
 }
 ```
 > Note that `InjectAttribute` also works on non-mono classes.
+
+### SourceGeneratorInjectable
+Should be used to allow for source generation on the type being injected to, simply use it to decorate classes that implement `[Inject]` members:
+```csharp
+[SourceGeneratorInjectable]
+public partial class Foo : MonoBehaviour  
+{  
+	[Inject] private readonly IInputManager _inputManager;  
+	[Inject] public IEnumerable<IManager> Managers { get; private set; }  
+  
+	[Inject]  
+	private void Inject(IEnumerable<int> numbers) // Method name here does not matter  
+	{  
+	  ...
+	}  
+}
+```
+> Note that `SourceGeneratorInjectable` requires that the decorated type be partial and public alongside all of its containing types:
+```csharp
+public partial class Foo
+{
+	[SourceGeneratorInjectable]
+	public partial class Bar : MonoBehaviour  
+	{  
+		[Inject] private readonly IInputManager _inputManager;  
+		[Inject] public IEnumerable<IManager> Managers { get; private set; }  
+	
+		[Inject]  
+		private void Inject(IEnumerable<int> numbers) // Method name here does not matter  
+		{  
+		...
+		}  
+	}
+}
+```
 
 ### ReflexConstructorAttribute
 Can be placed on constructors, telling reflex which constructor to use when instantiating an object.
