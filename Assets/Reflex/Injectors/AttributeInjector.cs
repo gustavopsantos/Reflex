@@ -7,6 +7,12 @@ namespace Reflex.Injectors
     {
         public static void Inject(object obj, Container container)
         {
+            if (obj is IAttributeInjectionContract contract)
+            {
+                Inject(contract, container);
+                return;
+            }
+
             var info = TypeInfoCache.Get(obj.GetType());
 
             var fields = info.InjectableFields;
@@ -29,6 +35,12 @@ namespace Reflex.Injectors
             {
                 MethodInjector.Inject(methods[i], obj, container);
             }
+        }
+        public static void Inject(IAttributeInjectionContract contract, Container container)
+        {
+            FieldInjector.Inject(contract, container);
+            PropertyInjector.Inject(contract, container);
+            MethodInjector.Inject(contract, container);
         }
     }
 }

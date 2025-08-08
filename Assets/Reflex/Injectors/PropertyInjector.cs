@@ -18,5 +18,9 @@ namespace Reflex.Injectors
                 throw new PropertyInjectorException(property, e);
             }
         }
+        internal static void Inject(IAttributeInjectionContract contract, Container container)
+        {
+            contract.InjectProperties(container);
+        }
     }
 }
