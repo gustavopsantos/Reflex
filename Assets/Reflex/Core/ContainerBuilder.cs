@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Reflex.Exceptions;
 using Reflex.Generics;
 using Reflex.Resolvers;
 
@@ -9,21 +10,32 @@ namespace Reflex.Core
     public sealed class ContainerBuilder
     {
         public string Name { get; private set; }
-        public Container Parent { get; private set; }
+        public List<Container> Parents { get; } = new();
         public List<Binding> Bindings { get; } = new();
         public event Action<Container> OnContainerBuilt;
+
+        private static readonly List<HashSet<IResolver>> HashSets = new();
+        private static readonly Dictionary<Type, HashSet<IResolver>> ResolversByContract = new();
 
         public Container Build()
         {
             var disposables = new DisposableCollection();
-            var resolversByContract = new Dictionary<Type, List<IResolver>>();
 
             // Inherited resolvers
-            if (Parent != null)
+            foreach (var parent in Parents)
             {
-                foreach (var (contract, resolvers) in Parent.ResolversByContract)
+                foreach (var (contract, parentResolvers) in parent.ResolversByContract)
                 {
-                    resolversByContract[contract] = new List<IResolver>(resolvers);
+                    if (!ResolversByContract.TryGetValue(contract, out var resolversSet))
+                    {
+                        resolversSet = GetResolversHashSet();
+                        resolversSet.UnionWith(parentResolvers);
+                        ResolversByContract[contract] = resolversSet;
+                    } 
+                    else
+                    {
+                        resolversSet.UnionWith(parentResolvers);
+                    }
                 }
             }
 
@@ -34,20 +46,41 @@ namespace Reflex.Core
 
                 foreach (var contract in binding.Contracts)
                 {
-                    if (!resolversByContract.TryGetValue(contract, out var resolvers))
+                    if (!ResolversByContract.TryGetValue(contract, out var resolversSet))
                     {
-                        resolvers = new List<IResolver>();
-                        resolversByContract.Add(contract, resolvers);
+                        resolversSet = GetResolversHashSet();
+                        ResolversByContract[contract] = resolversSet;
                     }
-
-                    resolvers.Add(binding.Resolver);
+                    resolversSet.Add(binding.Resolver);
                 }
             }
             
             Bindings.Clear();   
-            var container = new Container(Name, Parent, resolversByContract, disposables);
+            var container = new Container(Name, Parents, 
+                ResolversByContract.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList()),
+                disposables);
             OnContainerBuilt?.Invoke(container);
+            
+            foreach (var hashSet in ResolversByContract.Values)
+            {
+                hashSet.Clear();
+                HashSets.Add(hashSet);
+            }
+            ResolversByContract.Clear();
+            
             return container;
+
+            HashSet<IResolver> GetResolversHashSet()
+            {
+                if (HashSets.Count > 0)
+                {
+                    var hashSet = HashSets[^1];
+                    HashSets.RemoveAt(HashSets.Count - 1);
+                    return hashSet;
+                }
+
+                return new();
+            }
         }
 
         public ContainerBuilder SetName(string name)
@@ -56,9 +89,23 @@ namespace Reflex.Core
             return this;
         }
         
-        public ContainerBuilder SetParent(Container parent)
+        public ContainerBuilder AddParent(Container parent)
         {
-            Parent = parent;
+            if (parent == null)
+                throw new ContainerBuilderAddNullParentException(this);
+            Parents.Add(parent);
+            return this;
+        }
+
+        public ContainerBuilder RemoveParent(Container parent)
+        {
+            Parents.Remove(parent);
+            return this;
+        }
+        
+        public ContainerBuilder RemoveAllParents()
+        {
+            Parents.Clear();
             return this;
         }
 
