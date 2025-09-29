@@ -23,12 +23,11 @@ namespace Reflex.Injectors
         {
             ReportReflexDebuggerStatus();
             ResetStaticState();
-            Container.ProjectContainer = CreateProjectContainer();
 
             void InjectScene(Scene scene, SceneScope sceneScope)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
-                var sceneContainer = CreateSceneContainer(scene, Container.ProjectContainer, sceneScope);
+                var sceneContainer = CreateSceneContainer(scene, sceneScope);
                 ContainersPerScene.Add(scene, sceneContainer);
                 SceneInjector.Inject(scene, sceneContainer);
             }
@@ -75,9 +74,14 @@ namespace Reflex.Injectors
             return builder.Build();
         }
 
-        private static Container CreateSceneContainer(Scene scene, Container projectContainer, SceneScope sceneScope)
+        private static Container CreateSceneContainer(Scene scene, SceneScope sceneScope)
         {
-            return projectContainer.Scope(builder =>
+            if (Container.ProjectContainer == null)
+            {
+                Container.ProjectContainer = CreateProjectContainer();
+            }
+            
+            return Container.ProjectContainer.Scope(builder =>
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
                 sceneScope.InstallBindings(builder);
