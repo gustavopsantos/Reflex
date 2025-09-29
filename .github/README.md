@@ -264,7 +264,7 @@ Container scoping refers to the ability of being able to create a container inhe
 
 ### Project Scope
 It is root scope.
-It is created just before first scene opens by relying on `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]`
+It is created lazily once the first scene containing a SceneScope is loaded.
 To register bindings to it, create a prefab, name it how you wish, the name is not used as a identifier, and attach a "ProjectScope" component to it.
 Select ReflexSettings and add your ProjectScope prefab to the list of ProjectScopes.
 Then, create your installer as MonoBehaviour and implement IInstaller interface.
@@ -273,6 +273,7 @@ There's a menu item to ease the process: Assets > Create > Reflex > ProjectScope
 You can create multiple ProjectScope prefabs, and when its time to create the project container, all active ProjectScope prefabs will be merged, this allow a better separation of concerns if required.
 Note that ProjectScope prefab is not required, in case Reflex does not find any ProjectScope, an empty root will be created.
 ProjectScope instance will be disposed once app closes/app quits.
+Invokes `ProjectScope.OnRootContainerBuilding` static event while being built in case you need to dynamically extend it, you can use `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]` method attribute to register to this event.
 > Note that unity does not call OnDestroy deterministically, so rule of thumb is do not rely on injected dependencies on OnDestroy event functions.
 
 ### Scene Scope
@@ -285,6 +286,7 @@ There's a menu item to ease the process: GameObject > Reflex > Scene Context
 Remember to have a single SceneScope to avoid undesired behaviour.
 Note that SceneScope gameobject is required only if you want its scene to be injected, in case Reflex do not find SceneScope, the scene injection will be skipped for that specific scene missing SceneScope.
 SceneScope instance will be disposed once scene is unloaded.
+Invokes `SceneScope.OnSceneContainerBuilding` static event while being built for every scene containing a SceneScope in case you need to dynamically extend it,
 > Note that unity does not call OnDestroy deterministically, so rule of thumb is do not rely on injected dependencies on OnDestroy event functions. 
 
 ### Manual Scoping
