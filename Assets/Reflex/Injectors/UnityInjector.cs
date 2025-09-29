@@ -70,7 +70,8 @@ namespace Reflex.Injectors
                     projectScope.InstallBindings(builder);
                 }
             }
-
+            
+            ProjectScope.OnRootContainerBuilding?.Invoke(builder);
             return builder.Build();
         }
 
@@ -97,12 +98,14 @@ namespace Reflex.Injectors
         private static void ResetStaticState()
         {
             OnSceneLoaded = null;
-            SceneScope.OnSceneContainerBuilding = null;
             Container.ProjectContainer = null;
+            SceneScope.OnSceneContainerBuilding = null;
+            ProjectScope.OnRootContainerBuilding = null;
+            ContainersPerScene.Clear();
+            
 #if UNITY_EDITOR
             Container.RootContainers.Clear();
 #endif
-            ContainersPerScene.Clear();
         }
 
         [Conditional("REFLEX_DEBUG")]
