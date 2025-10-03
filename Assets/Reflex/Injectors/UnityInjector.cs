@@ -18,8 +18,8 @@ namespace Reflex.Injectors
         internal static Action<Scene, SceneScope> OnSceneLoaded;
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
         
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void BeforeAwakeOfFirstSceneOnly()
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        private static void AfterAssembliesLoaded()
         {
             ReportReflexDebuggerStatus();
             ResetStaticState();
