@@ -41,6 +41,17 @@ namespace Reflex.EditModeTests
             
             childContainer.Resolve<ChildServiceThatDependsOnParentService>().ParentService.Should().NotBeNull();
         }
+        
+        [Test]
+        public void ParentServiceShouldNotHaveAccessToChildContainer()
+        {
+            var parentContainer = new ContainerBuilder()
+                .AddSingleton(typeof(ParentServiceThatDependsOnContainer))
+                .Build();
+
+            var childContainer = parentContainer.Scope();
+            childContainer.Resolve<ParentServiceThatDependsOnContainer>().Container.Should().Be(parentContainer);
+        }
 
         [Test]
         public void ParentServicesShouldNotHaveAccessToChildServices()
@@ -51,17 +62,6 @@ namespace Reflex.EditModeTests
 
             var childContainer = parentContainer.Scope(builder => builder.AddSingleton(typeof(ChildService)));
             childContainer.Resolve<ParentServiceThatDependsOnChildService>().ChildService.Should().BeNull();
-        }
-
-        [Test]
-        public void ParentServiceShouldNotHaveAccessToChildContainer()
-        {
-            var parentContainer = new ContainerBuilder()
-                .AddSingleton(typeof(ParentServiceThatDependsOnContainer))
-                .Build();
-
-            var childContainer = parentContainer.Scope();
-            childContainer.Resolve<ParentServiceThatDependsOnContainer>().Container.Should().Be(parentContainer);
         }
     }
 }
