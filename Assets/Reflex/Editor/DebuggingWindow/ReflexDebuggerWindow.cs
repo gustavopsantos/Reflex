@@ -110,15 +110,18 @@ namespace Reflex.Editor.DebuggingWindow
                 resolvers.Remove(containerResolver);
             }
 
-            if (ReflexEditorSettings.ShowInheritedBindings == false && container.Parent != null)
+            if (ReflexEditorSettings.ShowInheritedBindings == false && container.Parents.Count != 0)
             {
-                var parentResolvers = container.Parent.ResolversByContract.Values
-                    .SelectMany(r => r)
-                    .Distinct();
-
-                foreach (var parentResolver in parentResolvers)
+                foreach (var parent in container.Parents)
                 {
-                    resolvers.Remove(parentResolver);
+                    var parentResolvers = parent.ResolversByContract.Values
+                        .SelectMany(r => r)
+                        .Distinct();
+
+                    foreach (var parentResolver in parentResolvers)
+                    {
+                        resolvers.Remove(parentResolver);
+                    }
                 }
             }
             

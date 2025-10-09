@@ -77,7 +77,8 @@ namespace Reflex.EditModeTests
             {
                 using (var inner = outer.Scope())
                 {
-                    inner.Parent.Should().Be(outer);
+                    inner.Parents.Count.Should().Be(1);
+                    inner.Parents.Contains(outer).Should().BeTrue();
                 }
             }
         }
@@ -100,7 +101,7 @@ namespace Reflex.EditModeTests
             var parent = new ContainerBuilder().Build();
             var child = parent.Scope();
 
-            child.Parent.Should().Be(parent);
+            child.Parents.Contains(parent).Should().BeTrue();
             parent.Children.Contains(child).Should().BeTrue();
             child.Dispose();
             parent.Children.Should().BeEmpty();
@@ -160,6 +161,36 @@ namespace Reflex.EditModeTests
             using var inner = outer.Scope(); 
             var temp = inner.Single<Container>();
             outer.Single<Container>().Should().Be(outer);
+        }
+
+        [Test]
+        public void ScopedContainer_ShouldInheritFromBothParents()
+        {
+            var parent0 = new ContainerBuilder().AddSingleton("A").Build();
+            var parent1 = new ContainerBuilder().AddSingleton("B").Build();
+            var parent2 = new ContainerBuilder().AddSingleton("C").Build();
+            var child = new ContainerBuilder()
+                .AddParent(parent0)
+                .AddParent(parent1)
+                .AddParent(parent2)
+                .AddSingleton("D")
+                .Build();
+
+            string.Join("", child.All<string>()).Should().BeEquivalentTo("ABCD");
+        }
+
+        [Test] public void ScopedContainer_MultipleInheritance_SingleResolve()
+        {
+            var list = new List<int>();
+            var parent = new ContainerBuilder().AddSingleton(list).Build();
+            var subParent0 = new ContainerBuilder().AddParent(parent).Build();
+            var subParent1 = new ContainerBuilder().AddParent(parent).Build();
+            var child = new ContainerBuilder()
+                .AddParent(subParent0)
+                .AddParent(subParent1)
+                .Build();
+
+            child.Single<List<int>>();
         }
     }
 }
