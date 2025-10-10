@@ -7,9 +7,11 @@ using UnityEngine.SceneManagement;
 
 namespace Reflex.Core
 {
-    [DefaultExecutionOrder(int.MinValue)]
+    [DefaultExecutionOrder(ExecutionOrder)]
     public sealed class SceneScope : MonoBehaviour
     {
+        public const int ExecutionOrder = -1_000_000_000;
+        
         public static Action<Scene, ContainerBuilder> OnSceneContainerBuilding;
         
         private void Awake()

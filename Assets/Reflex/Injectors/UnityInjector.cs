@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Reflex.Configuration;
 using Reflex.Core;
+using Reflex.Exceptions;
 using Reflex.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,19 +19,25 @@ namespace Reflex.Injectors
         internal static Action<Scene, SceneScope> OnSceneLoaded;
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
         
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void BeforeAwakeOfFirstSceneOnly()
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        private static void AfterAssembliesLoaded()
         {
             ReportReflexDebuggerStatus();
             ResetStaticState();
-            Container.ProjectContainer = CreateProjectContainer();
 
             void InjectScene(Scene scene, SceneScope sceneScope)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
-                var sceneContainer = CreateSceneContainer(scene, Container.ProjectContainer, sceneScope);
-                ContainersPerScene.Add(scene, sceneContainer);
-                SceneInjector.Inject(scene, sceneContainer);
+                var sceneContainer = CreateSceneContainer(scene, sceneScope);
+
+                if (ContainersPerScene.TryAdd(scene, sceneContainer))
+                {
+                    SceneInjector.Inject(scene, sceneContainer);
+                }
+                else
+                {
+                    throw new SceneHasMultipleSceneScopesException(scene);
+                }
             }
             
             void DisposeScene(Scene scene)
@@ -71,13 +78,19 @@ namespace Reflex.Injectors
                     projectScope.InstallBindings(builder);
                 }
             }
-
+            
+            ProjectScope.OnRootContainerBuilding?.Invoke(builder);
             return builder.Build();
         }
 
-        private static Container CreateSceneContainer(Scene scene, Container projectContainer, SceneScope sceneScope)
+        private static Container CreateSceneContainer(Scene scene, SceneScope sceneScope)
         {
-            return projectContainer.Scope(builder =>
+            if (Container.ProjectContainer == null)
+            {
+                Container.ProjectContainer = CreateProjectContainer();
+            }
+            
+            return Container.ProjectContainer.Scope(builder =>
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
                 sceneScope.InstallBindings(builder);
@@ -93,10 +106,14 @@ namespace Reflex.Injectors
         private static void ResetStaticState()
         {
             OnSceneLoaded = null;
-            SceneScope.OnSceneContainerBuilding = null;
             Container.ProjectContainer = null;
-            Container.RootContainers.Clear();
+            SceneScope.OnSceneContainerBuilding = null;
+            ProjectScope.OnRootContainerBuilding = null;
             ContainersPerScene.Clear();
+            
+#if UNITY_EDITOR
+            Container.RootContainers.Clear();
+#endif
         }
 
         [Conditional("REFLEX_DEBUG")]

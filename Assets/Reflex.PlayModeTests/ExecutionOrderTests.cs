@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
+using Reflex.Core;
 using Reflex.Extensions;
 using Reflex.Injectors;
 using UnityEngine;
@@ -12,11 +13,33 @@ namespace Reflex.PlayModeTests
 {
     public class ExecutionOrderTests
     {
+        private static bool _wasOnRootContainerBuildingInvoked;
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void BeforeSceneLoad()
+        {
+            ProjectScope.OnRootContainerBuilding += builder =>
+            {
+                builder.AddSingleton("InjectedFromOnRootContainerBuilding");
+                _wasOnRootContainerBuildingInvoked = true;
+            };
+        }
+        
         [UnitySetUp]
         public IEnumerator Setup()
         {
             yield return SceneManager.LoadSceneAsync("ExecutionOrderTestsScene", LoadSceneMode.Single);
             yield return WaitFrame(); // Wait until Start is called, takes one frame
+        }
+        
+        [Test]
+        public void OnRootContainerBuilding_ShouldBeListenable_AfterAssembliesLoaded()
+        {
+            var sceneContainer = new GameObject().scene.GetSceneContainer();
+            sceneContainer.Should().NotBeNull();
+            sceneContainer.HasBinding<string>().Should().BeTrue();
+            sceneContainer.Resolve<string>().Should().Be("InjectedFromOnRootContainerBuilding");
+            _wasOnRootContainerBuildingInvoked.Should().BeTrue();
         }
         
         [Test]

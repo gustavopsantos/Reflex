@@ -46,6 +46,7 @@ namespace Reflex.Editor.DebuggingWindow
                 {
                     _labelHorizontallyCentered = new GUIStyle("Label");
                     _labelHorizontallyCentered.alignment = TextAnchor.MiddleCenter;
+                    _labelHorizontallyCentered.wordWrap = true;
                 }
 
                 return _labelHorizontallyCentered;
