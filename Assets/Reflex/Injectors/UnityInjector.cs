@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Reflex.Configuration;
 using Reflex.Core;
+using Reflex.Exceptions;
 using Reflex.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,8 +29,15 @@ namespace Reflex.Injectors
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
                 var sceneContainer = CreateSceneContainer(scene, sceneScope);
-                ContainersPerScene.Add(scene, sceneContainer);
-                SceneInjector.Inject(scene, sceneContainer);
+
+                if (ContainersPerScene.TryAdd(scene, sceneContainer))
+                {
+                    SceneInjector.Inject(scene, sceneContainer);
+                }
+                else
+                {
+                    throw new SceneHasMultipleSceneScopesException(scene);
+                }
             }
             
             void DisposeScene(Scene scene)
