@@ -1,7 +1,9 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Attributes;
 using Reflex.Core;
+using Reflex.Exceptions;
 
 namespace Reflex.EditModeTests
 {
@@ -31,17 +33,18 @@ namespace Reflex.EditModeTests
         }
 
         [Test]
-        public void ChildServicesShouldHaveAccessToParentServices() 
+        public void ChildServicesShouldHaveAccessToParentServices()
         {
             var parentContainer = new ContainerBuilder()
                 .AddSingleton(typeof(ParentService))
                 .Build();
 
-            var childContainer = parentContainer.Scope(builder => builder.AddSingleton(typeof(ChildServiceThatDependsOnParentService)));
-            
+            var childContainer = parentContainer.Scope(builder =>
+                builder.AddSingleton(typeof(ChildServiceThatDependsOnParentService)));
+
             childContainer.Resolve<ChildServiceThatDependsOnParentService>().ParentService.Should().NotBeNull();
         }
-        
+
         [Test]
         public void ParentServiceShouldNotHaveAccessToChildContainer()
         {
@@ -61,7 +64,23 @@ namespace Reflex.EditModeTests
                 .Build();
 
             var childContainer = parentContainer.Scope(builder => builder.AddSingleton(typeof(ChildService)));
-            childContainer.Resolve<ParentServiceThatDependsOnChildService>().ChildService.Should().BeNull();
+
+            try
+            {
+                childContainer.Resolve<ParentServiceThatDependsOnChildService>();
+                Assert.Fail("ParentService from parent container should not have access to ChildService from child container.");
+            }
+            catch (Exception e)
+            {
+                if (e is PropertyInjectorException propertyInjectorException &&
+                    propertyInjectorException.InnerException is UnknownContractException unknownContractException &&
+                    unknownContractException.UnknownContract == typeof(ChildService))
+                {
+                    Assert.Pass();
+                }
+
+                Assert.Fail(e.ToString());
+            }
         }
     }
 }
