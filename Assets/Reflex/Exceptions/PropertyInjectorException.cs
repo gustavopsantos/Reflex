@@ -5,7 +5,7 @@ namespace Reflex.Exceptions
 {
     internal sealed class PropertyInjectorException : Exception
     {
-        public PropertyInjectorException(PropertyInfo property, Exception innerException) : base(BuildMessage(property, innerException))
+        public PropertyInjectorException(PropertyInfo property, Exception innerException) : base(BuildMessage(property, innerException), innerException)
         {
         }
         
