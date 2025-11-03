@@ -44,8 +44,14 @@ namespace Reflex.Core
                 }
             }
             
-            Bindings.Clear();   
             var container = new Container(Name, Parent, resolversByContract, disposables);
+
+            foreach (var binding in Bindings)
+            {
+                binding.Resolver.DeclaringContainer = container;
+            }
+            
+            Bindings.Clear();
             OnContainerBuilt?.Invoke(container);
             return container;
         }

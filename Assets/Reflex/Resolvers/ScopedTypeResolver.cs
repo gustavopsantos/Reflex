@@ -10,6 +10,7 @@ namespace Reflex.Resolvers
         private readonly Type _concreteType;
         private readonly ConditionalWeakTable<Container, object> _instances = new();
         public Lifetime Lifetime => Lifetime.Scoped;
+        public Container DeclaringContainer { get; set; }
 
         public ScopedTypeResolver(Type concreteType)
         {
