@@ -15,11 +15,11 @@ namespace Reflex.Resolvers
             _factory = factory;
         }
 
-        public object Resolve(Container container)
+        public object Resolve(Container resolvingContainer)
         {
             Diagnosis.IncrementResolutions(this);
-            var instance = _factory.Invoke(container);
-            container.Disposables.TryAdd(instance);
+            var instance = _factory.Invoke(resolvingContainer);
+            resolvingContainer.Disposables.TryAdd(instance);
             Diagnosis.RegisterInstance(this, instance);
             return instance;
         }

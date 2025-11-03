@@ -15,11 +15,11 @@ namespace Reflex.Resolvers
             _concreteType = concreteType;
         }
 
-        public object Resolve(Container container)
+        public object Resolve(Container resolvingContainer)
         {
             Diagnosis.IncrementResolutions(this);
-            var instance = container.Construct(_concreteType);
-            container.Disposables.TryAdd(instance);
+            var instance = resolvingContainer.Construct(_concreteType);
+            resolvingContainer.Disposables.TryAdd(instance);
             Diagnosis.RegisterInstance(this, instance);
             return instance;
         }

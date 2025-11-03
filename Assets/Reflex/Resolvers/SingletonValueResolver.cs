@@ -18,7 +18,7 @@ namespace Reflex.Resolvers
             _disposables.TryAdd(value);
         }
 
-        public object Resolve(Container container)
+        public object Resolve(Container resolvingContainer)
         {
             Diagnosis.IncrementResolutions(this);
             return _value;
