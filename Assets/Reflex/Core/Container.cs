@@ -10,7 +10,7 @@ using Reflex.Resolvers;
 
 namespace Reflex.Core
 {
-    public sealed class Container : IDisposable
+    public sealed class Container : IDisposable, IServiceProvider
     {
         public static Container ProjectContainer { get; internal set; } 
         public string Name { get; }
@@ -137,6 +137,11 @@ namespace Reflex.Core
         private void OverrideSelfInjection()
         {
             ResolversByContract[typeof(Container)] = new List<IResolver> { new SingletonValueResolver(this) };
+        }
+
+        public object GetService(Type serviceType)
+        {
+            return Resolve(serviceType);
         }
     }
 }

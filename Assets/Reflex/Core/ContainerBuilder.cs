@@ -84,8 +84,13 @@ namespace Reflex.Core
 
         public ContainerBuilder AddSingleton<T>(Func<Container, T> factory, params Type[] contracts)
         {
+            return AddSingleton(typeof(T), c => factory(c), contracts);
+        }
+        
+        public ContainerBuilder AddSingleton(Type factoryType, Func<Container, object> factory, params Type[] contracts)
+        {
             var resolver = new SingletonFactoryResolver(Proxy);
-            return Add(typeof(T), contracts, resolver);
+            return Add(factoryType, contracts, resolver);
 
             object Proxy(Container container)
             {
@@ -110,8 +115,13 @@ namespace Reflex.Core
 
         public ContainerBuilder AddTransient<T>(Func<Container, T> factory, params Type[] contracts)
         {
+            return AddTransient(typeof(T), c => factory(c), contracts);
+        }
+        
+        public ContainerBuilder AddTransient(Type factoryType, Func<Container, object> factory, params Type[] contracts)
+        {
             var resolver = new TransientFactoryResolver(Proxy);
-            return Add(typeof(T), contracts, resolver);
+            return Add(factoryType, contracts, resolver);
 
             object Proxy(Container container)
             {
@@ -138,8 +148,13 @@ namespace Reflex.Core
 
         public ContainerBuilder AddScoped<T>(Func<Container, T> factory, params Type[] contracts)
         {
+            return AddScoped(typeof(T), c => factory(c), contracts);
+        }
+        
+        public ContainerBuilder AddScoped(Type factoryType, Func<Container, object> factory, params Type[] contracts)
+        {
             var resolver = new ScopedFactoryResolver(Proxy);
-            return Add(typeof(T), contracts, resolver);
+            return Add(factoryType, contracts, resolver);
 
             object Proxy(Container container)
             {
