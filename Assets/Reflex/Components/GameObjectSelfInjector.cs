@@ -1,11 +1,12 @@
 using System;
+using Reflex.Core;
 using Reflex.Extensions;
 using Reflex.Injectors;
 using UnityEngine;
 
 namespace Reflex.Components
 {
-    [DefaultExecutionOrder(int.MinValue + 1000)]
+    [DefaultExecutionOrder(SceneScope.ExecutionOrder + 100)] // +100 instead of +1 to leave room for other user custom components
     internal sealed class GameObjectSelfInjector : MonoBehaviour
     {
         [SerializeField] private InjectionStrategy _injectionStrategy = InjectionStrategy.Recursive;
