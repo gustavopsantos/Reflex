@@ -17,6 +17,8 @@ namespace Reflex.Configuration
             {
                 if (_instance == null)
                 {
+                    _settingsRequest ??= Resources.LoadAsync<ReflexSettings>("ReflexSettings");
+
                     // This stalls execution until the request fully resolves.
                     // This *should* be faster than non-async loading when project installers have a lot of references.
                     _instance = (ReflexSettings)_settingsRequest.asset;
