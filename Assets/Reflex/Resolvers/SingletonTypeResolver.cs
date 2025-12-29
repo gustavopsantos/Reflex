@@ -1,7 +1,6 @@
 ﻿using System;
 using Reflex.Core;
 using Reflex.Enums;
-using Reflex.Generics;
 
 namespace Reflex.Resolvers
 {
@@ -9,8 +8,8 @@ namespace Reflex.Resolvers
     {
         private object _instance;
         private readonly Type _concreteType;
-        private readonly DisposableCollection _disposables = new();
         public Lifetime Lifetime => Lifetime.Singleton;
+        public Container DeclaringContainer { get; set; }
 
         public SingletonTypeResolver(Type concreteType)
         {
@@ -18,14 +17,14 @@ namespace Reflex.Resolvers
             _concreteType = concreteType;
         }
 
-        public object Resolve(Container container)
+        public object Resolve(Container resolvingContainer)
         {
             Diagnosis.IncrementResolutions(this);
 
             if (_instance == null)
             {
-                _instance = container.Construct(_concreteType);
-                _disposables.TryAdd(_instance);
+                _instance = DeclaringContainer.Construct(_concreteType);
+                DeclaringContainer.Disposables.TryAdd(_instance);
                 Diagnosis.RegisterInstance(this, _instance);
             }
 
@@ -34,7 +33,6 @@ namespace Reflex.Resolvers
 
         public void Dispose()
         {
-            _disposables.Dispose();
         }
     }
 }

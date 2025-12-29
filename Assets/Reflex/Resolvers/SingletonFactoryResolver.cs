@@ -1,7 +1,6 @@
 ﻿using System;
 using Reflex.Core;
 using Reflex.Enums;
-using Reflex.Generics;
 
 namespace Reflex.Resolvers
 {
@@ -9,9 +8,9 @@ namespace Reflex.Resolvers
     {
         private object _instance;
         private readonly Func<Container, object> _factory;
-        private readonly DisposableCollection _disposables = new();
 
         public Lifetime Lifetime => Lifetime.Singleton;
+        public Container DeclaringContainer { get; set; }
 
         public SingletonFactoryResolver(Func<Container, object> factory)
         {
@@ -19,14 +18,14 @@ namespace Reflex.Resolvers
             _factory = factory;
         }
 
-        public object Resolve(Container container)
+        public object Resolve(Container resolvingContainer)
         {
             Diagnosis.IncrementResolutions(this);
 
             if (_instance == null)
             {
-                _instance = _factory.Invoke(container);
-                _disposables.TryAdd(_instance);
+                _instance = _factory.Invoke(resolvingContainer);
+                DeclaringContainer.Disposables.TryAdd(_instance);
                 Diagnosis.RegisterInstance(this, _instance);
             }
 
@@ -35,7 +34,6 @@ namespace Reflex.Resolvers
 
         public void Dispose()
         {
-            _disposables.Dispose();
         }
     }
 }
