@@ -6,8 +6,7 @@ env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
 jobs:
-  TestRunner:
-    name: Tests
+  Tests:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     container:
@@ -17,6 +16,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Activate Unity
       run: echo "$UNITY_LICENSE" > Unity_lic.ulf && (/opt/unity/Editor/Unity -nographics -batchmode -manualLicenseFile Unity_lic.ulf || true)
+    - name: Import Project
+      run: /opt/unity/Editor/Unity -projectPath . -batchmode -nographics -quit
     - name: Edit Mode Tests
       run: /opt/unity/Editor/Unity -projectPath . -batchmode -nographics -runTests -testPlatform EditMode -retry 3
     - name: Play Mode Tests
