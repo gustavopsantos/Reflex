@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
+using Reflex.Enums;
 using Reflex.Extensions;
 using Reflex.Injectors;
 using UnityEngine;
@@ -18,12 +19,11 @@ namespace Reflex.PlayModeTests
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
-            // TODO Gus add a way to enable this callback back again
-            // ProjectScope.OnRootContainerBuilding += builder =>
-            // {
-            //     builder.AddSingleton("InjectedFromOnRootContainerBuilding");
-            //     _wasOnRootContainerBuildingInvoked = true;
-            // };
+            ContainerScope.OnRootContainerBuilding += builder =>
+            {
+                builder.RegisterValue("InjectedFromOnRootContainerBuilding", Lifetime.Singleton);
+                _wasOnRootContainerBuildingInvoked = true;
+            };
         }
         
         [UnitySetUp]

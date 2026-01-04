@@ -76,6 +76,7 @@ namespace Reflex.Injectors
                 ReflexLogger.Log("Root Bindings Installed", LogLevel.Info, reflexSettings.RootScope.gameObject);
             }
             
+            ContainerScope.OnRootContainerBuilding?.Invoke(builder);
             return builder.Build();
         }
 
