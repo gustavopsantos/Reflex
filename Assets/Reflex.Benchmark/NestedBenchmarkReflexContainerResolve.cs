@@ -1,6 +1,7 @@
 using Reflex.Benchmark.NestedModel;
 using Reflex.Benchmark.Utilities;
 using Reflex.Core;
+using Reflex.Enums;
 
 namespace Reflex.Benchmark
 {
@@ -11,11 +12,11 @@ namespace Reflex.Benchmark
         private void Start()
         {
             _container = new ContainerBuilder()
-                .AddTransient(typeof(A), typeof(IA))
-                .AddTransient(typeof(B), typeof(IB))
-                .AddTransient(typeof(C), typeof(IC))
-                .AddTransient(typeof(D), typeof(ID))
-                .AddTransient(typeof(E), typeof(IE))
+                .RegisterType(typeof(A), new[] { typeof(IA) }, Lifetime.Transient, Resolution.Lazy)
+                .RegisterType(typeof(B), new[] { typeof(IB) }, Lifetime.Transient, Resolution.Lazy)
+                .RegisterType(typeof(C), new[] { typeof(IC) }, Lifetime.Transient, Resolution.Lazy)
+                .RegisterType(typeof(D), new[] { typeof(ID) }, Lifetime.Transient, Resolution.Lazy)
+                .RegisterType(typeof(E), new[] { typeof(IE) }, Lifetime.Transient, Resolution.Lazy)
                 .Build();
         }
 

@@ -18,11 +18,12 @@ namespace Reflex.PlayModeTests
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void BeforeSceneLoad()
         {
-            ProjectScope.OnRootContainerBuilding += builder =>
-            {
-                builder.AddSingleton("InjectedFromOnRootContainerBuilding");
-                _wasOnRootContainerBuildingInvoked = true;
-            };
+            // TODO Gus add a way to enable this callback back again
+            // ProjectScope.OnRootContainerBuilding += builder =>
+            // {
+            //     builder.AddSingleton("InjectedFromOnRootContainerBuilding");
+            //     _wasOnRootContainerBuildingInvoked = true;
+            // };
         }
         
         [UnitySetUp]

@@ -11,11 +11,13 @@ namespace Reflex.Resolvers
 
         public Lifetime Lifetime => Lifetime.Singleton;
         public Container DeclaringContainer { get; set; }
+        public Resolution Resolution { get; }
 
-        public SingletonFactoryResolver(Func<Container, object> factory)
+        public SingletonFactoryResolver(Func<Container, object> factory, Resolution resolution)
         {
             Diagnosis.RegisterCallSite(this);
             _factory = factory;
+            Resolution = resolution;
         }
 
         public object Resolve(Container resolvingContainer)

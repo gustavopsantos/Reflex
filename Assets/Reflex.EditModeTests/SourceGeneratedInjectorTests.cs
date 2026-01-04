@@ -8,6 +8,7 @@ using Reflex.Attributes;
 using Reflex.Extensions;
 using Reflex.Injectors;
 using Reflex.Core;
+using Reflex.Enums;
 
 namespace Reflex.EditModeTests
 {
@@ -23,10 +24,10 @@ namespace Reflex.EditModeTests
         [Test]
         public void MockUsage_Injection()
         {
-            var TestDependency = "Hello World";
+            const string testDependency = "Hello World";
 
             var container = new ContainerBuilder()
-                .AddSingleton(TestDependency)
+                .RegisterValue(testDependency, Lifetime.Singleton)
                 .Build();
 
             var sample = new MockParent.MockUsageChild();
@@ -34,13 +35,13 @@ namespace Reflex.EditModeTests
             IAttributeInjectionContract handle = sample;
             AttributeInjector.Inject(handle, container);
 
-            Assert.AreEqual(sample.BaseSampleField, TestDependency);
-            Assert.AreEqual(sample.BaseSampleProperty, TestDependency);
-            Assert.AreEqual(sample.BaseSampleMethodParameter, TestDependency);
+            Assert.AreEqual(sample.BaseSampleField, testDependency);
+            Assert.AreEqual(sample.BaseSampleProperty, testDependency);
+            Assert.AreEqual(sample.BaseSampleMethodParameter, testDependency);
 
-            Assert.AreEqual(sample.ChildSampleField, TestDependency);
-            Assert.AreEqual(sample.ChildSampleProperty, TestDependency);
-            Assert.AreEqual(sample.ChildSampleMethodParameter, TestDependency);
+            Assert.AreEqual(sample.ChildSampleField, testDependency);
+            Assert.AreEqual(sample.ChildSampleProperty, testDependency);
+            Assert.AreEqual(sample.ChildSampleMethodParameter, testDependency);
         }
     }
 

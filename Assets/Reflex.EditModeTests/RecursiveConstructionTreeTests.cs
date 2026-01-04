@@ -2,6 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
+using Reflex.Enums;
 
 namespace Reflex.EditModeTests
 {
@@ -35,10 +36,10 @@ namespace Reflex.EditModeTests
         public void Resolve_RecursiveConstructionTree_ShouldNotThrow()
         {
             var container = new ContainerBuilder()
-                .AddSingleton(instance: 42)
-                .AddSingleton(instance: 1.5f)
-                .AddSingleton(concrete: typeof(ServiceOne))
-                .AddSingleton(concrete: typeof(ServiceTwo))
+                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(1.5f, Lifetime.Singleton)
+                .RegisterType(typeof(ServiceOne), Lifetime.Singleton, Resolution.Lazy)
+                .RegisterType(typeof(ServiceTwo), Lifetime.Singleton, Resolution.Lazy)
                 .Build();
 
             Action resolve = () => container.Resolve<ServiceOne>();

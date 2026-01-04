@@ -7,8 +7,8 @@ namespace Reflex.Resolvers
     public interface IResolver : IDisposable
     {
         Lifetime Lifetime { get; }
-        object Resolve(Container resolvingContainer);
-        
+        Resolution Resolution { get; }
         Container DeclaringContainer { get; set; }
+        object Resolve(Container resolvingContainer);
     }
 }

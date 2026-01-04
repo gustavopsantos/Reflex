@@ -4,8 +4,10 @@ using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
+using Reflex.Enums;
 using UnityEditor.Compilation;
 using UnityEngine;
+using Resolution = Reflex.Enums.Resolution;
 
 namespace Reflex.EditModeTests
 {
@@ -38,7 +40,7 @@ namespace Reflex.EditModeTests
 
             void Act()
             {
-                var container = new ContainerBuilder().AddSingleton(typeof(Service), typeof(Service)).Build();
+                var container = new ContainerBuilder().RegisterType(typeof(Service), Lifetime.Singleton, Resolution.Lazy).Build();
                 var service = container.Single<Service>();
                 references.Add(new WeakReference(service));
                 container.Dispose();

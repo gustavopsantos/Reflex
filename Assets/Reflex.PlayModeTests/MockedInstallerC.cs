@@ -1,4 +1,5 @@
 ﻿using Reflex.Core;
+using Reflex.Enums;
 using UnityEngine;
 
 namespace Reflex.PlayModeTests
@@ -7,7 +8,7 @@ namespace Reflex.PlayModeTests
     {
         public void InstallBindings(ContainerBuilder containerBuilder)
         {
-            containerBuilder.AddSingleton("C");
+            containerBuilder.RegisterValue("C", Lifetime.Singleton);
         }
     }
 }

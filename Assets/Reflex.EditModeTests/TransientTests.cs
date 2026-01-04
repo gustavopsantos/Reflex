@@ -2,6 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
+using Reflex.Enums;
 
 namespace Reflex.EditModeTests
 {
@@ -20,7 +21,7 @@ namespace Reflex.EditModeTests
         [Test]
         public void TransientFromType_ConstructedInstances_ShouldBeDisposed_WithinConstructingContainer()
         {
-            var parentContainer = new ContainerBuilder().AddTransient(typeof(Service)).Build();
+            var parentContainer = new ContainerBuilder().RegisterType(typeof(Service), Lifetime.Transient, Resolution.Lazy).Build();
             var childContainer = parentContainer.Scope();
 
             var instanceConstructedByChild = childContainer.Resolve<Service>();
@@ -35,7 +36,7 @@ namespace Reflex.EditModeTests
         [Test]
         public void TransientFromFactory_ConstructedInstances_ShouldBeDisposed_WithinConstructingContainer()
         {
-            var parentContainer = new ContainerBuilder().AddTransient(_ => new Service()).Build();
+            var parentContainer = new ContainerBuilder().RegisterFactory(_ => new Service(), Lifetime.Transient, Resolution.Lazy).Build();
             var childContainer = parentContainer.Scope();
 
             var instanceConstructedByChild = childContainer.Resolve<Service>();
@@ -52,7 +53,7 @@ namespace Reflex.EditModeTests
         {
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
-            var parentContainer = new ContainerBuilder().AddTransient(typeof(Service)).Build();
+            var parentContainer = new ContainerBuilder().RegisterType(typeof(Service), Lifetime.Transient, Resolution.Lazy).Build();
 
             void Act()
             {
@@ -74,7 +75,7 @@ namespace Reflex.EditModeTests
         {
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
-            var parentContainer = new ContainerBuilder().AddTransient(c => new Service()).Build();
+            var parentContainer = new ContainerBuilder().RegisterFactory(_ => new Service(), Lifetime.Transient, Resolution.Lazy).Build();
 
             void Act()
             {

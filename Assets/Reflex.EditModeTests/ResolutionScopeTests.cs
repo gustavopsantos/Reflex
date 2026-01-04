@@ -3,6 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Attributes;
 using Reflex.Core;
+using Reflex.Enums;
 using Reflex.Exceptions;
 
 namespace Reflex.EditModeTests
@@ -36,11 +37,11 @@ namespace Reflex.EditModeTests
         public void ChildServicesShouldHaveAccessToParentServices()
         {
             var parentContainer = new ContainerBuilder()
-                .AddSingleton(typeof(ParentService))
+                .RegisterType(typeof(ParentService), Lifetime.Singleton, Resolution.Lazy)
                 .Build();
 
             var childContainer = parentContainer.Scope(builder =>
-                builder.AddSingleton(typeof(ChildServiceThatDependsOnParentService)));
+                builder.RegisterType(typeof(ChildServiceThatDependsOnParentService), Lifetime.Singleton, Resolution.Lazy));
 
             childContainer.Resolve<ChildServiceThatDependsOnParentService>().ParentService.Should().NotBeNull();
         }
@@ -49,7 +50,7 @@ namespace Reflex.EditModeTests
         public void ParentServiceShouldNotHaveAccessToChildContainer()
         {
             var parentContainer = new ContainerBuilder()
-                .AddSingleton(typeof(ParentServiceThatDependsOnContainer))
+                .RegisterType(typeof(ParentServiceThatDependsOnContainer), Lifetime.Singleton, Resolution.Lazy)
                 .Build();
 
             var childContainer = parentContainer.Scope();
@@ -60,10 +61,10 @@ namespace Reflex.EditModeTests
         public void ParentServicesShouldNotHaveAccessToChildServices()
         {
             var parentContainer = new ContainerBuilder()
-                .AddSingleton(typeof(ParentServiceThatDependsOnChildService))
+                .RegisterType(typeof(ParentServiceThatDependsOnChildService), Lifetime.Singleton, Resolution.Lazy)
                 .Build();
 
-            var childContainer = parentContainer.Scope(builder => builder.AddSingleton(typeof(ChildService)));
+            var childContainer = parentContainer.Scope(builder => builder.RegisterType(typeof(ChildService), Lifetime.Singleton, Resolution.Lazy));
 
             try
             {

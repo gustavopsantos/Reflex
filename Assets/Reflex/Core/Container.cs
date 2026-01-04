@@ -12,7 +12,7 @@ namespace Reflex.Core
 {
     public sealed class Container : IDisposable
     {
-        public static Container ProjectContainer { get; internal set; } 
+        public static Container RootContainer { get; internal set; } // TODO Gus remove in favor or a single RootContainers list???
         public string Name { get; }
         public Container Parent { get; }
         internal List<Container> Children { get; } = new();
@@ -67,7 +67,8 @@ namespace Reflex.Core
         {
             var builder = new ContainerBuilder().SetParent(this);
             extend?.Invoke(builder);
-            return builder.Build();
+            var scoped = builder.Build();
+            return scoped;
         }
         
         public T Construct<T>()

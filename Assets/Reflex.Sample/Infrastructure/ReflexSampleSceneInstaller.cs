@@ -1,6 +1,8 @@
 ﻿using Reflex.Core;
+using Reflex.Enums;
 using Reflex.Sample.Application;
 using UnityEngine;
+using Resolution = Reflex.Enums.Resolution;
 
 namespace Reflex.Sample.Infrastructure
 {
@@ -11,14 +13,14 @@ namespace Reflex.Sample.Infrastructure
         public void InstallBindings(ContainerBuilder containerBuilder)
         {
             InstallInput(containerBuilder, useMouse: false);
-            containerBuilder.AddSingleton(_collectorConfigurationModel);
-            containerBuilder.AddSingleton(typeof(CollectionStoragePrefs), typeof(ICollectionStorage));
+            containerBuilder.RegisterValue(_collectorConfigurationModel, Lifetime.Singleton);
+            containerBuilder.RegisterType(typeof(CollectionStoragePrefs), new[] { typeof(ICollectionStorage) }, Lifetime.Singleton, Resolution.Lazy);
         }
 
         private static void InstallInput(ContainerBuilder containerBuilder, bool useMouse)
         {
             var implementation = useMouse ? typeof(CollectorInputMouse) : typeof(CollectorInputKeyboard);
-            containerBuilder.AddSingleton(implementation, typeof(ICollectorInput));
+            containerBuilder.RegisterType(implementation, new[] { typeof(ICollectorInput) }, Lifetime.Singleton, Resolution.Lazy);
         }
     }
 }

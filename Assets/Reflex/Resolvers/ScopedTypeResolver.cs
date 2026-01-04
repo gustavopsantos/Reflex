@@ -11,11 +11,13 @@ namespace Reflex.Resolvers
         private readonly ConditionalWeakTable<Container, object> _instances = new();
         public Lifetime Lifetime => Lifetime.Scoped;
         public Container DeclaringContainer { get; set; }
+        public Resolution Resolution { get; }
 
-        public ScopedTypeResolver(Type concreteType)
+        public ScopedTypeResolver(Type concreteType, Resolution resolution)
         {
             Diagnosis.RegisterCallSite(this);
             _concreteType = concreteType;
+            Resolution = resolution;
         }
 
         public object Resolve(Container resolvingContainer)

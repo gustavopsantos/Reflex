@@ -9,6 +9,7 @@ namespace Reflex.Resolvers
         private readonly Func<Container, object> _factory;
         public Lifetime Lifetime => Lifetime.Transient;
         public Container DeclaringContainer { get; set; }
+        public Resolution Resolution => Resolution.Lazy;
 
         public TransientFactoryResolver(Func<Container, object> factory)
         {

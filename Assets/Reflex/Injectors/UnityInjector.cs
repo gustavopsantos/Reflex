@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Reflex.Configuration;
 using Reflex.Core;
 using Reflex.Exceptions;
@@ -16,7 +15,7 @@ namespace Reflex.Injectors
 {
     internal static class UnityInjector
     {
-        internal static Action<Scene, SceneScope> OnSceneLoaded;
+        internal static Action<Scene, ContainerScope> OnSceneLoaded;
         internal static Dictionary<Scene, Container> ContainersPerScene { get; } = new();
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
@@ -25,10 +24,10 @@ namespace Reflex.Injectors
             ReportReflexDebuggerStatus();
             ResetStaticState();
 
-            void InjectScene(Scene scene, SceneScope sceneScope)
+            void InjectScene(Scene scene, ContainerScope containerScope)
             {
                 ReflexLogger.Log($"Scene {scene.name} ({scene.GetHashCode()}) loaded", LogLevel.Development);
-                var sceneContainer = CreateSceneContainer(scene, sceneScope);
+                var sceneContainer = CreateSceneContainer(scene, containerScope);
 
                 if (ContainersPerScene.TryAdd(scene, sceneContainer))
                 {
@@ -52,8 +51,8 @@ namespace Reflex.Injectors
             
             void DisposeProject()
             {
-                Container.ProjectContainer?.Dispose();
-                Container.ProjectContainer = null;
+                Container.RootContainer?.Dispose();
+                Container.RootContainer = null;
                 
                 // Unsubscribe from static events ensuring that Reflex works with domain reloading set to false
                 OnSceneLoaded -= InjectScene;
@@ -66,35 +65,32 @@ namespace Reflex.Injectors
             Application.quitting += DisposeProject;
         }
 
-        private static Container CreateProjectContainer()
+        private static Container CreateRootContainer()
         {
             var reflexSettings = ReflexSettings.Instance;
-            var builder = new ContainerBuilder().SetName("ProjectContainer");
+            var builder = new ContainerBuilder().SetName("RootContainer");
 
-            if (reflexSettings.ProjectScopes != null)
+            if (reflexSettings.RootScope != null)
             {
-                foreach (var projectScope in reflexSettings.ProjectScopes.Where(x => x != null && x.gameObject.activeSelf))
-                {
-                    projectScope.InstallBindings(builder);
-                }
+                reflexSettings.RootScope.InstallBindings(builder);
+                ReflexLogger.Log("Root Bindings Installed", LogLevel.Info, reflexSettings.RootScope.gameObject);
             }
             
-            ProjectScope.OnRootContainerBuilding?.Invoke(builder);
             return builder.Build();
         }
 
-        private static Container CreateSceneContainer(Scene scene, SceneScope sceneScope)
+        private static Container CreateSceneContainer(Scene scene, ContainerScope containerScope)
         {
-            if (Container.ProjectContainer == null)
+            if (Container.RootContainer == null)
             {
-                Container.ProjectContainer = CreateProjectContainer();
+                Container.RootContainer = CreateRootContainer();
             }
             
-            return Container.ProjectContainer.Scope(builder =>
+            return Container.RootContainer.Scope(builder =>
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
-                sceneScope.InstallBindings(builder);
-                SceneScope.OnSceneContainerBuilding?.Invoke(scene, builder);
+                containerScope.InstallBindings(builder);
+                ReflexLogger.Log($"Scene ({scene.name}) Bindings Installed", LogLevel.Info, containerScope.gameObject);
             });
         }
 
@@ -106,9 +102,7 @@ namespace Reflex.Injectors
         private static void ResetStaticState()
         {
             OnSceneLoaded = null;
-            Container.ProjectContainer = null;
-            SceneScope.OnSceneContainerBuilding = null;
-            ProjectScope.OnRootContainerBuilding = null;
+            Container.RootContainer = null;
             ContainersPerScene.Clear();
             
 #if UNITY_EDITOR

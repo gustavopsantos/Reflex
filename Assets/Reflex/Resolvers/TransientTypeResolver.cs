@@ -9,6 +9,7 @@ namespace Reflex.Resolvers
         private readonly Type _concreteType;
         public Lifetime Lifetime => Lifetime.Transient;
         public Container DeclaringContainer { get; set; }
+        public Resolution Resolution => Resolution.Lazy;
 
         public TransientTypeResolver(Type concreteType)
         {

@@ -1,15 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using Reflex.Core;
-using Reflex.Sample.Infrastructure;
+using Reflex.Enums;
 using UnityEngine;
 
-public class ReflexSampleProjectInstaller : MonoBehaviour, IInstaller
+namespace Reflex.Sample.Infrastructure
 {
-    [SerializeField] private PickupSoundEffect _pickupSoundEffectPrefab;
-
-    public void InstallBindings(ContainerBuilder containerBuilder)
+    public class ReflexSampleProjectInstaller : MonoBehaviour, IInstaller
     {
-        containerBuilder.AddSingleton(_pickupSoundEffectPrefab);
+        [SerializeField] private PickupSoundEffect _pickupSoundEffectPrefab;
+
+        public void InstallBindings(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterValue(_pickupSoundEffectPrefab, Lifetime.Singleton);
+        }
     }
 }
