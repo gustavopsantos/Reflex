@@ -91,6 +91,7 @@ namespace Reflex.Injectors
             {
                 builder.SetName($"{scene.name} ({scene.GetHashCode()})");
                 containerScope.InstallBindings(builder);
+                ContainerScope.OnSceneContainerBuilding?.Invoke(scene, builder);
                 ReflexLogger.Log($"Scene ({scene.name}) Bindings Installed", LogLevel.Info, containerScope.gameObject);
             });
         }
@@ -105,7 +106,8 @@ namespace Reflex.Injectors
             OnSceneLoaded = null;
             Container.RootContainer = null;
             ContainersPerScene.Clear();
-            
+            ContainerScope.OnRootContainerBuilding = null;
+            ContainerScope.OnSceneContainerBuilding = null;
 #if UNITY_EDITOR
             Container.RootContainers.Clear();
 #endif

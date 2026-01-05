@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Pool;
 using Reflex.Injectors;
+using UnityEngine.SceneManagement;
 
 namespace Reflex.Core
 {
@@ -11,7 +12,7 @@ namespace Reflex.Core
         public const int SceneContainerScopeExecutionOrder = -1_000_000_000;
         
         public static Action<ContainerBuilder> OnRootContainerBuilding;
-        // TODO Gus add OnSceneContainerBuilding
+        public static Action<Scene, ContainerBuilder> OnSceneContainerBuilding;
         
         private void Awake() // Note that Awake will only be called for ContainerScopes used inside scenes, not for RootScope as they are never instantiated
         {
