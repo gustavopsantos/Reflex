@@ -12,7 +12,7 @@ namespace Reflex.Core
 {
     public sealed class Container : IDisposable
     {
-        public static Container RootContainer { get; internal set; } // TODO Gus remove in favor or a single RootContainers list???
+        public static Container RootContainer { get; internal set; }
         public string Name { get; }
         public Container Parent { get; }
         internal List<Container> Children { get; } = new();

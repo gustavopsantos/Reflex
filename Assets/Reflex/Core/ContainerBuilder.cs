@@ -129,7 +129,7 @@ namespace Reflex.Core
             return RegisterValue(value, new[] { value.GetType() }, lifetime);
         }
         
-        public ContainerBuilder RegisterValue(object value, Type[] contracts, Lifetime lifetime) // TODO Gus remove lifetime param since only Singleton is supported
+        public ContainerBuilder RegisterValue(object value, Type[] contracts, Lifetime lifetime)
         {
             Assert.IsTrue(contracts != null && contracts.Length > 0);
             Assert.IsTrue(lifetime == Lifetime.Singleton, "Value registration only supports Lifetime.Singleton");
