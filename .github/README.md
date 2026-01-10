@@ -115,7 +115,7 @@ public class RootInstaller : MonoBehaviour, IInstaller
 6. Add `RootInstaller.cs` as a component
 7. Create directory `Assets/Resources`
 8. Right click over `Resources` folder, Create → Reflex → Settings. ReflexSettings should always be created directly inside `Resources` folder, without any subfolder.
-9. Select `ReflexSettings` ScriptableObject and add the `RootScope` prefab to the RootScope variable
+9. Select `ReflexSettings` ScriptableObject and add the `RootScope` prefab to the RootScopes list
 10. Create new scene `Greet`
 11. Add `Greet` to `Build Settings` → `Scenes In Build`
 12. Create `Greeter.cs` with
@@ -200,7 +200,7 @@ public class Loader : MonoBehaviour
 ## 🎯 Injection Strategy
 As of version 8.0.0 Reflex has stopped automatically managing dependency injection for any scene.
 
-If you plan on using dependency injection in one of your scenes, add a game object somewhere in the hierarchy with a `SceneScope` component attached. You can still manage dependencies project-wide or utilize this scene container for limited access. This component must be present at scene load time.
+If you plan on using dependency injection in one of your scenes, add a game object somewhere in the hierarchy with a `ContainerScope` component attached. You can still manage shared dependencies using Root Container or utilize this Scene Containers for limited access. This component must be present at scene load time.
 
 This allows users to consume injected dependencies on callbacks such as `Awake` and `OnEnable` while giving more granular control over which scene should be injected or not.
 
@@ -208,14 +208,14 @@ This allows users to consume injected dependencies on callbacks such as `Awake` 
 
 ## 🌱 Container Hierarchy
 ### Default Behaviour
-Reflex's default strategy for creating containers involves initially generating a root project container. For each newly loaded scene, an additional container is created, which always inherits from the root project container. This container hierarchy mirrors the flat hierarchy of Unity scenes. You can see how the structure looks like below:
+Reflex's default strategy for creating containers involves initially generating a root container. For each newly loaded scene, an additional container is created, which always inherits from the root container. This container hierarchy mirrors the flat hierarchy of Unity scenes. You can see how the structure looks like below:
 
 ```mermaid
 graph
-ProjectContainer --> BootScene
-ProjectContainer --> LobbyScene
-ProjectContainer --> GameScene
-ProjectContainer --> GameModeTwoScene
+RootContainer --> BootScene
+RootContainer --> LobbyScene
+RootContainer --> GameScene
+RootContainer --> GameModeTwoScene
 ```
 
 ### Override scene container parent
@@ -223,24 +223,19 @@ To do this or whatever else you want with scene `ContainerBuilder` you can acces
 ```csharp
 // here we take boot scene container just for an example, you can use any container you need
 var bootSceneContainer = gameObject.scene.GetSceneContainer();
-
-void OverrideParent(Scene scene, ContainerBuilder builder)
-{
-    builder.SetParent(bootSceneContainer);
-}
-
-SceneScope.OnSceneContainerBuilding += OverrideParent;
+void OverrideParent(Scene scene, ContainerBuilder builder) => builder.SetParent(bootSceneContainer);
+ContainerScope.OnSceneContainerBuilding += OverrideParent;
 
 // If you are loading scenes without addressables
 SceneManager.LoadSceneAsync("Lobby", LoadSceneMode.Additive).completed += operation =>
 {
-    SceneScope.OnSceneContainerBuilding -= OverrideParent;
+    ContainerScope.OnSceneContainerBuilding -= OverrideParent;
 };
 
 // If you are loading scenes with addressables
 Addressables.LoadSceneAsync("Lobby", LoadSceneMode.Additive).Completed += operation =>
 {
-    SceneScope.OnSceneContainerBuilding -= OverrideParent;
+    ContainerScope.OnSceneContainerBuilding -= OverrideParent;
 };
 ```
 
@@ -248,7 +243,7 @@ By utilizing this API, you can create hierarchical structures such as the one sh
 
 ```mermaid
 graph
-ProjectContainer-->BootScene
+RootContainer-->BootScene
 BootScene-->LobbyScene
 ```
 
@@ -263,106 +258,98 @@ BootScene-->LobbyScene
 ## 📦 Scopes
 Container scoping refers to the ability of being able to create a container inheriting the registrations of its parent container while also being able to extend it.
 
-### Project Scope
-It is root scope.
-It is created lazily once the first scene containing a SceneScope is loaded.
-To register bindings to it, create a prefab, name it how you wish, the name is not used as a identifier, and attach a "ProjectScope" component to it.
-Select ReflexSettings and add your ProjectScope prefab to the list of ProjectScopes.
+### Root Scope
+The root scope by default share all its dependencies with all SceneScopes.
+It is created lazily once the first scene containing a ContainerScope is loaded.
+To register bindings to it, create a prefab, name it how you wish, the name is not used as a identifier, and attach a "ContainerScope" component to it.
+Select ReflexSettings and add the prefab you created to the RootScopes list.
 Then, create your installer as MonoBehaviour and implement IInstaller interface.
-Remember to attach your installer to the ProjectScope prefab, as ProjectScope searches for every child implementing IInstaller when it's time to create the ProjectScope container.
-There's a menu item to ease the process: Assets > Create > Reflex > ProjectScope
-You can create multiple ProjectScope prefabs, and when its time to create the project container, all active ProjectScope prefabs will be merged, this allow a better separation of concerns if required.
-Note that ProjectScope prefab is not required, in case Reflex does not find any ProjectScope, an empty root will be created.
-ProjectScope instance will be disposed once app closes/app quits.
-Invokes `ProjectScope.OnRootContainerBuilding` static event while being built in case you need to dynamically extend it, you can use `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]` method attribute to register to this event.
+Remember to attach your installer to the RootScope prefab, as RootScope searches for every child implementing IInstaller when it's time to create the Root Container.
+There's a menu item to ease the process: Assets > Create > Reflex > RootScope
+You can create multiple RootScope prefabs, and when its time to create the root container, all active RootScope prefabs will be merged, this allow a better separation of concerns if required.
+Note that RootScope prefab is not required, so if ReflexSettings.RootScopes list is empty, an empty root container will be created.
+RootContainer instance will be disposed once app closes/app quits.
+Invokes `ContainerScope.OnRootContainerBuilding` static event while being built in case you need to dynamically extend it, you can use `[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]` method attribute to register to this event.
 > Note that unity does not call OnDestroy deterministically, so rule of thumb is do not rely on injected dependencies on OnDestroy event functions.
 
 ### Scene Scope
-It is scoped from ProjectScope, inheriting all bindings from ProjectScope.
-It is created and injected before Awake. 
-To register bindings to it, create a gameobject on desired scene, name it "SceneScope", put it as root game object, and attach a "SceneScope" component to it.
+It is scoped from RootScope, inheriting all its bindings.
+It is created and injected on Awake, using a custom execution order to execute as the earliest Awake, see ContainerScope.SceneContainerScopeExecutionOrder. 
+To register bindings to it, create a gameobject on desired scene, name it "SceneScope", put it as root game object, and attach a "ContainerScope" component to it.
 Then, create your installer as MonoBehaviour and implement IInstaller interface.
 Remember to attach your installer to your SceneScope gameobject, as SceneScope searches for every child implementing IInstaller when it's time to create the SceneScope container.
-There's a menu item to ease the process: GameObject > Reflex > Scene Context
+There's a menu item to ease the process: GameObject > Reflex > SceneScope
 Remember to have a single SceneScope to avoid undesired behaviour.
 Note that SceneScope gameobject is required only if you want its scene to be injected, in case Reflex do not find SceneScope, the scene injection will be skipped for that specific scene missing SceneScope.
 SceneScope instance will be disposed once scene is unloaded.
-Invokes `SceneScope.OnSceneContainerBuilding` static event while being built for every scene containing a SceneScope in case you need to dynamically extend it,
+Invokes `ContainerScope.OnSceneContainerBuilding` static event while being built for every scene containing a SceneScope in case you need to dynamically extend it,
 > Note that unity does not call OnDestroy deterministically, so rule of thumb is do not rely on injected dependencies on OnDestroy event functions. 
 
 ### Manual Scoping
 ```csharp
-using var scopedContainer = parentContainer.Scope(builder =>  
+using var childContainer = parentContainer.Scope(builder =>  
 {  
   // Extend your scoped container by adding extra registrations here  
 });
 ```
 
 ## 🔩 Bindings
+### ContainerBuilder.RegisterValue
+Used to register **user-created objects** into the container.
 
-### AddSingleton (From Type)
-```csharp
-ContainerBuilder::AddSingleton(Type concrete, params Type[] contracts)
-```
-Adds a deferred object creation based on the type to be constructed and its contracts.
-The object will be constructed lazily, once first request to resolve any of its contracts is called.
-Then **same** object will always be returned.
-If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+* The instance is created **outside** the container
+* The container **does not construct this object
+* Gets disposed by the container if it implements `IDisposable`
+* The registered instance always behaves as a **singleton**
+---
+### ContainerBuilder.RegisterType
+Registers a **type** that the container is responsible for creating.
 
-### AddSingleton (From Value)
-```csharp
-ContainerBuilder::AddSingleton(object instance, params Type[] contracts)
-```
-Adds an object already constructed by the user to the container as a singleton, everytime the contracts given is asked to be resolved, the same object will be returned.
-If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+* The type must be constructible by the container
+* The container resolves constructor dependencies automatically
+* The container resolves decorated fields, properties and methods automatically
+* Instances are created according to the configured **resolution**
+* Instances are provided according to the configured **lifetime**
+---
+### ContainerBuilder.RegisterFactory
+Allows the user to provide a **factory function** that the container will invoke to create instances.
 
-### AddSingleton (From Factory)
-```csharp
-ContainerBuilder::AddSingleton<T>(Func<Container, T> factory, params Type[] contracts)
-```
-Adds a deferred object creation based on the given factory and its contracts.
-The object will be constructed lazily, once first request to resolve any of its contracts is called.
-The factory will be ran once, and then the **same** object will always be returned.
-If object implements `IDisposable` it will be disposed when its parent Container are disposed.
-There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+* Full control over object creation
+* Can depend on runtime data
+* Factory receives the resolution container as context for further resolutions if needed
+* Calls to the registered function happens according to the configured **resolution**
+* Calls to the registered function happens according to the configured **lifetime**
+---
+### Resolution
+The `Resolution` enum defines **when** a dependency is instantiated.
+#### Lazy
+* Instance is created **only when first resolved**
+* Default behavior in most DI frameworks
+* Improves startup performance
 
-### AddTransient (From Type)
-```csharp
-ContainerBuilder::AddTransient(Type concrete, params Type[] contracts)
-```
-Adds a deferred object creation based on the type to be constructed and its contracts.
-The object will be constructed lazily, once first request to resolve any of its contracts is called.
-Then for any request of any contract, a new object will be created, use this carefully.
-If object implements `IDisposable` it will be disposed when the container who constructed the instance are disposed, and eventually collected when GC kicks in.
-There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+#### Eager
+* Instance is created **during container build**
+* Useful for early validation
+* Ideal for critical systems required at startup
+---
 
-### AddTransient (From Factory)
-```csharp
-ContainerBuilder::AddTransient(Func<Container, T> factory, params Type[] contracts)
-```
-Adds a deferred object creation based on the given factory and its contracts.
-The object will be constructed lazily, once first request to resolve any of its contracts is called.
-Then for any request of any contract, a new object will be created, use this carefully.
-If object implements `IDisposable` it will be disposed when the container who constructed the instance are disposed, and eventually collected when GC kicks in.
-There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
-
-### AddScoped (From Type)
-```csharp
-ContainerBuilder::AddScoped(Type concrete, params Type[] contracts)
-```
-Very similar to AddSingleton API, however, instead of having a single global instance, AddScoped creates one object instance per container.
-If object implements `IDisposable` it will be disposed when the container who constructed the instance are disposed, and eventually collected when GC kicks in.
-There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
-
-### AddScoped (From Factory)
-```csharp
-ContainerBuilder::AddScoped(Func<Container, T> factory, params Type[] contracts)
-```
-Very similar to AddSingleton API, however, instead of having a single global instance, AddScoped creates one object instance per container.
-If object implements `IDisposable` it will be disposed when the container who constructed the instance are disposed, and eventually collected when GC kicks in.
-There's no need to pass `IDisposable` as contract to have your object disposed, however, if you want to retrieve all `IDisposable` by any API `Single<TContract>`, `Resolve<TContract>` or `All<TContract>` then yes, you have to specify it.
+### Lifetime
+The `Lifetime` enum defines **how** instances will be provided.
+#### Singleton
+* One instance shared **globally**
+* Same object returned for every resolve
+#### Scoped
+* One instance per **container**
+* Each container has their own unique instance
+#### Transient
+* A **new instance per resolve**
+* No instance sharing
+#### Summary
+| Lifetime  | Instance Behavior   |
+| --------- | ------------------- |
+| Singleton | One global instance |
+| Scoped    | One per container   |
+| Transient | One per resolve     |
 
 ## 🔍 Resolving
 ### Constructor
@@ -416,9 +403,9 @@ Example:
 private void Documentation_Bindings()  
 {
 	var container = new ContainerBuilder()
-		.AddSingleton(1)
-		.AddSingleton(2)
-		.AddSingleton(3)
+		.RegisterValue(1)
+		.RegisterValue(2)
+		.RegisterValue(3)
 		.Build();
 
 	Debug.Log(string.Join(", ", container.All<int>())); // Prints: 1, 2, 3
@@ -474,12 +461,12 @@ namespace Reflex.EditModeTests
         public void TestSelectiveBinding() 
         {
             var container = new ContainerBuilder()
-                .AddSingleton(typeof (AppWindow))
-                .AddSingleton(new AppVersion("0.9"))
-                .AddSingleton(new AppName("MyHelloWorldConsoleApp"))
+                .RegisterValue(typeof (AppWindow))
+                .RegisterValue(new AppVersion("0.9"))
+                .RegisterValue(new AppName("MyHelloWorldConsoleApp"))
                 .Build();
 
-            var appWindow = container.Resolve <AppWindow>();
+            var appWindow = container.Resolve<AppWindow>();
             appWindow.Present();
         }
     }
@@ -643,7 +630,7 @@ It's a  `ReflexSettings` scriptable object instance, named `ReflexSettings` that
 It can be created by asset menu item Assets → Create → Reflex → Settings.
 
 - logging verbosity is configured in this asset, and default value is set to `Info`
-- the list of ProjectScopes is also configured in this asset, and default value is empty
+- the list of RootScopes is also configured in this asset, and default value is null
 
 > [!IMPORTANT]
 > ReflexSettings asset is obligatory to have

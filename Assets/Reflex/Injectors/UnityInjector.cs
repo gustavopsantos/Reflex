@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Reflex.Configuration;
 using Reflex.Core;
 using Reflex.Exceptions;
@@ -70,10 +71,13 @@ namespace Reflex.Injectors
             var reflexSettings = ReflexSettings.Instance;
             var builder = new ContainerBuilder().SetName("RootContainer");
 
-            if (reflexSettings.RootScope != null)
+            if (reflexSettings.RootScopes != null)
             {
-                reflexSettings.RootScope.InstallBindings(builder);
-                ReflexLogger.Log("Root Bindings Installed", LogLevel.Info, reflexSettings.RootScope.gameObject);
+                foreach (var rootScope in reflexSettings.RootScopes.Where(x => x != null && x.gameObject.activeSelf))
+                {
+                    rootScope.InstallBindings(builder);
+                    ReflexLogger.Log($"Root Bindings Installed from '{rootScope.name}'", LogLevel.Info, rootScope.gameObject);
+                }
             }
             
             ContainerScope.OnRootContainerBuilding?.Invoke(builder);

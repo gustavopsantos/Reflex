@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Reflex.Core;
 using Reflex.Logging;
 using UnityEngine;
@@ -30,7 +31,7 @@ namespace Reflex.Configuration
         }
         
         [field: SerializeField] public LogLevel LogLevel { get; private set; }
-        [field: SerializeField] public ContainerScope RootScope { get; private set; }
+        [field: SerializeField] public List<ContainerScope> RootScopes { get; private set; }
 
         private void OnValidate()
         {
