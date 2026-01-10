@@ -264,5 +264,23 @@ namespace Reflex.EditModeTests
             var container = new ContainerBuilder().RegisterValue(42).Build();
             container.HasBinding<int>().Should().BeTrue();
         }
+        
+        [Test]
+        public void TryGetResolverDoesNotThrowsWhenContractIsMissing()
+        {
+            var container = new ContainerBuilder().Build();
+            Func<bool> call = () => container.TryGetResolver(typeof(int), out _);
+            call.Should().NotThrow();
+            call().Should().BeFalse();
+        }
+        
+        [Test]
+        public void TryGetResolverGenericDoesNotThrowsWhenContractIsMissing()
+        {
+            var container = new ContainerBuilder().Build();
+            Func<bool> call = () => container.TryGetResolver<int>(out _);
+            call.Should().NotThrow();
+            call().Should().BeFalse();
+        }
     }
 }
