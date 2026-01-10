@@ -38,10 +38,10 @@ namespace Reflex.Editor
             UnityEditorUtility.CreatePrefab(desiredAssetPath, Edit);
         }
         
-        [MenuItem("GameObject/Reflex/ContainerScope")]
-        private static void CreateReflexContainerScope()
+        [MenuItem("GameObject/Reflex/SceneScope")]
+        private static void CreateReflexSceneScope()
         {
-            var containerScope = new GameObject("ContainerScope").AddComponent<ContainerScope>();
+            var containerScope = new GameObject("SceneScope").AddComponent<ContainerScope>();
             Selection.activeObject = containerScope.gameObject;
             EditorSceneManager.MarkSceneDirty(containerScope.gameObject.scene);
         }

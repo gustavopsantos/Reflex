@@ -96,26 +96,26 @@ openupm install com.gustavopsantos.reflex
 
 ## 🚀 Getting Started
 1. [Install Reflex](#-installation)
-2. Create `ProjectInstaller.cs` with 
+2. Create `RootInstaller.cs` with 
 ```csharp
 using Reflex.Core;
 using UnityEngine;
 
-public class ProjectInstaller : MonoBehaviour, IInstaller
+public class RootInstaller : MonoBehaviour, IInstaller
 {
     public void InstallBindings(ContainerBuilder builder)
     {
-        builder.AddSingleton("Hello");
+        builder.RegisterValue("Hello"); // Note that values are always registered as singletons
     }
 }
 ```
 3. In unity project window
-4. Right click over any folder, Create → Reflex → ProjectScope. Since ProjectScopes is strongly referenced by ReflexSettings, you can create it anywhere, it does not need to be inside `Resources` folder.
-5. Select `ProjectScope` you just created
-6. Add `ProjectInstaller.cs` as a component
+4. Right click over any folder, Create → Reflex → RootScope. Since RootScope is strongly referenced by ReflexSettings, you can create it anywhere, it does not need to be inside `Resources` folder.
+5. Select `RootScope` you just created
+6. Add `RootInstaller.cs` as a component
 7. Create directory `Assets/Resources`
 8. Right click over `Resources` folder, Create → Reflex → Settings. ReflexSettings should always be created directly inside `Resources` folder, without any subfolder.
-9. Select `ReflexSettings` ScriptableObject and add the `ProjectScope` prefab to the ProjectScopes list
+9. Select `ReflexSettings` ScriptableObject and add the `RootScope` prefab to the RootScope variable
 10. Create new scene `Greet`
 11. Add `Greet` to `Build Settings` → `Scenes In Build`
 12. Create `Greeter.cs` with
@@ -145,11 +145,11 @@ public class GreetInstaller : MonoBehaviour, IInstaller
 {
     public void InstallBindings(ContainerBuilder builder)
     {
-        builder.AddSingleton("World");
+        builder.RegisterValue("World"); // Note that values are always registered as singletons
     }
 }
 ```
-16. Add `GreetInstaller.cs` to `Greet.unity` `SceneScope`
+16. Add `GreetInstaller.cs` to the `SceneScope` you created on step 14
 17. Create new scene `Boot`
 18. Add `Boot` to `Build Settings` → `Scenes In Build`
 19. Create `Loader.cs` with
@@ -161,24 +161,24 @@ public class Loader : MonoBehaviour
 {
     private void Start()
     {
-        void InstallExtra(Scene scene, ContainerBuilder builder)
+        void InstallExtra(UnityEngine.SceneManagement.Scene scene, ContainerBuilder builder)
         {
-            builder.AddSingleton("of Developers");
+            builder.RegisterValue("of Developers");
         }
         
         // This way you can access ContainerBuilder of the scene that is currently building
-        SceneScope.OnSceneContainerBuilding += InstallExtra;
+        ContainerScope.OnSceneContainerBuilding += InstallExtra;
 
         // If you are loading scenes without addressables
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Greet").completed += operation =>
         {
-            SceneScope.OnSceneContainerBuilding -= InstallExtra;
+            ContainerScope.OnSceneContainerBuilding -= InstallExtra;
         };
 
         // If you are loading scenes with addressables
         UnityEngine.AddressableAssets.Addressables.LoadSceneAsync("Greet").Completed += operation =>
         {
-            SceneScope.OnSceneContainerBuilding -= InstallExtra;
+            ContainerScope.OnSceneContainerBuilding -= InstallExtra;
         };
     }
 }
