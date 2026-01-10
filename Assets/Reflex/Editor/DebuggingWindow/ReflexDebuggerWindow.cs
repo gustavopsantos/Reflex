@@ -106,8 +106,10 @@ namespace Reflex.Editor.DebuggingWindow
 
             if (ReflexEditorSettings.ShowInternalBindings == false)
             {
-                var containerResolver = container.ResolversByContract[typeof(Container)].Single();
-                resolvers.Remove(containerResolver);
+                if (container.TryGetResolver(typeof(Container), out var containerResolver))
+                {
+                    resolvers.Remove(containerResolver);                
+                }
             }
 
             if (ReflexEditorSettings.ShowInheritedBindings == false && container.Parent != null)

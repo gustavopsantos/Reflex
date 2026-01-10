@@ -111,6 +111,23 @@ namespace Reflex.Core
             return (TContract)Single(typeof(TContract));
         }
 
+        public bool TryGetResolver(Type contract, out IResolver result)
+        {
+            if (ResolversByContract.TryGetValue(contract, out var resolvers))
+            {
+                result = resolvers.Single();
+                return true;
+            }
+
+            result = null;
+            return false;
+        }
+
+        public bool TryGetResolver<TContract>(out IResolver result)
+        {
+            return TryGetResolver(typeof(TContract), out result);
+        }
+
         public IEnumerable<object> All(Type contract)
         {
             return ResolversByContract.TryGetValue(contract, out var resolvers)
