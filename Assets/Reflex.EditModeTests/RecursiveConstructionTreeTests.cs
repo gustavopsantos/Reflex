@@ -36,8 +36,8 @@ namespace Reflex.EditModeTests
         public void Resolve_RecursiveConstructionTree_ShouldNotThrow()
         {
             var container = new ContainerBuilder()
-                .RegisterValue(42, Lifetime.Singleton)
-                .RegisterValue(1.5f, Lifetime.Singleton)
+                .RegisterValue(42)
+                .RegisterValue(1.5f)
                 .RegisterType(typeof(ServiceOne), Lifetime.Singleton, Resolution.Lazy)
                 .RegisterType(typeof(ServiceTwo), Lifetime.Singleton, Resolution.Lazy)
                 .Build();

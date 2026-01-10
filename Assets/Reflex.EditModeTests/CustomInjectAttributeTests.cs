@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using Reflex.Attributes;
 using Reflex.Core;
-using Reflex.Enums;
 
 namespace Reflex.EditModeTests
 {
@@ -41,7 +40,7 @@ namespace Reflex.EditModeTests
         public void CustomInheritorOfInjectAttribute_CanBeUsedToInjectFields()
         {
             using var container = new ContainerBuilder()
-                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(42)
                 .Build();
 
             var service = container.Construct<CustomInjectOnField>();
@@ -52,7 +51,7 @@ namespace Reflex.EditModeTests
         public void CustomInheritorOfInjectAttribute_CanBeUsedToInjectProperties()
         {
             using var container = new ContainerBuilder()
-                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(42)
                 .Build();
 
             var service = container.Construct<CustomInjectOnProperty>();
@@ -63,7 +62,7 @@ namespace Reflex.EditModeTests
         public void CustomInheritorOfInjectAttribute_CanBeUsedToInjectMethods()
         {
             using var container = new ContainerBuilder()
-                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(42)
                 .Build();
 
             var service = container.Construct<CustomInjectOnMethod>();

@@ -37,7 +37,7 @@ namespace Reflex.EditModeTests
         public void Resolve_ValueTypeSingleton_ShouldReturn42()
         {
             var container = new ContainerBuilder()
-                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(42)
                 .Build();
             
             container.Single<int>().Should().Be(42);
@@ -169,7 +169,7 @@ namespace Reflex.EditModeTests
         public void Resolve_ValueTypeAsTransient_CustomConstructor_ValueShouldReturn42()
         {
             var container = new ContainerBuilder()
-                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(42)
                 .RegisterType(typeof(MyStruct), Lifetime.Transient, Resolution.Lazy)
                 .Build();
             
@@ -229,7 +229,7 @@ namespace Reflex.EditModeTests
         public void AddSingleton_WithoutContract_ShouldBindToItsType()
         {
             var container = new ContainerBuilder()
-                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(42)
                 .Build();
             
             container.Single<int>().Should().Be(42);
@@ -245,9 +245,9 @@ namespace Reflex.EditModeTests
         [Test]
         public void All_OnParentShouldNotBeAffectedByScoped()
         {
-            var container = new ContainerBuilder().RegisterValue(1, Lifetime.Singleton).Build();
+            var container = new ContainerBuilder().RegisterValue(1).Build();
             string.Join(",", container.All<int>()).Should().Be("1");
-            var scoped = container.Scope(containerBuilder => { containerBuilder.RegisterValue(2, Lifetime.Singleton); });
+            var scoped = container.Scope(containerBuilder => { containerBuilder.RegisterValue(2); });
             string.Join(",", container.All<int>()).Should().Be("1");
         }
         
@@ -261,7 +261,7 @@ namespace Reflex.EditModeTests
         [Test]
         public void HasBindingReturnTrueWhenBindingIsDefined()
         {
-            var container = new ContainerBuilder().RegisterValue(42, Lifetime.Singleton).Build();
+            var container = new ContainerBuilder().RegisterValue(42).Build();
             container.HasBinding<int>().Should().BeTrue();
         }
     }

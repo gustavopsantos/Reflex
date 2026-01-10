@@ -26,7 +26,7 @@ namespace Reflex.EditModeTests
         public void AddSingleton_ShouldRunAttributeInjectionOnFieldsPropertiesAndMethodsMarkedWithInjectAttribute()
         {
             var container = new ContainerBuilder()
-                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(42)
                 .RegisterType(typeof(Foo), Lifetime.Singleton, Resolution.Lazy)
                 .Build();
             
@@ -40,7 +40,7 @@ namespace Reflex.EditModeTests
         public void AddTransient_ShouldRunAttributeInjectionOnFieldsPropertiesAndMethodsMarkedWithInjectAttribute()
         {
             var container = new ContainerBuilder()
-                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(42)
                 .RegisterType(typeof(Foo), Lifetime.Singleton, Resolution.Lazy)
                 .Build();
             

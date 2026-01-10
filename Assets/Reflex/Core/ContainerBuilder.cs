@@ -124,15 +124,14 @@ namespace Reflex.Core
             return Add(type, contracts, resolver);
         }
         
-        public ContainerBuilder RegisterValue(object value, Lifetime lifetime)
+        public ContainerBuilder RegisterValue(object value)
         {
-            return RegisterValue(value, new[] { value.GetType() }, lifetime);
+            return RegisterValue(value, new[] { value.GetType() });
         }
         
-        public ContainerBuilder RegisterValue(object value, Type[] contracts, Lifetime lifetime)
+        public ContainerBuilder RegisterValue(object value, Type[] contracts)
         {
             Assert.IsTrue(contracts != null && contracts.Length > 0);
-            Assert.IsTrue(lifetime == Lifetime.Singleton, "Value registration only supports Lifetime.Singleton");
             var resolver = new SingletonValueResolver(value);
             return Add(value.GetType(), contracts, resolver);
         }

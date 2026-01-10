@@ -14,7 +14,7 @@ namespace Reflex.IL2CPP.Tests
         private void Start()
         {
             _container = new ContainerBuilder()
-                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(42)
                 .RegisterType(typeof(TestGenericStructure<int>), new[] { typeof(ITestGenericStructure<int>) }, Lifetime.Singleton, Resolution.Lazy)
                 .Build();
         }

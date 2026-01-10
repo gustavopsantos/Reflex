@@ -8,7 +8,6 @@ using Reflex.Attributes;
 using Reflex.Extensions;
 using Reflex.Injectors;
 using Reflex.Core;
-using Reflex.Enums;
 
 namespace Reflex.EditModeTests
 {
@@ -27,7 +26,7 @@ namespace Reflex.EditModeTests
             const string testDependency = "Hello World";
 
             var container = new ContainerBuilder()
-                .RegisterValue(testDependency, Lifetime.Singleton)
+                .RegisterValue(testDependency)
                 .Build();
 
             var sample = new MockParent.MockUsageChild();

@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using Reflex.Attributes;
 using Reflex.Core;
-using Reflex.Enums;
 
 namespace Reflex.EditModeTests
 {
@@ -45,8 +44,8 @@ namespace Reflex.EditModeTests
         public void ClassWithMultipleConstructors_WithoutAnyReflexConstructorAttribute_ShouldBeConstructedUsing_ConstructorWithMostArguments()
         {
             var container = new ContainerBuilder()
-                .RegisterValue(new object(), Lifetime.Singleton)
-                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(new object())
+                .RegisterValue(42)
                 .Build();
 
             var result = container.Construct<ClassWithReflexConstructorIdentifiedByMaxAmountOfArguments>();
@@ -58,8 +57,8 @@ namespace Reflex.EditModeTests
         public void ClassWithMultipleConstructors_WithOneDefiningReflexConstructorAttribute_ShouldBeConstructedUsing_ConstructorWithReflexConstructorAttribute()
         {
             var container = new ContainerBuilder()
-                .RegisterValue(new object(), Lifetime.Singleton)
-                .RegisterValue(42, Lifetime.Singleton)
+                .RegisterValue(new object())
+                .RegisterValue(42)
                 .Build();
 
             var result = container.Construct<ClassWithReflexConstructorIdentifiedByReflexConstructorAttribute>();

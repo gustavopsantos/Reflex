@@ -13,7 +13,7 @@ namespace Reflex.Sample.Infrastructure
         public void InstallBindings(ContainerBuilder containerBuilder)
         {
             InstallInput(containerBuilder, useMouse: false);
-            containerBuilder.RegisterValue(_collectorConfigurationModel, Lifetime.Singleton);
+            containerBuilder.RegisterValue(_collectorConfigurationModel);
             containerBuilder.RegisterType(typeof(CollectionStoragePrefs), new[] { typeof(ICollectionStorage) }, Lifetime.Singleton, Resolution.Lazy);
         }
 

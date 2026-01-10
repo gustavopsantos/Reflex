@@ -1,5 +1,4 @@
 using Reflex.Core;
-using Reflex.Enums;
 using UnityEngine;
 
 namespace Reflex.Sample.Infrastructure
@@ -10,7 +9,7 @@ namespace Reflex.Sample.Infrastructure
 
         public void InstallBindings(ContainerBuilder containerBuilder)
         {
-            containerBuilder.RegisterValue(_pickupSoundEffectPrefab, Lifetime.Singleton);
+            containerBuilder.RegisterValue(_pickupSoundEffectPrefab);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Reflex.EditModeTests
         {
             var service = new Service();
             var container = new ContainerBuilder()
-                .RegisterValue(service, Lifetime.Singleton)
+                .RegisterValue(service)
                 .Build();
             
             container.Dispose();

@@ -3,7 +3,6 @@ using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
-using Reflex.Enums;
 using Reflex.Extensions;
 using Reflex.Injectors;
 using UnityEngine;
@@ -21,7 +20,7 @@ namespace Reflex.PlayModeTests
         {
             ContainerScope.OnRootContainerBuilding += builder =>
             {
-                builder.RegisterValue("InjectedFromOnRootContainerBuilding", Lifetime.Singleton);
+                builder.RegisterValue("InjectedFromOnRootContainerBuilding");
                 _wasOnRootContainerBuildingInvoked = true;
             };
         }

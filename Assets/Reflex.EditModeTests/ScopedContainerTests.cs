@@ -38,7 +38,7 @@ namespace Reflex.EditModeTests
         [Test]
         public void ScopedContainer_CanResolveDependency_FromParentContainer()
         {
-            using (var outer = new ContainerBuilder().RegisterValue(42, Lifetime.Singleton).Build())
+            using (var outer = new ContainerBuilder().RegisterValue(42).Build())
             {
                 using (var inner = outer.Scope())
                 {
@@ -51,7 +51,7 @@ namespace Reflex.EditModeTests
         public void ParentWithScopedContainer_ParentShouldNotBeAbleToResolveDependencyFromChild()
         {
             var outer = new ContainerBuilder().Build();
-            var inner = outer.Scope(builder => builder.RegisterValue(42, Lifetime.Singleton));
+            var inner = outer.Scope(builder => builder.RegisterValue(42));
             Action resolve = () => outer.Single<int>();
             resolve.Should().ThrowExactly<UnknownContractException>();
         }
@@ -113,13 +113,13 @@ namespace Reflex.EditModeTests
             var disposalOrder = new List<string>();
 
             var a = new ContainerBuilder()
-                .RegisterValue(new DisposeHook(() => disposalOrder.Add("a")), Lifetime.Singleton)
+                .RegisterValue(new DisposeHook(() => disposalOrder.Add("a")))
                 .Build();
 
-            var b = a.Scope(builder => builder.RegisterValue(new DisposeHook(() => disposalOrder.Add("b")), Lifetime.Singleton));
-            var c = b.Scope(builder => builder.RegisterValue(new DisposeHook(() => disposalOrder.Add("c")), Lifetime.Singleton));
-            var d = c.Scope(builder => builder.RegisterValue(new DisposeHook(() => disposalOrder.Add("d")), Lifetime.Singleton));
-            var e = d.Scope(builder => builder.RegisterValue(new DisposeHook(() => disposalOrder.Add("e")), Lifetime.Singleton));
+            var b = a.Scope(builder => builder.RegisterValue(new DisposeHook(() => disposalOrder.Add("b"))));
+            var c = b.Scope(builder => builder.RegisterValue(new DisposeHook(() => disposalOrder.Add("c"))));
+            var d = c.Scope(builder => builder.RegisterValue(new DisposeHook(() => disposalOrder.Add("d"))));
+            var e = d.Scope(builder => builder.RegisterValue(new DisposeHook(() => disposalOrder.Add("e"))));
             
             a.Dispose();
             
@@ -132,10 +132,10 @@ namespace Reflex.EditModeTests
             var disposalOrder = new List<string>();
 
             var a = new ContainerBuilder()
-                .RegisterValue(new DisposeHook(() => disposalOrder.Add("a")), Lifetime.Singleton)
+                .RegisterValue(new DisposeHook(() => disposalOrder.Add("a")))
                 .Build();
 
-            var b = a.Scope(builder => builder.RegisterValue(new DisposeHook(() => disposalOrder.Add("b")), Lifetime.Singleton));
+            var b = a.Scope(builder => builder.RegisterValue(new DisposeHook(() => disposalOrder.Add("b"))));
             
             a.Dispose();
             
