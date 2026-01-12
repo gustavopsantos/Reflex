@@ -34,12 +34,18 @@ namespace Reflex.Caching
                     constructor = constructors.MaxBy(ctor => ctor.GetParameters().Length); // Gets the constructor with most arguments
                 }
                 
-                var parameters = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
-                return new TypeConstructionInfo(ActivatorFactoryManager.Factory.GenerateActivator(type, constructor, parameters), parameters);
+                var parameters = constructor.GetParameters();
+                var paramInfo = parameters.Select(p => 
+                    new MethodParamInfo(p.ParameterType, 
+                    p.HasDefaultValue, 
+                    p.DefaultValue))
+                    .ToArray();
+                    
+                return new TypeConstructionInfo(ActivatorFactoryManager.Factory.GenerateActivator(type, constructor, paramInfo), paramInfo);
             }
 
-            // Should we add this complexity yo be able to inject value types?
-            return new TypeConstructionInfo(ActivatorFactoryManager.Factory.GenerateDefaultActivator(type), Type.EmptyTypes);
+            // Should we add this complexity to be able to inject value types?
+            return new TypeConstructionInfo(ActivatorFactoryManager.Factory.GenerateDefaultActivator(type), Array.Empty<MethodParamInfo>());
         }
     }
 }

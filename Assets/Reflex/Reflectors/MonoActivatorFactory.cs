@@ -1,13 +1,14 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Reflex.Caching;
 using Reflex.Delegates;
 
 namespace Reflex.Reflectors
 {
     internal sealed class MonoActivatorFactory : IActivatorFactory
     {
-        public ObjectActivator GenerateActivator(Type type, ConstructorInfo constructor, Type[] parameters)
+        public ObjectActivator GenerateActivator(Type type, ConstructorInfo constructor, MethodParamInfo[] parameters)
         {
             var param = Expression.Parameter(typeof(object[]));
             var argumentsExpressions = new Expression[parameters.Length];
@@ -15,7 +16,7 @@ namespace Reflex.Reflectors
             for (var i = 0; i < parameters.Length; i++)
             {
                 var index = Expression.Constant(i);
-                var parameterType = parameters[i];
+                var parameterType = parameters[i].ParameterType;
                 var parameterAccessor = Expression.ArrayIndex(param, index);
                 var parameterCast = Expression.Convert(parameterAccessor, parameterType);
                 argumentsExpressions[i] = parameterCast;
