@@ -36,7 +36,7 @@ namespace Reflex.Caching
                 
                 var parameters = constructor.GetParameters();
                 var paramInfo = parameters.Select(p => 
-                    new MethodParamInfo(p.ParameterType, 
+                    new MemberParamInfo(p.ParameterType, 
                     p.HasDefaultValue, 
                     p.DefaultValue))
                     .ToArray();
@@ -45,7 +45,7 @@ namespace Reflex.Caching
             }
 
             // Should we add this complexity to be able to inject value types?
-            return new TypeConstructionInfo(ActivatorFactoryManager.Factory.GenerateDefaultActivator(type), Array.Empty<MethodParamInfo>());
+            return new TypeConstructionInfo(ActivatorFactoryManager.Factory.GenerateDefaultActivator(type), Array.Empty<MemberParamInfo>());
         }
     }
 }

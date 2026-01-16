@@ -7,7 +7,7 @@ namespace Reflex.Reflectors
 {
     internal sealed class IL2CPPActivatorFactory : IActivatorFactory
     {
-        public ObjectActivator GenerateActivator(Type type, ConstructorInfo constructor, MethodParamInfo[] parameters)
+        public ObjectActivator GenerateActivator(Type type, ConstructorInfo constructor, MemberParamInfo[] parameters)
         {
             return args =>
             {

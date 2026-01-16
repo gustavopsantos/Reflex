@@ -8,7 +8,7 @@ namespace Reflex.Reflectors
 {
     internal sealed class MonoActivatorFactory : IActivatorFactory
     {
-        public ObjectActivator GenerateActivator(Type type, ConstructorInfo constructor, MethodParamInfo[] parameters)
+        public ObjectActivator GenerateActivator(Type type, ConstructorInfo constructor, MemberParamInfo[] parameters)
         {
             var param = Expression.Parameter(typeof(object[]));
             var argumentsExpressions = new Expression[parameters.Length];

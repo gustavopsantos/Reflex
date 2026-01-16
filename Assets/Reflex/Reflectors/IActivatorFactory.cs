@@ -7,7 +7,7 @@ namespace Reflex.Reflectors
 {
     internal interface IActivatorFactory
     {
-        ObjectActivator GenerateActivator(Type type, ConstructorInfo constructor, MethodParamInfo[] parameters);
+        ObjectActivator GenerateActivator(Type type, ConstructorInfo constructor, MemberParamInfo[] parameters);
         ObjectActivator GenerateDefaultActivator(Type type);
     }
 }

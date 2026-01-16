@@ -25,7 +25,7 @@ namespace Reflex.EditModeTests
         public void CanActivate_ReferenceType(Type activatorFactoryType)
         {
             var activatorFactory = (IActivatorFactory) Activator.CreateInstance(activatorFactoryType);
-            var activator = activatorFactory.GenerateActivator(typeof(string), typeof(string).GetConstructor(new[] {typeof(char[])}), new[] {new MethodParamInfo(typeof(char[]))});
+            var activator = activatorFactory.GenerateActivator(typeof(string), typeof(string).GetConstructor(new[] {typeof(char[])}), new[] {new MemberParamInfo(typeof(char[]))});
             var complex = (string) activator.Invoke(Array.Empty<char>());
             complex.Should().NotBeNull();
             complex.Should().Be(string.Empty);
