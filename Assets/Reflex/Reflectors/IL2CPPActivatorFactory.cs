@@ -1,12 +1,13 @@
 using System;
 using System.Reflection;
+using Reflex.Caching;
 using Reflex.Delegates;
 
 namespace Reflex.Reflectors
 {
     internal sealed class IL2CPPActivatorFactory : IActivatorFactory
     {
-        public ObjectActivator GenerateActivator(Type type, ConstructorInfo constructor, Type[] parameters)
+        public ObjectActivator GenerateActivator(Type type, ConstructorInfo constructor, MemberParamInfo[] parameters)
         {
             return args =>
             {
