@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Reflex.Caching;
 using Reflex.Core;
 using Reflex.Exceptions;
@@ -22,7 +23,21 @@ namespace Reflex.Injectors
             {
                 for (var i = 0; i < methodParametersLength; i++)
                 {
-                    arguments[i] = container.Resolve(methodParameters[i].ParameterType);
+                    try
+                    {
+                        arguments[i] = container.Resolve(methodParameters[i].ParameterType);                    
+                    }
+                    catch (UnknownContractException exception)
+                    {
+                        if (methodParameters[i].HasDefaultValue)
+                        {
+                            arguments[i] = methodParameters[i].DefaultValue;
+                        }
+                        else
+                        {
+                            throw exception;
+                        }
+                    }
                 }
 
                 method.MethodInfo.Invoke(instance, arguments);
