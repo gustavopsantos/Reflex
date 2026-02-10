@@ -2,7 +2,7 @@
   "name": "com.gustavopsantos.reflex",
   "displayName": "Reflex",
   "version": "14.1.0",
-  "unity": "2021.1",
+  "unity": "6000.0",
   "description": "Minimal dependency injection framework for Unity",
   "keywords": ["Dependency Injection", "IoC", "DI", "DI Container"],
   "license": "MIT",
