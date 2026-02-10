@@ -15,15 +15,29 @@ namespace Reflex.Injectors
         public static object Construct(Type concrete, Container container)
         {
             var info = TypeConstructionInfoCache.Get(concrete);
-            var constructorParameters = info.ConstructorParameters;
-            var constructorParametersLength = info.ConstructorParameters.Length;
+            var constructorParameters = info.ConstructorParameterData;
+            var constructorParametersLength = info.ConstructorParameterData.Length;
             var arguments = ArrayPool.Rent(constructorParametersLength);
 
             try
             {
                 for (var i = 0; i < constructorParametersLength; i++)
                 {
-                    arguments[i] = container.Resolve(constructorParameters[i]);
+                    try
+                    {
+                        arguments[i] = container.Resolve(constructorParameters[i].ParameterType);
+                    }
+                    catch (UnknownContractException exception)
+                    {
+                        if (constructorParameters[i].HasDefaultValue)
+                        {
+                            arguments[i] = constructorParameters[i].DefaultValue;
+                        }
+                        else
+                        {
+                            throw exception;
+                        }
+                    }
                 }
 
                 return info.ObjectActivator.Invoke(arguments);
@@ -37,7 +51,7 @@ namespace Reflex.Injectors
                 ArrayPool.Return(arguments);
             }
         }
-        
+
         public static object Construct(Type concrete, object[] arguments)
         {
             var info = TypeConstructionInfoCache.Get(concrete);
@@ -48,7 +62,7 @@ namespace Reflex.Injectors
             }
             catch (Exception exception)
             {
-                throw new ConstructorInjectorException(concrete, exception, info.ConstructorParameters);
+                throw new ConstructorInjectorException(concrete, exception, info.ConstructorParameterData);
             }
         }
     }

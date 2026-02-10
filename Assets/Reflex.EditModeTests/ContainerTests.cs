@@ -1,6 +1,7 @@
 using System;
 using FluentAssertions;
 using NUnit.Framework;
+using Reflex.Attributes;
 using Reflex.Core;
 using Reflex.Enums;
 using Reflex.Exceptions;
@@ -33,13 +34,31 @@ namespace Reflex.EditModeTests
             }
         }
 
+        private class ClassWithDefaultUnresolvableValues : IClassWithDependency
+        {
+            private readonly int _constructorValue;
+
+            private int _methodValue;
+
+            public ClassWithDefaultUnresolvableValues(int value = 42)
+            {
+                _constructorValue = value;
+            }
+
+            [Inject]
+            public void InjectionMethod(int value = 42)
+            {
+                _methodValue = value;
+            }
+        }
+
         [Test]
         public void Resolve_ValueTypeSingleton_ShouldReturn42()
         {
             var container = new ContainerBuilder()
                 .RegisterValue(42)
                 .Build();
-            
+
             container.Single<int>().Should().Be(42);
         }
 
@@ -57,26 +76,26 @@ namespace Reflex.EditModeTests
             var container = new ContainerBuilder()
                 .RegisterType(typeof(Valuable), new[] { typeof(IValuable) }, Lifetime.Transient, Resolution.Lazy)
                 .Build();
-            
+
             container.Single<IValuable>().Value = 123;
             container.Single<IValuable>().Value.Should().Be(default(int));
         }
-        
+
         [Test]
         public void Resolve_AsTransientFromFactory_ShouldRunFactoryAlways()
         {
             var callbackAssertion = new CallbackAssertion();
-            
+
             string Factory(Container container)
             {
                 callbackAssertion.Invoke();
                 return "Hello World!";
             }
-            
+
             var container = new ContainerBuilder()
                 .RegisterFactory(Factory, Lifetime.Transient, Resolution.Lazy)
                 .Build();
-            
+
             container.Single<string>().Should().Be("Hello World!");
             container.Single<string>().Should().Be("Hello World!");
             container.Single<string>().Should().Be("Hello World!");
@@ -89,26 +108,26 @@ namespace Reflex.EditModeTests
             var container = new ContainerBuilder()
                 .RegisterType(typeof(Valuable), new[] { typeof(IValuable) }, Lifetime.Singleton, Resolution.Lazy)
                 .Build();
-            
+
             container.Single<IValuable>().Value = 123;
             container.Single<IValuable>().Value.Should().Be(123);
         }
-        
+
         [Test]
         public void Resolve_AsSingletonFromFactory_ShouldRunFactoryOnce()
         {
             var callbackAssertion = new CallbackAssertion();
-            
+
             string Factory(Container container)
             {
                 callbackAssertion.Invoke();
                 return "Hello World!";
             }
-            
+
             var container = new ContainerBuilder()
                 .RegisterFactory(Factory, Lifetime.Singleton, Resolution.Lazy)
                 .Build();
-            
+
             container.Single<string>().Should().Be("Hello World!");
             container.Single<string>().Should().Be("Hello World!");
             container.Single<string>().Should().Be("Hello World!");
@@ -129,7 +148,7 @@ namespace Reflex.EditModeTests
             var container = new ContainerBuilder()
                 .RegisterType(typeof(ClassWithDependency), new[] { typeof(IClassWithDependency) }, Lifetime.Transient, Resolution.Lazy)
                 .Build();
-            
+
             Action resolve = () => container.Single<IClassWithDependency>();
             resolve.Should().Throw<ConstructorInjectorException>();
         }
@@ -138,9 +157,9 @@ namespace Reflex.EditModeTests
         public void Resolve_KnownDependencyAsSingletonWithUnknownDependency_ShouldThrowConstructorInjectorException()
         {
             var container = new ContainerBuilder()
-                .RegisterType(typeof(ClassWithDependency), new []{typeof(IClassWithDependency)}, Lifetime.Singleton, Resolution.Lazy)
+                .RegisterType(typeof(ClassWithDependency), new[] { typeof(IClassWithDependency) }, Lifetime.Singleton, Resolution.Lazy)
                 .Build();
-            
+
             Action resolve = () => container.Single<IClassWithDependency>();
             resolve.Should().Throw<ConstructorInjectorException>();
         }
@@ -151,8 +170,8 @@ namespace Reflex.EditModeTests
             var container = new ContainerBuilder()
                 .RegisterType(typeof(int), Lifetime.Transient, Resolution.Lazy)
                 .Build();
-            
-        	container.Single<int>().Should().Be(default);
+
+            container.Single<int>().Should().Be(default);
         }
 
         private struct MyStruct
@@ -172,7 +191,7 @@ namespace Reflex.EditModeTests
                 .RegisterValue(42)
                 .RegisterType(typeof(MyStruct), Lifetime.Transient, Resolution.Lazy)
                 .Build();
-            
+
             container.Single<MyStruct>().Value.Should().Be(42);
         }
 
@@ -219,10 +238,10 @@ namespace Reflex.EditModeTests
                 .RegisterType(typeof(IntSetup), new[] { typeof(ISetup<int>) }, Lifetime.Transient, Resolution.Lazy)
                 .RegisterType(typeof(StringSetup), new[] { typeof(ISetup<string>) }, Lifetime.Transient, Resolution.Lazy)
                 .Build();
-            
-        	var instance = container.Construct<NumberAndStringCache>();
-        	instance.Int.Should().Be(42);
-        	instance.String.Should().Be("abc");
+
+            var instance = container.Construct<NumberAndStringCache>();
+            instance.Int.Should().Be(42);
+            instance.String.Should().Be("abc");
         }
 
         [Test]
@@ -231,17 +250,17 @@ namespace Reflex.EditModeTests
             var container = new ContainerBuilder()
                 .RegisterValue(42)
                 .Build();
-            
+
             container.Single<int>().Should().Be(42);
         }
-        
+
         [Test]
         public void ResolveAll_WithoutMatch_ShouldReturnEmptyEnumerable()
         {
             var container = new ContainerBuilder().Build();
             container.All<IDisposable>().Should().BeEmpty();
         }
-        
+
         [Test]
         public void All_OnParentShouldNotBeAffectedByScoped()
         {
@@ -250,21 +269,21 @@ namespace Reflex.EditModeTests
             var scoped = container.Scope(containerBuilder => { containerBuilder.RegisterValue(2); });
             string.Join(",", container.All<int>()).Should().Be("1");
         }
-        
+
         [Test]
         public void HasBindingReturnFalseWhenBindingIsNotDefined()
         {
             var container = new ContainerBuilder().Build();
             container.HasBinding<int>().Should().BeFalse();
         }
-        
+
         [Test]
         public void HasBindingReturnTrueWhenBindingIsDefined()
         {
             var container = new ContainerBuilder().RegisterValue(42).Build();
             container.HasBinding<int>().Should().BeTrue();
         }
-        
+
         [Test]
         public void TryGetResolverDoesNotThrowsWhenContractIsMissing()
         {
@@ -273,7 +292,7 @@ namespace Reflex.EditModeTests
             call.Should().NotThrow();
             call().Should().BeFalse();
         }
-        
+
         [Test]
         public void TryGetResolverGenericDoesNotThrowsWhenContractIsMissing()
         {
@@ -281,6 +300,18 @@ namespace Reflex.EditModeTests
             Func<bool> call = () => container.TryGetResolver<int>(out _);
             call.Should().NotThrow();
             call().Should().BeFalse();
+        }
+
+        [Test]
+        public void FailedResolutionSubstitutesWithDefaultMethodValues()
+        {
+            var container = new ContainerBuilder().RegisterType(typeof(ClassWithDefaultUnresolvableValues), Lifetime.Singleton, Resolution.Lazy).Build();
+            Action call = () =>
+            {
+                container.Resolve<ClassWithDefaultUnresolvableValues>();
+            };
+
+            call.Should().NotThrow();
         }
     }
 }

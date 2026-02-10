@@ -1,4 +1,3 @@
-using System;
 using Reflex.Delegates;
 
 namespace Reflex.Caching
@@ -6,12 +5,12 @@ namespace Reflex.Caching
     internal sealed class TypeConstructionInfo
     {
         public readonly ObjectActivator ObjectActivator;
-        public readonly Type[] ConstructorParameters;
+        public readonly MemberParamInfo[] ConstructorParameterData;
 
-        public TypeConstructionInfo(ObjectActivator objectActivator, Type[] constructorParameters)
+        public TypeConstructionInfo(ObjectActivator objectActivator, MemberParamInfo[] constructorParameterData)
         {
             ObjectActivator = objectActivator;
-            ConstructorParameters = constructorParameters;
+            ConstructorParameterData = constructorParameterData;
         }
     }
 }

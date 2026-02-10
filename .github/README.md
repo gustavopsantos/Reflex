@@ -75,7 +75,7 @@ You can install Reflex using any of the following methods:
 
 ### Unity Package Manager
 ```
-https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#14.0.0
+https://github.com/gustavopsantos/reflex.git?path=/Assets/Reflex/#14.1.0
 ```
 
 1. In Unity, open **Window** → **Package Manager**.
@@ -367,6 +367,8 @@ private class Foo
 }
 ```
 
+If resolution fails on a constructor parameter, Reflex will attempt to use the default value provided in the parameter - if one is present.
+
 > Note that constructor injection relies on `Resolve<TContract>` API, so in case there's two objects with `IInputManager` contract, the last one will be injected. 
 
 ### Attribute
@@ -385,6 +387,9 @@ class Foo : MonoBehaviour
 	}  
 }
 ```
+
+If resolution fails on a function parameter, Reflex will attempt to use the default value provided in the parameter - if one is present.
+
 > Note that attribute injection also works on non-mono classes.
 ### Single
 `Container::Single<TContract>` actually validates that there's a single binding implementing given contract, and returns it.
