@@ -5,11 +5,13 @@
   "unity": "6000.0",
   "description": "Minimal dependency injection framework for Unity",
   "keywords": ["Dependency Injection", "IoC", "DI", "DI Container"],
-  "samples": {
-    "displayName": "Compatibility with pre-1.4 API",
-    "description": "Offers extension methods converting the old API calls into equivalents in the new API, for an easier upgrade path into Reflex 1.4.X and above.",
-    "path": "Samples/OldApiCompatibility"
-  },
+  "samples": [
+    {
+      "displayName": "Compatibility with pre-1.4 API",
+      "description": "Offers extension methods converting the old API calls into equivalents in the new API, for an easier upgrade path into Reflex 1.4.X and above. Functionality provided in the new API (such as eager resolution) is not present in the compatibility API.",
+      "path": "Samples/OldAPICompatibility"
+    }
+  ],
   "license": "MIT",
   "documentationUrl": "https://github.com/gustavopsantos/reflex",
   "changelogUrl": "https://github.com/gustavopsantos/reflex/releases",
