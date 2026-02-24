@@ -163,6 +163,24 @@ namespace Reflex.Core
             return Add(typeof(T), contracts, resolver);
         }
         
+        public ContainerBuilder RegisterFactory(Func<Container, object> factory, Type concreteType, Type[] contracts, Lifetime lifetime, Resolution resolution)
+        {
+            Assert.IsNotNull(factory);
+            Assert.IsTrue(contracts != null && contracts.Length > 0);
+            Assert.IsTrue(contracts != null && contracts.Length > 0);
+            Assert.IsFalse(lifetime == Lifetime.Transient && resolution == Resolution.Eager, "Factory registration Lifetime.Transient + Resolution.Eager not allowed");
+            
+            IResolver resolver = lifetime switch
+            {
+                Lifetime.Singleton =>  new SingletonFactoryResolver(factory, resolution),
+                Lifetime.Transient => new TransientFactoryResolver(factory),
+                Lifetime.Scoped => new ScopedFactoryResolver(factory, resolution),
+                _ => throw new ArgumentOutOfRangeException(nameof(lifetime), lifetime, "Unhandled lifetime in ContainerBuilder.RegisterFactory() method.")
+            };
+
+            return Add(concreteType, contracts, resolver);
+        }
+        
         private ContainerBuilder Add(Type concrete, Type[] contracts, IResolver resolver)
         {
             var binding = Binding.Validated(resolver, concrete, contracts);
