@@ -20,8 +20,13 @@ namespace Reflex.EditModeTests
         public static void ForceGarbageCollection()
         {
             Resources.UnloadUnusedAssets();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+         
+            // A single run of Collect + WaitForPendingFinalizers doesn't fully guarantee that all objects will be collected. 
+            for (int i = 0; i < 2; i++)
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
         }
 
         [OneTimeSetUp]
@@ -82,10 +87,6 @@ namespace Reflex.EditModeTests
             }
 
             Act();
-            
-            // Somehow, without this check, the objects are not properly collected afterwards. GC magic.
-            references.All(r => r.IsAlive).Should().BeTrue();
-            
             ForceGarbageCollection();
             references.Any(r => r.IsAlive).Should().BeFalse();
         }
