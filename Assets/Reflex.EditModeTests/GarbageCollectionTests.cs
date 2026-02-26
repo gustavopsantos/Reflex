@@ -23,7 +23,7 @@ namespace Reflex.EditModeTests
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
-        
+
         [OneTimeSetUp]
         public void Setup()
         {
@@ -82,6 +82,10 @@ namespace Reflex.EditModeTests
             }
 
             Act();
+            
+            // Somehow, without this check, the objects are not properly collected afterwards. GC magic.
+            references.All(r => r.IsAlive).Should().BeTrue();
+            
             ForceGarbageCollection();
             references.Any(r => r.IsAlive).Should().BeFalse();
         }
