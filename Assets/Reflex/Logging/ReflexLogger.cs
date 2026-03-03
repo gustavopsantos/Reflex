@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Reflex.Configuration;
 using UnityEngine;
 
@@ -23,7 +24,8 @@ namespace Reflex.Logging
                 Log($"Reflex LogLevel set to {_logLevel}", LogLevel.Info);
             }
         }
-        
+
+        [Conditional("UNITY_EDITOR"), Conditional("DEBUG")]
         public static void Log(object message, LogLevel logLevel, UnityEngine.Object context = null)
         {
             if (logLevel < _logLevel)
