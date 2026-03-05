@@ -7,7 +7,7 @@ namespace Reflex.Exceptions
 {
     internal sealed class ConstructorInjectorException : Exception
     {
-        public ConstructorInjectorException(Type type, Exception exception, MemberParamInfo[] constructorParameters) : base(BuildMessage(type, exception, constructorParameters))
+        public ConstructorInjectorException(Type type, Exception exception, MemberParamInfo[] constructorParameters) : base(BuildMessage(type, exception, constructorParameters), exception)
         {
         }
 
