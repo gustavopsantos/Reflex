@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     container:
-      image: "unityci/editor:ubuntu-2021.3.45f1-base-3.1.0"
+      image: "unityci/editor:ubuntu-6000.0.67f1-windows-mono-3.2.1"
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
