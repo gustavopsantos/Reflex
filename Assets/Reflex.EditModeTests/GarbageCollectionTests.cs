@@ -17,15 +17,16 @@ namespace Reflex.EditModeTests
         private class Service
         {
         }
-
-        private static async Task ForceGarbageCollection()
+        
+        private static async Task ForceGarbageCollectionAsync()
         {
-            Resources.UnloadUnusedAssets();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            await Task.Yield();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+            for (var i = 0; i < 2; i++)
+            {
+                Resources.UnloadUnusedAssets();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                await Task.Yield();
+            }
         }
         
         [OneTimeSetUp]
@@ -37,7 +38,7 @@ namespace Reflex.EditModeTests
             }
         }
 
-        [Test, Retry(3)]
+        [Test]
         public async Task Singleton_ShouldBeFinalized_WhenOwnerIsDisposed()
         {
             var references = new List<WeakReference>();
@@ -51,11 +52,11 @@ namespace Reflex.EditModeTests
             }
 
             Act();
-            await ForceGarbageCollection();
+            await ForceGarbageCollectionAsync();
             references.Any(r => r.IsAlive).Should().BeFalse();
         }
 
-        [Test, Retry(3)]
+        [Test]
         public async Task DisposedScopedContainer_ShouldHaveNoReferencesToItself_AndShouldBeCollectedAndFinalized()
         {
             var references = new List<WeakReference>();
@@ -69,11 +70,11 @@ namespace Reflex.EditModeTests
             }
 
             Act();
-            await ForceGarbageCollection();
+            await ForceGarbageCollectionAsync();
             references.Any(r => r.IsAlive).Should().BeFalse();
         }
 
-        [Test, Retry(3)]
+        [Test]
         public async Task Construct_ContainerShouldNotControlConstructedObjectLifeCycle_ByNotKeepingReferenceToIt()
         {
             var references = new List<WeakReference>();
@@ -86,11 +87,11 @@ namespace Reflex.EditModeTests
             }
 
             Act();
-            await ForceGarbageCollection();
+            await ForceGarbageCollectionAsync();
             references.Any(r => r.IsAlive).Should().BeFalse();
         }
         
-        [Test, Retry(3)]
+        [Test]
         public async Task ScopedFromType_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
         {
             WeakReference instanceConstructedByChild;
@@ -107,12 +108,12 @@ namespace Reflex.EditModeTests
             }
             
             Act();
-            await ForceGarbageCollection();
+            await ForceGarbageCollectionAsync();
             instanceConstructedByChild.IsAlive.Should().BeFalse();
             instanceConstructedByParent.IsAlive.Should().BeTrue();
         }
         
-        [Test, Retry(3)]
+        [Test]
         public async Task ScopedFromFactory_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
         {
             WeakReference instanceConstructedByChild;
@@ -129,13 +130,18 @@ namespace Reflex.EditModeTests
             }
             
             Act();
-            await ForceGarbageCollection();
+            await ForceGarbageCollectionAsync();
             instanceConstructedByChild.IsAlive.Should().BeFalse();
             instanceConstructedByParent.IsAlive.Should().BeTrue();
         }
         
-                [Test, Retry(3)]
-        public async Task TransientFromType_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
+        /// <summary>
+        /// Because Transient instances are not tracked by the container,
+        /// so they should be collected as soon as there are no references to them,
+        /// even if the container that constructed them is still alive.
+        /// </summary>
+        [Test]
+        public async Task TransientFromType_ConstructedInstances_ShouldBeCollected_BeforeConstructingContainerIsDisposed()
         {
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
@@ -151,13 +157,18 @@ namespace Reflex.EditModeTests
             }
             
             Act();
-            await ForceGarbageCollection();
+            await ForceGarbageCollectionAsync();
             instanceConstructedByChild.IsAlive.Should().BeFalse();
-            instanceConstructedByParent.IsAlive.Should().BeTrue();
+            instanceConstructedByParent.IsAlive.Should().BeFalse();
         }
         
-        [Test, Retry(3)]
-        public async Task TransientFromFactory_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
+        /// <summary>
+        /// Because Transient instances are not tracked by the container,
+        /// so they should be collected as soon as there are no references to them,
+        /// even if the container that constructed them is still alive.
+        /// </summary>
+        [Test]
+        public async Task TransientFromFactory_ConstructedInstances_ShouldBeCollected_BeforeConstructingContainerIsDisposed()
         {
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
@@ -173,9 +184,9 @@ namespace Reflex.EditModeTests
             }
             
             Act();
-            await ForceGarbageCollection();
+            await ForceGarbageCollectionAsync();
             instanceConstructedByChild.IsAlive.Should().BeFalse();
-            instanceConstructedByParent.IsAlive.Should().BeTrue();
+            instanceConstructedByParent.IsAlive.Should().BeFalse();
         }
     }
 }
