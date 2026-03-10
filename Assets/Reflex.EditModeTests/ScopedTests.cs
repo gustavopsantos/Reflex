@@ -93,49 +93,5 @@ namespace Reflex.EditModeTests
             instanceConstructedByChild.IsDisposed.Should().BeTrue();
             instanceConstructedByParent.IsDisposed.Should().BeFalse();
         }
-        
-        [Test, Retry(3)]
-        public async Task ScopedFromType_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
-        {
-            WeakReference instanceConstructedByChild;
-            WeakReference instanceConstructedByParent;
-            var parentContainer = new ContainerBuilder().RegisterType(typeof(Service), Lifetime.Scoped, Resolution.Lazy).Build();
-
-            void Act()
-            {
-                using (var childContainer = parentContainer.Scope())
-                {
-                    instanceConstructedByChild = new WeakReference(childContainer.Resolve<Service>());
-                    instanceConstructedByParent = new WeakReference(parentContainer.Resolve<Service>());
-                }
-            }
-            
-            Act();
-            await GarbageCollectionTests.ForceGarbageCollection();
-            instanceConstructedByChild.IsAlive.Should().BeFalse();
-            instanceConstructedByParent.IsAlive.Should().BeTrue();
-        }
-        
-        [Test, Retry(3)]
-        public async Task ScopedFromFactory_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
-        {
-            WeakReference instanceConstructedByChild;
-            WeakReference instanceConstructedByParent;
-            var parentContainer = new ContainerBuilder().RegisterFactory(_ => new Service(), Lifetime.Scoped, Resolution.Lazy).Build();
-
-            void Act()
-            {
-                using (var childContainer = parentContainer.Scope())
-                {
-                    instanceConstructedByChild = new WeakReference(childContainer.Resolve<Service>());
-                    instanceConstructedByParent = new WeakReference(parentContainer.Resolve<Service>());
-                }
-            }
-            
-            Act();
-            await GarbageCollectionTests.ForceGarbageCollection();
-            instanceConstructedByChild.IsAlive.Should().BeFalse();
-            instanceConstructedByParent.IsAlive.Should().BeTrue();
-        }
     }
 }
