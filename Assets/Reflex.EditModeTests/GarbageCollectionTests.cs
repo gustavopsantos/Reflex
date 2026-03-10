@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
@@ -17,9 +18,12 @@ namespace Reflex.EditModeTests
         {
         }
 
-        public static void ForceGarbageCollection()
+        public static async Task ForceGarbageCollection()
         {
             Resources.UnloadUnusedAssets();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            await Task.Yield();
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -34,7 +38,7 @@ namespace Reflex.EditModeTests
         }
 
         [Test, Retry(3)]
-        public void Singleton_ShouldBeFinalized_WhenOwnerIsDisposed()
+        public async Task Singleton_ShouldBeFinalized_WhenOwnerIsDisposed()
         {
             var references = new List<WeakReference>();
 
@@ -47,12 +51,12 @@ namespace Reflex.EditModeTests
             }
 
             Act();
-            ForceGarbageCollection();
+            await ForceGarbageCollection();
             references.Any(r => r.IsAlive).Should().BeFalse();
         }
 
         [Test, Retry(3)]
-        public void DisposedScopedContainer_ShouldHaveNoReferencesToItself_AndShouldBeCollectedAndFinalized()
+        public async Task DisposedScopedContainer_ShouldHaveNoReferencesToItself_AndShouldBeCollectedAndFinalized()
         {
             var references = new List<WeakReference>();
 
@@ -65,12 +69,12 @@ namespace Reflex.EditModeTests
             }
 
             Act();
-            ForceGarbageCollection();
+            await ForceGarbageCollection();
             references.Any(r => r.IsAlive).Should().BeFalse();
         }
 
         [Test, Retry(3)]
-        public void Construct_ContainerShouldNotControlConstructedObjectLifeCycle_ByNotKeepingReferenceToIt()
+        public async Task Construct_ContainerShouldNotControlConstructedObjectLifeCycle_ByNotKeepingReferenceToIt()
         {
             var references = new List<WeakReference>();
             var container = new ContainerBuilder().Build();
@@ -82,7 +86,7 @@ namespace Reflex.EditModeTests
             }
 
             Act();
-            ForceGarbageCollection();
+            await ForceGarbageCollection();
             references.Any(r => r.IsAlive).Should().BeFalse();
         }
     }

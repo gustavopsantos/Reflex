@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using Reflex.Core;
@@ -49,7 +50,7 @@ namespace Reflex.EditModeTests
         }
         
         [Test, Retry(3)]
-        public void TransientFromType_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
+        public async Task TransientFromType_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
         {
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
@@ -65,13 +66,13 @@ namespace Reflex.EditModeTests
             }
             
             Act();
-            GarbageCollectionTests.ForceGarbageCollection();
+            await GarbageCollectionTests.ForceGarbageCollection();
             instanceConstructedByChild.IsAlive.Should().BeFalse();
             instanceConstructedByParent.IsAlive.Should().BeTrue();
         }
         
         [Test, Retry(3)]
-        public void TransientFromFactory_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
+        public async Task TransientFromFactory_ConstructedInstances_ShouldBeCollected_WhenConstructingContainerIsDisposed()
         {
             WeakReference instanceConstructedByChild;
             WeakReference instanceConstructedByParent;
@@ -87,7 +88,7 @@ namespace Reflex.EditModeTests
             }
             
             Act();
-            GarbageCollectionTests.ForceGarbageCollection();
+            await GarbageCollectionTests.ForceGarbageCollection();
             instanceConstructedByChild.IsAlive.Should().BeFalse();
             instanceConstructedByParent.IsAlive.Should().BeTrue();
         }
