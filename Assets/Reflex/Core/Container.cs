@@ -79,7 +79,13 @@ namespace Reflex.Core
         public object Construct(Type concrete)
         {
             var instance = ConstructorInjector.Construct(concrete, this);
-            AttributeInjector.Inject(instance, this);   
+            AttributeInjector.Inject(instance, this);
+
+            if (instance is IOnInjectedListener onInjectedListener)
+            {
+                onInjectedListener.OnInjected();
+            }
+            
             return instance;
         }
         
