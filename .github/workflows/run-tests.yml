@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     container:
-      image: "unityci/editor:ubuntu-6000.0.67f1-base-3.2.1"
+      image: ${{ vars.UNITY_IMAGE }}
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
