@@ -9,7 +9,7 @@ jobs:
     name: Generate Unity License File
     runs-on: ubuntu-latest
     container:
-      image: "unityci/editor:ubuntu-2021.3.45f1-base-3.1.0"
+      image: "unityci/editor:ubuntu-6000.0.67f1-base-3.2.1"
     steps:
     - uses: actions/checkout@v2
     - run: /opt/unity/Editor/Unity -nographics -batchmode -createManualActivationFile -logfile || true
