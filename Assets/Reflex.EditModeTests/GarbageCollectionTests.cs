@@ -20,13 +20,9 @@ namespace Reflex.EditModeTests
         
         private static async Task ForceGarbageCollectionAsync()
         {
-            for (var i = 0; i < 2; i++)
-            {
-                Resources.UnloadUnusedAssets();
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                await Task.Yield();
-            }
+            await Resources.UnloadUnusedAssets();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
         
         [OneTimeSetUp]
