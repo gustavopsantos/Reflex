@@ -27,7 +27,7 @@ namespace Reflex.Injectors
                     {
                         arguments[i] = container.Resolve(constructorParameters[i].ParameterType);
                     }
-                    catch (UnknownContractException exception)
+                    catch (UnknownContractException)
                     {
                         if (constructorParameters[i].HasDefaultValue)
                         {
@@ -35,7 +35,7 @@ namespace Reflex.Injectors
                         }
                         else
                         {
-                            throw exception;
+                            throw;
                         }
                     }
                 }

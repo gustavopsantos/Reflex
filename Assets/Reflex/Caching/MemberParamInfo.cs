@@ -8,7 +8,7 @@ namespace Reflex.Caching
         public readonly bool HasDefaultValue;
         public readonly object DefaultValue;
         
-        public MemberParamInfo(Type parameterType, bool hasDefaultValue, object defaultValue) : this()
+        public MemberParamInfo(Type parameterType, bool hasDefaultValue, object defaultValue)
         {
             ParameterType = parameterType;
             HasDefaultValue = hasDefaultValue;
