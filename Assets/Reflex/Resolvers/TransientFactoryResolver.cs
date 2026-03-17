@@ -1,6 +1,7 @@
 ﻿using System;
 using Reflex.Core;
 using Reflex.Enums;
+using Reflex.Injectors;
 
 namespace Reflex.Resolvers
 {
@@ -22,6 +23,7 @@ namespace Reflex.Resolvers
             Diagnosis.IncrementResolutions(this);
             var instance = _factory.Invoke(resolvingContainer);
             resolvingContainer.Disposables.TryAdd(instance);
+            AttributeInjector.Inject(instance, resolvingContainer);
             Diagnosis.RegisterInstance(this, instance);
             return instance;
         }
