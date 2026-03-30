@@ -102,12 +102,12 @@ namespace Reflex.Core
             return Bindings.Any(binding => binding.Contracts.Contains(contract));
         }
 
-        public ContainerBuilder RegisterType(Type type, Lifetime lifetime, Resolution resolution)
+        public ContainerBuilder RegisterType(Type type, Lifetime lifetime = Lifetime.Singleton, Resolution resolution = Resolution.Lazy)
         {
             return RegisterType(type, new[] { type }, lifetime, resolution);
         }
 
-        public ContainerBuilder RegisterType(Type type, Type[] contracts, Lifetime lifetime, Resolution resolution)
+        public ContainerBuilder RegisterType(Type type, Type[] contracts, Lifetime lifetime = Lifetime.Singleton, Resolution resolution = Resolution.Lazy)
         {
             Assert.IsNotNull(type);
             Assert.IsTrue(contracts != null && contracts.Length > 0);
@@ -136,12 +136,12 @@ namespace Reflex.Core
             return Add(value.GetType(), contracts, resolver);
         }
 
-        public ContainerBuilder RegisterFactory<T>(Func<Container, T> factory, Lifetime lifetime, Resolution resolution)
+        public ContainerBuilder RegisterFactory<T>(Func<Container, T> factory, Lifetime lifetime = Lifetime.Singleton, Resolution resolution = Resolution.Lazy)
         {
             return RegisterFactory(factory, new[] { typeof(T) }, lifetime, resolution);
         }
 
-        public ContainerBuilder RegisterFactory<T>(Func<Container, T> factory, Type[] contracts, Lifetime lifetime, Resolution resolution)
+        public ContainerBuilder RegisterFactory<T>(Func<Container, T> factory, Type[] contracts, Lifetime lifetime = Lifetime.Singleton, Resolution resolution = Resolution.Lazy)
         {
             Assert.IsNotNull(factory);
             Assert.IsTrue(contracts != null && contracts.Length > 0);
@@ -163,7 +163,7 @@ namespace Reflex.Core
             return Add(typeof(T), contracts, resolver);
         }
         
-        public ContainerBuilder RegisterFactory(Func<Container, object> factory, Type concreteType, Type[] contracts, Lifetime lifetime, Resolution resolution)
+        public ContainerBuilder RegisterFactory(Func<Container, object> factory, Type concreteType, Type[] contracts, Lifetime lifetime = Lifetime.Singleton, Resolution resolution = Resolution.Lazy)
         {
             Assert.IsNotNull(factory);
             Assert.IsTrue(contracts != null && contracts.Length > 0);
