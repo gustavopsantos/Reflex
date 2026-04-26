@@ -87,5 +87,63 @@ namespace Reflex.EditModeTests
             container.Dispose();
             service.Disposed.Should().Be(1);
         }
+
+        [Test]
+        public void DisableAutoDispose_ShouldPreventResolvedSingletonsFromBeingDisposed()
+        {
+            var container = new ContainerBuilder()
+                .DisableAutoDispose()
+                .RegisterType(typeof(Service), Lifetime.Singleton, Resolution.Lazy)
+                .Build();
+
+            var service = container.Single<Service>();
+            container.Dispose();
+
+            service.Disposed.Should().Be(0);
+        }
+
+        [Test]
+        public void DisableAutoDispose_ShouldPreventResolvedTransientsFromBeingDisposed()
+        {
+            var container = new ContainerBuilder()
+                .DisableAutoDispose()
+                .RegisterType(typeof(Service), Lifetime.Transient, Resolution.Lazy)
+                .Build();
+
+            var service = container.Single<Service>();
+            container.Dispose();
+
+            service.Disposed.Should().Be(0);
+        }
+
+        [Test]
+        public void DisableAutoDispose_ShouldPreventRegisteredValuesFromBeingDisposed()
+        {
+            var service = new Service();
+            var container = new ContainerBuilder()
+                .DisableAutoDispose()
+                .RegisterValue(service)
+                .Build();
+
+            container.Dispose();
+
+            service.Disposed.Should().Be(0);
+        }
+
+        [Test]
+        public void DisableAutoDispose_ShouldPreventFactoryProducedSingletonsFromBeingDisposed()
+        {
+            Service Factory(Container _) => new Service();
+
+            var container = new ContainerBuilder()
+                .DisableAutoDispose()
+                .RegisterFactory(Factory, Lifetime.Singleton, Resolution.Lazy)
+                .Build();
+
+            var service = container.Single<Service>();
+            container.Dispose();
+
+            service.Disposed.Should().Be(0);
+        }
     }
 }
