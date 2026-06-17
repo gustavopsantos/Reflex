@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using Reflex.Logging;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+#if UNITY_6000_2_OR_NEWER
+using TreeViewItem = UnityEditor.IMGUI.Controls.TreeViewItem<int>;
+using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState<int>;
+using TreeView = UnityEditor.IMGUI.Controls.TreeView<int>;
+#endif
 
 namespace Reflex.Editor.DebuggingWindow
 {
