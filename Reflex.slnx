@@ -1,9 +1,0 @@
-﻿<Solution>
-  <Project Path="Reflex.csproj" />
-  <Project Path="Reflex.EditModeTests.csproj" />
-  <Project Path="Reflex.Editor.csproj" />
-  <Project Path="Reflex.IL2CPP.Tests.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
-  <Project Path="Reflex.Benchmark.csproj" />
-  <Project Path="Reflex.PlayModeTests.csproj" />
-</Solution>
