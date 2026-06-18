@@ -14,7 +14,7 @@
       "dependencies": {}
     },
     "com.unity.ide.rider": {
-      "version": "3.0.39",
+      "version": "3.0.40",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -32,7 +32,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.nuget.newtonsoft-json": {
-      "version": "3.2.1",
+      "version": "3.2.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -58,11 +58,11 @@
       }
     },
     "jp.hadashikick.vcontainer": {
-      "version": "https://github.com/hadashiA/VContainer.git?path=/VContainer/Assets/VContainer/#1.16.8",
+      "version": "https://github.com/hadashiA/VContainer.git?path=/VContainer/Assets/VContainer/#1.18.0",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "5e6f5cc14b6dc8b94251bf6c0d6c37025a6ecf77"
+      "hash": "6e6972730ce316fab2408f20e7a160aec070e48b"
     },
     "com.unity.modules.animation": {
       "version": "1.0.0",
