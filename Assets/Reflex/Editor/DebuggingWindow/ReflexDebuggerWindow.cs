@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using Reflex.Core;
@@ -7,7 +8,11 @@ using Reflex.Extensions;
 using Reflex.Injectors;
 using Reflex.Resolvers;
 using UnityEditor;
+using UnityEditor.Compilation;
 using UnityEditor.IMGUI.Controls;
+#if UNITY_6000_0_OR_NEWER
+using UnityEditor.Build.Profile;
+#endif
 #if UNITY_6000_2_OR_NEWER
 using TreeViewState = UnityEditor.IMGUI.Controls.TreeViewState<int>;
 #endif
@@ -64,6 +69,28 @@ namespace Reflex.Editor.DebuggingWindow
         {
             await Task.Yield();
             Refresh();
+        }
+
+        private static DebuggerState GetDebuggerState()
+        {
+#if REFLEX_DEBUG
+            var _debuggerState = DebuggerState.Enabled;
+            
+            if (UnityScriptingDefineSymbols.IsDefined("REFLEX_DEBUG"))
+            {
+                _debuggerState |= DebuggerState.InUnityScriptingDefineSymbols;
+            }
+
+    #if UNITY_6000_0_OR_NEWER
+            if (BuildProfile.GetActiveBuildProfile().scriptingDefines?.Any(sym => sym == "REFLEX_DEBUG") ?? false)
+            {
+                _debuggerState |= DebuggerState.InCurrentBuildProfile;
+            }
+    #endif
+            return _debuggerState;
+#else
+            return DebuggerState.Disabled;
+#endif
         }
 
         private void InitIfNeeded()
@@ -214,7 +241,7 @@ namespace Reflex.Editor.DebuggingWindow
             Repaint();
             InitIfNeeded();
             
-            if (UnityScriptingDefineSymbols.IsDefined("REFLEX_DEBUG"))
+            if (GetDebuggerState().HasFlag(DebuggerState.Enabled))
             {
                 PresentDebuggerEnabled();
             }
@@ -303,17 +330,57 @@ namespace Reflex.Editor.DebuggingWindow
                     Refresh();
                 }
                 
-                var debuggerIcon = UnityScriptingDefineSymbols.IsDefined("REFLEX_DEBUG")
+                var debuggerState = GetDebuggerState();
+                var debuggerIcon = debuggerState.HasFlag(DebuggerState.Enabled)
                     ? EditorGUIUtility.IconContent("d_DebuggerEnabled")
                     : EditorGUIUtility.IconContent("d_DebuggerDisabled");
 
-                debuggerIcon.tooltip = UnityScriptingDefineSymbols.IsDefined("REFLEX_DEBUG")
-                    ? "Reflex Debugger Enabled"
-                    : "Reflex Debugger Disabled";
+                var builder = new StringBuilder("Reflex Debugger");
+
+                if (debuggerState.HasFlag(DebuggerState.Enabled))
+                {
+                    builder.Append(" Enabled: ");
+
+                    if (debuggerState == DebuggerState.Enabled)
+                    {
+                        builder.Append("\n- SourceCode");
+                    }
+                    else
+                    {
+                        if (debuggerState.HasFlag(DebuggerState.InUnityScriptingDefineSymbols))
+                        {
+                            builder.Append("\n- ScriptingDefineSymbols");
+                        }
+                    
+                        if (debuggerState.HasFlag(DebuggerState.InCurrentBuildProfile))
+                        {
+                            builder.Append("\n- CurrentBuildProfile");
+                        }
+                    }
+                }
+                else
+                {
+                    builder.Append(" Disabled");
+                }
+                
+                debuggerIcon.tooltip = builder.ToString();
                 
                 if (GUILayout.Button(debuggerIcon, Styles.StatusBarIcon, GUILayout.Width(25)))
                 {
-                    UnityScriptingDefineSymbols.Toggle("REFLEX_DEBUG", EditorUserBuildSettings.selectedBuildTargetGroup);
+                    if (debuggerState == DebuggerState.Disabled || debuggerState.HasFlag(DebuggerState.InUnityScriptingDefineSymbols))
+                    {
+                        UnityScriptingDefineSymbols.Toggle("REFLEX_DEBUG", EditorUserBuildSettings.selectedBuildTargetGroup);
+                        CompilationPipeline.RequestScriptCompilation(); // Force compilation even if UnityScriptingDefineSymbols changed a Build Profile 
+                    }
+                    
+                    if (debuggerState.HasFlag(DebuggerState.Enabled) && debuggerState != DebuggerState.InUnityScriptingDefineSymbols)
+                    {
+                        EditorUtility.DisplayDialog(
+                            "Reflex Debugger Warning!", 
+                            "REFLEX_DEBUG is defined outside Unity's ScriptingDefineSymbols so Reflex Debugger cannot disable the Debug mode completely!" +
+                            $"\nYou need to change that manualy.\n\n{builder.ToString()}", 
+                            "OK");
+                    }
                 }
             }
         }
@@ -362,6 +429,15 @@ namespace Reflex.Editor.DebuggingWindow
             Handles.color = Color.white;
             EditorGUIUtility.AddCursorRect(position, MouseCursor.Link);
             return GUI.Button(position, label, Styles.Hyperlink);
+        }
+        
+        [Flags]
+        private enum DebuggerState
+        {
+            Disabled = 0,
+            Enabled = 1,
+            InUnityScriptingDefineSymbols = Enabled | 1 << 1,
+            InCurrentBuildProfile = Enabled | 1 << 2
         }
     }
 }
