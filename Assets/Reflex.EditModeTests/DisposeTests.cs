@@ -87,5 +87,40 @@ namespace Reflex.EditModeTests
             container.Dispose();
             service.Disposed.Should().Be(1);
         }
+
+        [Test]
+        public void OnDisposing_ShouldFire_BeforeRegisteredDisposablesAreDisposed()
+        {
+            var service = new Service();
+            var observedDisposedAtEvent = -1;
+
+            var container = new ContainerBuilder()
+                .RegisterValue(service)
+                .Build();
+
+            container.OnDisposing += _ => observedDisposedAtEvent = service.Disposed;
+            container.Dispose();
+
+            observedDisposedAtEvent.Should().Be(0);
+            service.Disposed.Should().Be(1);
+        }
+
+        [Test]
+        public void OnDisposing_ShouldFire_BeforeChildContainersAreDisposed()
+        {
+            var parentEventOrder = -1;
+            var childDisposeOrder = -1;
+            var counter = 0;
+
+            var parent = new ContainerBuilder().Build();
+            var child = parent.Scope();
+            child.OnDisposing += _ => childDisposeOrder = ++counter;
+            parent.OnDisposing += _ => parentEventOrder = ++counter;
+
+            parent.Dispose();
+
+            parentEventOrder.Should().Be(1);
+            childDisposeOrder.Should().Be(2);
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace Reflex.Core
         public static Container RootContainer { get; internal set; }
         public string Name { get; }
         public Container Parent { get; }
+        public event Action<Container> OnDisposing;
         internal List<Container> Children { get; } = new();
         internal Dictionary<Type, List<IResolver>> ResolversByContract { get; }
         internal DisposableCollection Disposables { get; }
@@ -52,6 +53,8 @@ namespace Reflex.Core
 
         public void Dispose()
         {
+            OnDisposing?.Invoke(this);
+
             foreach (var child in Children.Reversed())
             {
                 child.Dispose();
