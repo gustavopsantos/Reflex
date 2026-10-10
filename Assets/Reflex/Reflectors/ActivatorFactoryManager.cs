@@ -13,9 +13,7 @@ namespace Reflex.Reflectors
             {
                 ScriptingBackend.Backend.Mono => new MonoActivatorFactory(),
                 ScriptingBackend.Backend.IL2CPP => new IL2CPPActivatorFactory(),
-#if UNITY_6000_7_OR_NEWER
                 ScriptingBackend.Backend.CoreCLR => new IL2CPPActivatorFactory(),
-#endif
                 _ => throw new Exception($"UnhandledRuntimeScriptingBackend {ScriptingBackend.Current}")
             };
         }
