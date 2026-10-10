@@ -45,7 +45,7 @@ namespace Reflex.PlayModeTests
         [Test]
         public void ExecutionOrderOf_PreInstantiated_InjectedObject_ShouldBe_InjectAwakeStart()
         {
-            var injectedObject = Object.FindObjectsOfType<InjectedGameObject>().Single();
+            var injectedObject = Object.FindFirstObjectByType<InjectedGameObject>();
             string.Join(",", injectedObject.ExecutionOrder).Should().Be("Inject,Awake,Start");
         }
         

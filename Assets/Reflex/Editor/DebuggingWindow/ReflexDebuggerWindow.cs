@@ -182,6 +182,11 @@ namespace Reflex.Editor.DebuggingWindow
             var containerTreeElement = new MyTreeElement(container.Name, parent.Depth + 1, ++_id, ContainerIcon, () => string.Empty, Array.Empty<string>(), string.Empty, container.GetDebugProperties().BuildCallsite, kind: string.Empty);
             parent.Children.Add(containerTreeElement);
             containerTreeElement.Parent = parent;
+
+            foreach (var scopedContainer in container.Children)
+            {
+                BuildDataRecursively(containerTreeElement, scopedContainer);
+            }
             
             foreach (var pair in BuildMatrix(container))
             {
@@ -215,11 +220,6 @@ namespace Reflex.Editor.DebuggingWindow
                 }
                 
                 resolverTreeElement.SetParent(containerTreeElement);
-            }
-
-            foreach (var scopedContainer in container.Children)
-            {
-                BuildDataRecursively(containerTreeElement, scopedContainer);
             }
         }
         
