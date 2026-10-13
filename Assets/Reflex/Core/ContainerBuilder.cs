@@ -12,12 +12,13 @@ namespace Reflex.Core
     {
         public string Name { get; private set; }
         public Container Parent { get; private set; }
+        public bool AutoDisposeEnabled { get; private set; } = true;
         public List<Binding> Bindings { get; } = new();
         public event Action<Container> OnContainerBuilt;
 
         public Container Build()
         {
-            var disposables = new DisposableCollection();
+            var disposables = new DisposableCollection(AutoDisposeEnabled);
             var resolversByContract = new Dictionary<Type, List<IResolver>>();
 
             // Inherited resolvers
@@ -94,6 +95,12 @@ namespace Reflex.Core
         public ContainerBuilder SetParent(Container parent)
         {
             Parent = parent;
+            return this;
+        }
+
+        public ContainerBuilder DisableAutoDispose()
+        {
+            AutoDisposeEnabled = false;
             return this;
         }
         
