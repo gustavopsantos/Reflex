@@ -49,6 +49,8 @@ namespace Reflex.Pooling
                 {
                     bucket[i] = new T[length];
                 }
+
+                _buckets[length] = bucket;
             }
 
             var array = bucket[rentalIndex];

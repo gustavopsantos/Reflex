@@ -94,6 +94,21 @@ namespace Reflex.EditModeTests
         }
 
         [Test]
+        public void Rent_ExpandBucketMoreThanOnce()
+        {
+            var pool = new SizeSpecificArrayPool<int>(8);
+            var arrays = new int[SizeSpecificArrayPool<int>.InitialBucketSize * 4 + 1][];
+            Assert.DoesNotThrow(() =>
+            {
+                for (var i = 0; i < arrays.Length; i++)
+                {
+                    arrays[i] = pool.Rent(1);
+                }
+            });
+            arrays.Distinct().Count().Should().Be(arrays.Length);
+        }
+
+        [Test]
         public void Rent_OverMaxLength_DoesNotThrow()
         {
             var pool = new SizeSpecificArrayPool<object>(8);
